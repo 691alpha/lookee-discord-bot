@@ -1,0 +1,39 @@
+{
+    "success": {
+        "color": "#e61531",
+        "title": "Success!!",
+        "description": ""
+    },
+    "error": {
+        "color": "#e61531",
+        "title": "Click meeeeeeeeeeeeee",
+        "description": "Not good, Error not good.",
+        "url":"https://sypher-project.com/",
+        "image": {
+            "url":"attachment://server-icon_bot.png"
+        },
+        "author":{
+            "name":"me",
+            "icon_url":"attachment://profil-icon_bot.png"
+        },
+        "fields": [
+            {
+                "name": "Errors",
+                "value": "Errors have to be fixed"
+            },
+            {
+                "name": "More good text",
+                "value": "Very useful text",
+                "inline": true
+            },
+            {
+                "name": "More good good text",
+                "value": "Very usefullll text",
+                "inline": true
+            }     
+        ],
+        "footer": {
+            "text":"Some good footer text :D"
+        }
+    }
+}
