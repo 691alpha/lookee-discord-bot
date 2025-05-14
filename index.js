@@ -1,20 +1,15 @@
 // Require the necessary discord.js classes
 const fs = require('node:fs');
 const path = require('node:path');
-const { Client, Collection, Events, GatewayIntentBits } = require('discord.js');
+const { Collection, GatewayIntentBits } = require('discord.js');
+
+const Client = require('./includes/Client.js');
 const dotenv = require('dotenv');
-const Sequelize = require('sequelize');
 
 dotenv.config();
 
 // Create a new client instance
-const client = new Client({ intents: [GatewayIntentBits.Guilds] });
-
-const sequelize = new Sequelize('database', 'user', 'password', {
-	host: 'localhost',
-	dialect: 'sqlite',
-	logging: false,
-});
+const client = new Client();
 
 client.commands = new Collection();
 client.cooldowns = new Collection();

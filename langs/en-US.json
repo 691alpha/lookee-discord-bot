@@ -1,4 +1,6 @@
 {
     "error":"An error has occured: {error} {error} {test}",
-    "lm_fallback":"[LM] Key could not be loaded."
+    "lm_fallback":"[LM] Key could not be loaded.",
+    "database_connection_fail":"Couldn't connect to database.",
+    "database_connection_success":"Connected to database."
 }
