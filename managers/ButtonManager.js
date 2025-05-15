@@ -40,6 +40,15 @@ class ButtonManager {
         return null;
     }
 
+    // static getButton(key) {
+    //     const bm = ButtonManager.getInstance();
+    //     if (Object.keys(bm._buttons).includes(key) && Object.keys(bm._buttons[key]).includes(key)) {
+    //         return bm._buttons[key][key];
+    //     }
+
+    //     return null;
+    // }
+
     static getInstance() {
         if (ButtonManager._instance) {
             return ButtonManager._instance;

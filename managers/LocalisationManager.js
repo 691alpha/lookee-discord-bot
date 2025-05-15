@@ -31,6 +31,7 @@ class LocalisationManager {
     /**
      * Replaces the expected string for the provided key with the provided values. 
      * @param {string} key 
+     * @param {string} langKey: optional 
      * @param {{}} values: optional 
      */
     static getString(key, langKey, values) {
@@ -53,7 +54,7 @@ class LocalisationManager {
             });
         }
 
-        
+
         return outputString;
     }
 

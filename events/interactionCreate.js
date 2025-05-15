@@ -6,9 +6,11 @@ module.exports = {
 	name: Events.InteractionCreate,
 	async execute(interaction) {
 
+		
+
 		if (interaction.isModalSubmit()) ModalManager.dispatch(interaction);
 
-		if (interaction.isButton()) ButtonManager.dispatch(interaction);
+		if (interaction.isButton() && ) ButtonManager.dispatch(interaction);
 
 		if (!interaction.isChatInputCommand()) return;
 

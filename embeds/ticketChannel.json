@@ -1,0 +1,13 @@
+{
+    "create": {
+        "color": "#00aeff",
+        "title": "Create a Ticket",
+        "description": " "
+    },
+
+    "pickCategory": {
+        "color": "#00aeff",
+        "title": "Pick a Category",
+        "description": "Click one of the Buttons to open a Ticket for the according Category."
+    }
+}

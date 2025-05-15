@@ -3,7 +3,7 @@ const { ConfirmButton } = require('../../buttons/components/ConfirmButton');
 const { CancelButton } = require('../../buttons/components/CancelButton');
 
 module.exports = {
-    category: 'utility',
+    category: 'admin',
     cooldown: 0,
     data: new SlashCommandBuilder()
         .setName('kick')

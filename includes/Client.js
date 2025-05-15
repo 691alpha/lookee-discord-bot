@@ -1,5 +1,5 @@
 const { Client, GatewayIntentBits, Partials } = require("discord.js");
-const Database = require("../database/database");
+const Database = require("../database/Database.js");
 
  
 module.exports = class extends Client {
