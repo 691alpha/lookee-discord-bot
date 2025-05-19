@@ -1,8 +1,9 @@
-const { ButtonBuilder, ButtonStyle, ActionRowBuilder, MessageFlags } = require("discord.js");
+const { ButtonBuilder, ButtonStyle, ActionRowBuilder, MessageFlags, ComponentType } = require("discord.js");
 const { EmbedManager } = require("../../managers/EmbedManager");
-const { HelpTicketButton } = require("../components/HelpTicketButton");
+const { HelpTicketButton } = require("./HelpTicketButton");
 const { BugTicketButton } = require("../components/BugTicketButton");
 const { SuggestionTicketButton } = require("../components/SuggestionTicketButton");
+const Tickets = require("../../database/models/Tickets");
 
 class CreateTicketButton {
     static customId = "CreateTicketButton";
@@ -18,6 +19,8 @@ class CreateTicketButton {
         
         let outputEmbed = EmbedManager.getEmbed('ticketChannel.pickCategory');
 
+        await interaction.deferReply();
+
         const row = new ActionRowBuilder()
                 .addComponents(
                     HelpTicketButton.create(), 
@@ -25,22 +28,26 @@ class CreateTicketButton {
                     SuggestionTicketButton.create()
                 );
         
-        const response = interaction.reply({
+        await interaction.followUp({
             embeds: [outputEmbed], 
             components: [row],
             flags: MessageFlags.Ephemeral
         })
 
-        const collectorFilter = i => i.user.id === interaction.user.id;
+        // const collectorFilter = i => i.user.id === interaction.user.id;
 
-        try {
-            const component = await response.resource.message.awaitMessageComponent({ filter: collectorFilter, time: 60_000});
+        // try {
+        //     const component = await response.awaitMessageComponent({
+        //         filter: collectorFilter,
+        //         time: 60_000,
+        //         componentType: ComponentType.Button
+        //     });
 
-            HelpTicketButton.onComponentInteraction(component, interaction);
+        //     HelpTicketButton.onComponentInteraction(component, interaction);
 
-        } catch (e) {
-            console.log(e);
-        }
+        // } catch (e) {
+        //     console.log(e);
+        // }
 
         return;
     }

@@ -2,9 +2,15 @@ const { Sequelize, QueryTypes } = require('sequelize');
 const dotenv = require('dotenv');
 const {LocalisationManager} = require('../managers/LocalisationManager.js');
 
+const SetupModel = require('./models/Setups.js');
+const AutoIncrementModel = require('./models/AutoIncrement.js');
+const TicketModel = require('./models/Tickets.js');
+
 dotenv.config();
 
 module.exports = class Database {
+    force = false;
+
     constructor() {
         this.sequelize = new Sequelize(
             process.env.DB_NAME,
@@ -20,8 +26,18 @@ module.exports = class Database {
 
     async authenticate() {
         try {
-            await this.sequelize.authenticate();
-            console.log(LocalisationManager.getString('database_connection_success', 'en-US'));
+            await this.sequelize.authenticate().then(async () => {
+                console.log(LocalisationManager.getString('database_connection_success', 'en-US'));
+                
+                this.initConnection(SetupModel);
+                this.initConnection(AutoIncrementModel);
+                this.initConnection(TicketModel);
+            
+                await this.sequelize.sync({force: this.force});
+                console.log(this.force ? `Drop and re-sync db.` : "Sync db.")
+
+                this.initAutoIncrement();
+            }).catch((e) => console.log(e));
         } catch (error) {
             console.error(LocalisationManager.getString('database_connection_fail', 'en-US'), error);
         }
@@ -44,5 +60,20 @@ module.exports = class Database {
         id |= BigInt(ai % 1024);
         
         return id.toString();
+    }
+
+    initConnection(database) {
+        database.init(this.sequelize);
+        // database.sync();
+    }
+
+    initAutoIncrement() {
+        AutoIncrementModel.findAll().then(data => {
+            if(data.length == 0) AutoIncrementModel.create({
+                setups: 0,
+                tickets: 0,
+                messages: 0
+            });
+        });
     }
 }

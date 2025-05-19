@@ -9,5 +9,11 @@
         "color": "#00aeff",
         "title": "Pick a Category",
         "description": "Click one of the Buttons to open a Ticket for the according Category."
+    },
+
+    "ticketCreated": {
+        "color": "#afff99",
+        "title": "Ticket Created",
+        "description": "Your Ticket has been created."
     }
 }

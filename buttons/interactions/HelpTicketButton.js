@@ -11,9 +11,7 @@ class HelpTicketButton {
         .setStyle(ButtonStyle.Secondary);
     }
 
-    static onComponentInteraction(component, interaction) {
-
-        if(component.customId != HelpTicketButton.customId) return;
+    static onInteraction(interaction) {
 
         return interaction.showModal(HelpTicketModal.create());
     }

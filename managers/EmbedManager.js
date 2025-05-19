@@ -40,12 +40,22 @@ class EmbedManager {
     /**
      * Load Embend from embedName File
      * @param {string} embedName 
+     * @param {{}} values: optional 
      */
-    static getEmbed(key) {
+    static getEmbed(key, values) {
         const [fileName, embedkey] = key.split(".");
         const em = EmbedManager.getInstance();
         let currentEmbedFile = em._embeds[fileName];
         let outputEmbed = currentEmbedFile[embedkey] ?? null;
+
+        // let outputString = currentEmbedFile[embedkey] ?? null;
+
+        // if (values) {
+        //     Object.entries(values).forEach(entry  => {
+        //         const [entryKey, entryValue] = entry;
+        //         outputString = outputString.replaceAll(entryKey, entryValue);
+        //     });
+        // }
 
         return outputEmbed;
 
