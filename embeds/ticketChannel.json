@@ -15,5 +15,17 @@
         "color": "#afff99",
         "title": "Ticket Created",
         "description": "Your Ticket has been created."
+    },
+
+    "movedToClosed": {
+        "color": "#afff99",
+        "title": "Ticket closed",
+        "description": "This ticket has been closed and will be deleted in 7 days. Click the button to re-open it."
+    },
+
+    "reopened": {
+        "color": "#afff99",
+        "title": "Ticket re-opened",
+        "description": "This ticket has been re-opened."
     }
 }

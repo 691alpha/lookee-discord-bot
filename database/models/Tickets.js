@@ -33,7 +33,7 @@ module.exports = class Tickets extends Model {
                 allowNull: false,
             },
             status: {
-                type: Sequelize.ENUM('assigned', 'unassigned', 'solved', 'dropped'),
+                type: Sequelize.ENUM('assigned', 'unassigned', 'closed', 'dropped'),
                 allowNull: false,
             },
             category: {

@@ -69,6 +69,34 @@ class TicketUtilities {
             flags: MessageFlags.Ephemeral,
         });
     }
+
+    /**
+     * Moves the ticket to the closed category and updates the database.
+     * @param {*} guild 
+     * @param {*} ticketId 
+     * @param {*} channel 
+     * @returns 
+     */
+    static async moveTicketToCategory(guild, ticketId, channel, status, newChannelId) {
+        await Tickets.update(
+            { status: status },
+            { where: { id: ticketId } }
+        );
+        
+        const setup = await Setups.findOne({ where: { guildId: guild.id } });
+
+        if (!setup) {
+            console.log(`Setup not found for guild ${guild.id}`);
+            return;
+        }
+
+        // Moves ticket to new category whilst keeping its permissions.
+        await channel.setParent(setup[newChannelId], { lockPermissions: false });
+
+        await channel.permissionOverwrites.edit(guild.roles.everyone, {
+            ViewChannel: false
+        });
+    }
 }
 
 module.exports.TicketUtilities = TicketUtilities;
