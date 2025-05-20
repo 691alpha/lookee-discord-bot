@@ -1,3 +1,23 @@
 {
-    "lm_fallback":"[LM] Der Schlüssel konnte nicht geladen werden."
+    "error": "Ein Fehler ist aufgetreten: {error} {error} {test}",
+    "lm_fallback": "[LM] Schlüssel konnte nicht geladen werden.",
+    "database_connection_fail": "Verbindung zur Datenbank fehlgeschlagen.",
+    "database_connection_success": "Erfolgreich mit der Datenbank verbunden.",
+
+    "ticket_created": "Ticket erstellt",
+    "ticket_created_at": "Dein Ticket wurde erstellt am:",
+    "create_ticket": "Ticket erstellen",
+    "create_ticket_1": "Klicke auf den Button, um",
+    "create_ticket_2": "ein Ticket zu erstellen.",
+    "pick_category": "Kategorie auswählen",
+    "pick_category_1": "Klicke auf einen der Buttons, um ein Ticket für die entsprechende Kategorie zu öffnen.",
+    "help_ticket_button": "Hilfe",
+    "create_ticket_button": "Ticket erstellen",
+    "forward_ticket_button": "Ticket",
+    "help_modal_title": "Hilfeticket erstellen",
+    "help_modal_input_title": "Gib deinen Titel ein",
+    "help_modal_placeholder_title": "Titel",
+    "help_modal_input_description": "Gib deine Beschreibung ein",
+    "help_modal_placeholder_description": "Beschreibung",
+    "ticket_creation_fail": "Ticketerstellung fehlgeschlagen."
 }

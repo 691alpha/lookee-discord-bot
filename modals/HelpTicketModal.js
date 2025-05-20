@@ -2,29 +2,30 @@ const { ActionRowBuilder, ModalBuilder, TextInputBuilder, TextInputStyle } = req
 const ChannelUtils = require('../utils/ChannelUtils');
 const Setups = require('../database/models/Setups');
 const Tickets = require('../database/models/Tickets');
+const { LocalisationManager } = require('../managers/LocalisationManager');
 
 class HelpTicketModal {
-    static create () {
+    static create (lang) {
 
         const modal = new ModalBuilder()
             .setCustomId('HelpTicketModal')
-            .setTitle('Create Help Ticket');
+            .setTitle(LocalisationManager.getString('help_modal_title', lang));
 
 		const title = new TextInputBuilder()
             .setMinLength(5)
             .setMaxLength(40)
-			.setLabel('Input your Title')
+			.setLabel(LocalisationManager.getString('help_modal_input_title', lang))
 			.setCustomId('helpTicketModalTitle')
-            .setPlaceholder('Title')
+            .setPlaceholder(LocalisationManager.getString('help_modal_placeholder_title', lang))
             .setRequired(true)
             .setStyle(TextInputStyle.Short);
 		
 		const description = new TextInputBuilder()
             .setMinLength(10)
             .setMaxLength(1_000)
-			.setLabel('Input your Description')
+			.setLabel(LocalisationManager.getString('help_modal_input_description', lang))
             .setCustomId('helpTicketModalDescription')
-            .setPlaceholder('Description')
+            .setPlaceholder(LocalisationManager.getString('help_modal_placeholder_description', lang))
             .setRequired(true)
             .setStyle(TextInputStyle.Paragraph);
 
@@ -41,11 +42,13 @@ class HelpTicketModal {
 		const guildId = interaction.guildId.toString(); 
 		const setup = await Setups.findOne({ where: { guildId } });
 		const ticketId = await db.getNextId('tickets');
+        const lang = interaction?.locale ?? 'en-US';
 		const createdTicketChannel = await ChannelUtils.runCreateTicketProcess(
 			interaction,
 			setup.unsolvedTicketsId,
 			'help',
-			ticketId
+			ticketId,
+            lang
 		);
 
 		await Tickets.create({

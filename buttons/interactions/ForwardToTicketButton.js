@@ -1,11 +1,12 @@
 const { ButtonBuilder, ButtonStyle, MessageFlags } = require("discord.js");
+const { LocalisationManager } = require("../../managers/LocalisationManager");
 
 class ForwardToTicketButton {
     static customId = "ForwardToTicketButton";
 
-    static create(channelId, guildId) {
+    static create(channelId, guildId, lang) {
         return new ButtonBuilder()
-            .setLabel('Ticket')
+            .setLabel(LocalisationManager.getString('forward_ticket_button', lang))
             .setStyle(ButtonStyle.Link)
             .setURL(`discord://discord.com/channels/${guildId}/${channelId}`)
     }

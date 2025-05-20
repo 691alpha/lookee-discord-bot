@@ -1,6 +1,5 @@
-const {SlashCommandBuilder, ActionRowBuilder} = require('discord.js');
-const { CreateTicketButton } = require('../../buttons/interactions/CreateTicketButton.js');
-const {EmbedManager} = require('../../managers/EmbedManager.js');
+const {SlashCommandBuilder, ActionRowBuilder, MessageFlags} = require('discord.js');
+const { CreateTicketComponent } = require('../../components/CreateTicketComponent.js');
 
 module.exports = {
     category: 'admin',
@@ -9,14 +8,11 @@ module.exports = {
         .setName('create_ticket_channel')
         .setDescription('Sends a Ticket embed in the current channel.'),
     async execute(interaction) {
-        let outputEmbed = EmbedManager.getEmbed('ticketChannel.create');
+        let outputContainer = await CreateTicketComponent.create(interaction);
 
-        const row = new ActionRowBuilder()
-                    .addComponents(CreateTicketButton.create())
-
-        interaction.reply({ 
-            embeds: [outputEmbed], 
-            components: [row]
-         });
+        await interaction.reply({
+            components: [outputContainer],
+            flags: MessageFlags.IsComponentsV2,
+        })
     },
 };

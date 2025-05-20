@@ -1,3 +1,23 @@
 {
-    "lm_fallback":"[LM] La clé n'a pas pu être chargée."
+    "error": "Une erreur s'est produite : {error} {error} {test}",
+    "lm_fallback": "[LM] La clé n'a pas pu être chargée.",
+    "database_connection_fail": "Connexion à la base de données échouée.",
+    "database_connection_success": "Connecté à la base de données.",
+
+    "ticket_created": "Ticket créé",
+    "ticket_created_at": "Votre ticket a été créé à :",
+    "create_ticket": "Créer un ticket",
+    "create_ticket_1": "Cliquez sur le bouton pour créer",
+    "create_ticket_2": "un ticket.",
+    "pick_category": "Choisissez une catégorie",
+    "pick_category_1": "Cliquez sur un des boutons pour ouvrir un ticket selon la catégorie correspondante.",
+    "help_ticket_button": "Aide",
+    "create_ticket_button": "Créer un ticket",
+    "forward_ticket_button": "Ticket",
+    "help_modal_title": "Créer un ticket d'aide",
+    "help_modal_input_title": "Entrez votre titre",
+    "help_modal_placeholder_title": "Titre",
+    "help_modal_input_description": "Entrez votre description",
+    "help_modal_placeholder_description": "Description",
+    "ticket_creation_fail": "La création du ticket a échoué."
 }

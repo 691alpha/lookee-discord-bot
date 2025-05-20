@@ -1,6 +1,7 @@
 const { ChannelType, MessageFlags, ActionRowBuilder, PermissionsBitField } = require("discord.js");
 const { EmbedManager } = require("../managers/EmbedManager");
 const { ForwardToTicketButton } = require("../buttons/interactions/ForwardToTicketButton");
+const { TicketCreationSuccessComponent } = require("../components/TicketCreationSuccessComponent");
 
 module.exports = class ChannelUtils {
     /**
@@ -58,33 +59,24 @@ module.exports = class ChannelUtils {
      * @param {*} interaction 
      * @param {*} tempChannel 
      */
-    static sendTicketCreationSuccess(interaction, tempChannel) {
-        let outputEmbed = EmbedManager.getEmbed(
-            'ticketChannel.ticketCreated',
-            {"{date}": Date.now()}
+    static async sendTicketCreationSuccess(interaction, tempChannel) {
+        let outputContainer = await TicketCreationSuccessComponent.create(
+            tempChannel, 
+            interaction
         );
 
-        const row = new ActionRowBuilder()
-                            .addComponents(
-                                ForwardToTicketButton.create(
-                                    tempChannel.id, 
-                                    interaction.guild.id
-                                )
-                            )
-
-        interaction.editReply({ 
-            embeds: [outputEmbed], 
-            flags: MessageFlags.Ephemeral,
-            components: [row]
-        });
+        await interaction.editReply({
+            components: [outputContainer],
+            flags: [MessageFlags.IsComponentsV2, MessageFlags.Ephemeral],
+        })
     }
 
     /**
      *  Replys to interaction if failed.
      * @param {*} interaction 
      */
-    static sendTicketCreationFailed(interaction) {
-        interaction.editReply('Ticket Creation failed.')
+    static sendTicketCreationFailed(interaction, lang) {
+        interaction.editReply(LocalisationManager.getString('ticket_creation_fail', lang))
     }
 
     /**
@@ -95,7 +87,7 @@ module.exports = class ChannelUtils {
      * @param {*} ticketId 
      * @returns 
      */
-    static async runCreateTicketProcess(interaction, categoryId, ticketType, ticketId) {
+    static async runCreateTicketProcess(interaction, categoryId, ticketType, ticketId, lang) {
         // Defer interaction to await for creation of the channel.
         await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 
@@ -112,7 +104,7 @@ module.exports = class ChannelUtils {
             ChannelUtils.sendTicketCreationSuccess(interaction, creationTicketResult);
             return creationTicketResult;
         } catch (e) {
-            ChannelUtils.sendTicketCreationFailed(interaction);
+            ChannelUtils.sendTicketCreationFailed(interaction, lang);
             return;
         }
     }

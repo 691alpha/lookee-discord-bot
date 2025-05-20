@@ -2,5 +2,23 @@
     "error":"An error has occured: {error} {error} {test}",
     "lm_fallback":"[LM] Key could not be loaded.",
     "database_connection_fail":"Couldn't connect to database.",
-    "database_connection_success":"Connected to database."
+    "database_connection_success":"Connected to database.",
+
+    "ticket_created":"Ticket created",
+    "ticket_created_at":"Your Ticket has been created at:",
+    "create_ticket":"Create a Ticket",
+    "create_ticket_1":"Click on the Button to create",
+    "create_ticket_2":"a Ticket.",
+    "pick_category":"Pick a Category",
+    "pick_category_1":"Click one of the Buttons to open a Ticket for the according Category.",
+    "help_ticket_button":"Help",
+    "create_ticket_button":"Create Ticket",
+    "forward_ticket_button":"Ticket",
+    "help_modal_title":"Create Help Ticket",
+    "help_modal_input_title":"Input your Title",
+    "help_modal_placeholder_title":"Title",
+    "help_modal_input_description":"Input your Description",
+    "help_modal_placeholder_description":"Description",
+    "ticket_creation_fail":"Ticket creation failed."
+
 }

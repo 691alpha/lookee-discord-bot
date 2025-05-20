@@ -1,19 +1,22 @@
 const { ButtonBuilder, ButtonStyle } = require("discord.js");
 const { HelpTicketModal } = require("../../modals/HelpTicketModal");
+const { LocalisationManager } = require("../../managers/LocalisationManager");
 
 class HelpTicketButton {
     static customId = "HelpTicketButton";
 
-    static create() {
+    static create(lang) {
         return new ButtonBuilder()
         .setCustomId(HelpTicketButton.customId)
-        .setLabel('Help')
+        .setLabel(LocalisationManager.getString('help_ticket_button', lang))
         .setStyle(ButtonStyle.Secondary);
     }
 
     static onInteraction(interaction) {
 
-        return interaction.showModal(HelpTicketModal.create());
+        const lang = interaction?.locale ?? 'en-US';
+
+        return interaction.showModal(HelpTicketModal.create(lang));
     }
 }
 
