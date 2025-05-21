@@ -16,13 +16,23 @@ class ReopenTicketButton {
 
             const ticket = await TicketUtilities.findTicketByChannel(interaction.channel.id);
 
-            TicketUtilities.moveTicketToCategory(
-                interaction.guild, 
-                ticket.id, 
-                interaction.channel, 
-                'assigned', 
-                'solvedTicketsId'
-            );
+            if(ticket.moderator) {
+                TicketUtilities.moveTicketToCategory(
+                    interaction.guild, 
+                    ticket.id,
+                    interaction.channel, 
+                    'assigned', 
+                    // 'solvedTicketsId'
+                );
+            } else {
+                TicketUtilities.moveTicketToCategory(
+                    interaction.guild, 
+                    ticket.id, 
+                    interaction.channel, 
+                    'unassigned', 
+                    // 'unsolvedTicketsId'
+                );
+            }
 
             let outputEmbed = EmbedManager.getEmbed('ticketChannel.reopened');
 

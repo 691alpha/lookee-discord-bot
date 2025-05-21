@@ -30,9 +30,9 @@ module.exports = {
         await Setups.create({
             id: await db.getNextId('setups'),
             guildId: guildId,
-            solvedTicketsId: assignedCategory.id,
-            unsolvedTicketsId: unassignedCategory.id,
-            closedTicketsId: closedCategory.id,
+            assignedTicketsCategoryId: assignedCategory.id,
+            unassignedTicketsCategoryId: unassignedCategory.id,
+            closedTicketsCategoryId: closedCategory.id,
             defaultLang: 'en-US', // or interaction.locale or your own logic
         });
 

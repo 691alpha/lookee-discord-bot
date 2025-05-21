@@ -1,7 +1,8 @@
-const { ChannelType, MessageFlags, ActionRowBuilder, PermissionsBitField } = require("discord.js");
+const { ChannelType, MessageFlags, ActionRowBuilder, PermissionsBitField, Client } = require("discord.js");
 const { EmbedManager } = require("../managers/EmbedManager");
 const { ForwardToTicketButton } = require("../buttons/interactions/ForwardToTicketButton");
 const { TicketCreationSuccessComponent } = require("../components/TicketCreationSuccessComponent");
+const { TicketCreationSuccessChannelComponent } = require("../components/TicketCreationSuccessChannelComponent");
 
 module.exports = class ChannelUtils {
     /**
@@ -60,6 +61,8 @@ module.exports = class ChannelUtils {
      * @param {*} tempChannel 
      */
     static async sendTicketCreationSuccess(interaction, tempChannel) {
+        let { client } = interaction;
+
         let outputContainer = await TicketCreationSuccessComponent.create(
             tempChannel, 
             interaction
@@ -69,6 +72,15 @@ module.exports = class ChannelUtils {
             components: [outputContainer],
             flags: [MessageFlags.IsComponentsV2, MessageFlags.Ephemeral],
         })
+
+        const lang = interaction?.locale ?? 'en-US';
+
+        let outputContainer2 = await TicketCreationSuccessChannelComponent.create(lang);
+        const test = client.channels.cache.get(tempChannel.id)
+        await test.send({
+            components: [outputContainer2],
+            flags: [MessageFlags.IsComponentsV2]
+        });
     }
 
     /**

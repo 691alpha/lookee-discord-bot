@@ -19,6 +19,15 @@
     "help_modal_placeholder_title":"Title",
     "help_modal_input_description":"Input your Description",
     "help_modal_placeholder_description":"Description",
-    "ticket_creation_fail":"Ticket creation failed."
+    "ticket_creation_fail":"Ticket creation failed.",
+    "ticket_created_channel":"This is your created Ticket.",
+    "ticket_created_channel_1":"A moderator will support you soon.",
+    "ticket_created_channel_close":"Click the button if you want to close the ticket.",
+    "ticket_close":"Close Ticket",
+
+    "pick_moderator_action":"Click on the Button with the Moderator Action you want to execute.",
+    "add_user_ticket":"Add User",
+    "add_moderator_ticket":"Assign Moderator",
+    "add_self_moderator_ticket":"Assign Self Moderator"
 
 }

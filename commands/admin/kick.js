@@ -1,6 +1,6 @@
 const { SlashCommandBuilder, ActionRowBuilder } = require('discord.js');
-const { ConfirmButton } = require('../../buttons/components/ConfirmButton');
-const { CancelButton } = require('../../buttons/components/CancelButton');
+// const { ConfirmButton } = require('../../buttons/components/ConfirmButton');
+// const { CancelButton } = require('../../buttons/components/CancelButton');
 
 module.exports = {
     category: 'admin',
@@ -22,8 +22,8 @@ module.exports = {
         const reason = interaction.options.getString('reason') ?? 'No reason provided';
 
         const row = new ActionRowBuilder()
-                    .addComponents(ConfirmButton.create())
-                    .addComponents(CancelButton.create());
+                    // .addComponents(ConfirmButton.create())
+                    // .addComponents(CancelButton.create());
         
 
         const response = await interaction.reply({

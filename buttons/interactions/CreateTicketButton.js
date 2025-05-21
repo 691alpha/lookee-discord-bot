@@ -1,8 +1,5 @@
-const { ButtonBuilder, ButtonStyle, ActionRowBuilder, MessageFlags, ComponentType } = require("discord.js");
-const { HelpTicketButton } = require("./HelpTicketButton");
-const { BugTicketButton } = require("../components/BugTicketButton");
-const { SuggestionTicketButton } = require("../components/SuggestionTicketButton");
-const { CreateTicketComponent, PickCategoryComponent } = require("../../components/PickCategoryComponent");
+const { ButtonBuilder, ButtonStyle, MessageFlags } = require("discord.js");
+const { PickCategoryComponent } = require("../../components/PickCategoryComponent");
 const { LocalisationManager } = require("../../managers/LocalisationManager");
 
 class CreateTicketButton {

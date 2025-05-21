@@ -35,7 +35,7 @@ class TicketUtilities {
         }
 
         // Moves ticket to new category whilst keeping its permissions.
-        await channel.setParent(setup.solvedTicketsId, { lockPermissions: false });
+        await channel.setParent(setup.assignedTicketsCategoryId, { lockPermissions: false });
 
         await channel.permissionOverwrites.edit(guild.roles.everyone, {
             ViewChannel: false
@@ -77,9 +77,10 @@ class TicketUtilities {
      * @param {*} channel 
      * @returns 
      */
-    static async moveTicketToCategory(guild, ticketId, channel, status, newChannelId) {
+    static async moveTicketToCategory(guild, ticketId, channel, newStatus) {
+
         await Tickets.update(
-            { status: status },
+            { status: newStatus },
             { where: { id: ticketId } }
         );
         
@@ -91,7 +92,7 @@ class TicketUtilities {
         }
 
         // Moves ticket to new category whilst keeping its permissions.
-        await channel.setParent(setup[newChannelId], { lockPermissions: false });
+        await channel.setParent(setup[`${newStatus}TicketsCategoryId`], { lockPermissions: false });
 
         await channel.permissionOverwrites.edit(guild.roles.everyone, {
             ViewChannel: false

@@ -1,13 +1,14 @@
 const { ButtonBuilder, ButtonStyle, MessageFlags } = require("discord.js");
 const { TicketUtilities } = require("../../utils/TicketUtils");
+const { LocalisationManager } = require("../../managers/LocalisationManager");
 
 class AddUserTicketButton {
     static customId = "AddUserTicketButton";
 
-    static create() {
+    static create(lang) {
         return new ButtonBuilder()
             .setCustomId(AddUserTicketButton.customId)
-            .setLabel('Add User')
+            .setLabel(`${LocalisationManager.getString('add_user_ticket', lang)}`)
             .setStyle(ButtonStyle.Secondary);
     }
 

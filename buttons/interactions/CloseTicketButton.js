@@ -2,14 +2,15 @@ const { ButtonBuilder, ButtonStyle, MessageFlags, PermissionsBitField, ActionRow
 const { TicketUtilities } = require("../../utils/TicketUtils");
 const { ReopenTicketButton } = require("../interactions/ReopenTicketButton");
 const { EmbedManager } = require("../../managers/EmbedManager");
+const { LocalisationManager } = require("../../managers/LocalisationManager");
 
 class CloseTicketButton {
     static customId = "CloseTicketButton";
 
-    static create() {
+    static create(lang) {
         return new ButtonBuilder()
             .setCustomId(CloseTicketButton.customId)
-            .setLabel('Close Ticket')
+            .setLabel(LocalisationManager.getString('ticket_close', lang))
             .setStyle(ButtonStyle.Secondary);
     }
 
@@ -19,8 +20,7 @@ class CloseTicketButton {
             interaction.guild, 
             ticket.id, 
             interaction.channel, 
-            'closed', 
-            'closedTicketsId'
+            'closed'
         );
 
         const row = new ActionRowBuilder()

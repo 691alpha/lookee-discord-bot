@@ -1,8 +1,5 @@
 const { SlashCommandBuilder, ActionRowBuilder, MessageFlags } = require('discord.js');
-const { AssignModeratorButton } = require('../../buttons/interactions/AssignModeratorButton');
-const { AddUserTicketButton } = require('../../buttons/interactions/AddUserTicketButton');
-const { AssignSelfModeratorButton } = require('../../buttons/interactions/AssignSelfModeratorButton');
-const { CloseTicketButton } = require('../../buttons/interactions/CloseTicketButton');
+const { TicketModeratorActionsComponent } = require('../../components/TicketModeratorActionsComponent')
 
 module.exports = {
     category: 'admin',
@@ -12,18 +9,25 @@ module.exports = {
         .setDescription('Sends buttons for all Moderator Ticket options.'),
     async execute(interaction) {
 
-        const row = new ActionRowBuilder()
-                    .addComponents(AssignModeratorButton.create())
-                    .addComponents(AddUserTicketButton.create())
-                    .addComponents(AssignSelfModeratorButton.create())
-                    .addComponents(CloseTicketButton.create());
-        
+        let outputContainer = await TicketModeratorActionsComponent.create(interaction);
 
         await interaction.reply({
-            content: `Click on the Moderator Action you want to execute.`,
-            components: [row],
-            flags: MessageFlags.Ephemeral
-        });
+            components: [outputContainer],
+            flags: MessageFlags.IsComponentsV2,
+        })
+
+        // const row = new ActionRowBuilder()
+        //             .addComponents(AssignModeratorButton.create())
+        //             .addComponents(AddUserTicketButton.create())
+        //             .addComponents(AssignSelfModeratorButton.create())
+        //             .addComponents(CloseTicketButton.create());
+        
+
+        // await interaction.reply({
+        //     content: `Click on the Moderator Action you want to execute.`,
+        //     components: [row],
+        //     flags: MessageFlags.Ephemeral
+        // });
 
         // const ticket = await Tickets.findOne({ 
         //     where: {

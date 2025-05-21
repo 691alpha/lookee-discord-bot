@@ -25,6 +25,7 @@ module.exports = {
 			.setURL('https://www.youtube.com/shorts/nfKGYDsnnH0');
 		const section2 = new SectionBuilder().addTextDisplayComponents(text2).setButtonAccessory(changelogButton1);
 		container.addSectionComponents(section2);
+		container.setAccentColor(122342);
 		await interaction.reply({
 			components: [container],
 			flags: MessageFlags.IsComponentsV2,

@@ -14,15 +14,15 @@ module.exports = class Setups extends Model {
                 allowNull: false,
                 field: 'guildId'
             },
-            unsolvedTicketsId: {
+            unassignedTicketsCategoryId: {
                 type: Sequelize.STRING,
                 allowNull: true,
             },
-            solvedTicketsId: {
+            assignedTicketsCategoryId: {
                 type: Sequelize.STRING,
                 allowNull: true,
             },
-            closedTicketsId: {
+            closedTicketsCategoryId: {
                 type: Sequelize.STRING,
                 allowNull: true,
             },

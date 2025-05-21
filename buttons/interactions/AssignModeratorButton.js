@@ -1,13 +1,14 @@
 const { ButtonBuilder, ButtonStyle, MessageFlags } = require("discord.js");
 const { TicketUtilities } = require("../../utils/TicketUtils");
+const { LocalisationManager } = require("../../managers/LocalisationManager");
 
 class AssignModeratorButton {
     static customId = "AssignModeratorButton";
 
-    static create() {
+    static create(lang) {
         return new ButtonBuilder()
             .setCustomId(AssignModeratorButton.customId)
-            .setLabel('Add Moderator')
+            .setLabel(`${LocalisationManager.getString('add_moderator_ticket', lang)}`)
             .setStyle(ButtonStyle.Secondary);
     }
 

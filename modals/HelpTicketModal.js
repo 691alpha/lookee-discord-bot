@@ -45,7 +45,7 @@ class HelpTicketModal {
         const lang = interaction?.locale ?? 'en-US';
 		const createdTicketChannel = await ChannelUtils.runCreateTicketProcess(
 			interaction,
-			setup.unsolvedTicketsId,
+			setup.unassignedTicketsCategoryId,
 			'help',
 			ticketId,
             lang

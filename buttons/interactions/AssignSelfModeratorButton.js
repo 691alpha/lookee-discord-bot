@@ -1,13 +1,14 @@
 const { ButtonBuilder, ButtonStyle, MessageFlags, PermissionsBitField } = require("discord.js");
 const { TicketUtilities } = require("../../utils/TicketUtils");
+const { LocalisationManager } = require("../../managers/LocalisationManager");
 
 class AssignSelfModeratorButton {
     static customId = "AssignSelfModeratorButton";
 
-    static create() {
+    static create(lang) {
         return new ButtonBuilder()
             .setCustomId(AssignSelfModeratorButton.customId)
-            .setLabel('Assign Self Moderator')
+            .setLabel(`${LocalisationManager.getString('add_self_moderator_ticket', lang)}`)
             .setStyle(ButtonStyle.Secondary);
     }
 
