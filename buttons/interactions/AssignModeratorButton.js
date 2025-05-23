@@ -1,6 +1,7 @@
 const { ButtonBuilder, ButtonStyle, MessageFlags } = require("discord.js");
-const { TicketUtilities } = require("../../utils/TicketUtils");
+const { TicketUtils } = require("../../utils/TicketUtils");
 const { LocalisationManager } = require("../../managers/LocalisationManager");
+const { AssignModeratorComponent } = require("../../components/AssignModeratorComponent");
 
 class AssignModeratorButton {
     static customId = "AssignModeratorButton";
@@ -14,61 +15,67 @@ class AssignModeratorButton {
 
     static async onInteraction(interaction) {
 
-        const ticket = await TicketUtilities.findTicketByChannel(interaction.channel.id);
-        if (!ticket) return TicketUtilities.searchTicketFail(interaction);
+        const ticket = await TicketUtils.findTicketByChannel(interaction.channel.id);
+        if (!ticket) return TicketUtils.searchTicketFail(interaction);
 
-        await interaction.reply({
-            content: 'Please enter the **User ID** or mention the user to add to this ticket.',
-            flags: MessageFlags.Ephemeral,
-        });
+        let outputContainer = await AssignModeratorComponent.create(interaction);
+		await interaction.reply({
+			components: [outputContainer],
+			flags: [MessageFlags.IsComponentsV2, MessageFlags.Ephemeral],
+		});
 
-        const collector = interaction.channel.createMessageCollector({
-            filter: m => m.author.id === interaction.user.id,
-            time: 30_000,
-            max: 1
-        });
+        // await interaction.reply({
+        //     content: 'Please enter the **User ID** or mention the user to add to this ticket.',
+        //     flags: MessageFlags.Ephemeral,
+        // });
 
-        collector.on('collect', async (msg) => {
-            // Extracts username or id by checking if the message mentions an user,
-            // if so it gets the id of the user, 
-            // otherwise it gets the text input (without whitespaces)
-            const userId = msg.mentions.users.first()?.id || msg.content.trim();
+        // const collector = interaction.channel.createMessageCollector({
+        //     filter: m => m.author.id === interaction.user.id,
+        //     time: 30_000,
+        //     max: 1
+        // });
 
-            // gets the guild member by user id
-            const member = await interaction.guild.members.fetch(userId).catch(() => null);
-            if (!member) return TicketUtilities.gettingMemberFail(interaction);
+        // collector.on('collect', async (msg) => {
+        //     // Extracts username or id by checking if the message mentions an user,
+        //     // if so it gets the id of the user, 
+        //     // otherwise it gets the text input (without whitespaces)
+        //     const userId = msg.mentions.users.first()?.id || msg.content.trim();
 
-            await TicketUtilities.addUserToChannel(interaction.channel, member, {
-                ViewChannel: true,
-                SendMessages: true,
-                ReadMessageHistory: true,
-                ManageMessages: true,
-                ManageChannels: true,
-                AddReactions: true,
-                AttachFiles: true,
-                EmbedLinks: true
-            });
+        //     // gets the guild member by user id
+        //     const member = await interaction.guild.members.fetch(userId).catch(() => null);
+        //     if (!member) return TicketUtils.gettingMemberFail(interaction);
 
-            await TicketUtilities.assignModerator(
-                ticket.id, 
-                member.id, 
-                interaction.guild, 
-                interaction.channel);
+        //     await TicketUtils.addUserToChannel(interaction.channel, member, {
+        //         ViewChannel: true,
+        //         SendMessages: true,
+        //         ReadMessageHistory: true,
+        //         ManageMessages: true,
+        //         ManageChannels: true,
+        //         AddReactions: true,
+        //         AttachFiles: true,
+        //         EmbedLinks: true
+        //     });
 
-            await interaction.followUp({ 
-                content: `<@${member.id}> has been added as moderator.`, 
-                flags: MessageFlags.Ephemeral, 
-            });
-        });
+        //     await TicketUtils.assignModerator(
+        //         ticket.id, 
+        //         member.id, 
+        //         interaction.guild, 
+        //         interaction.channel);
 
-        collector.on('end', (collected) => {
-            if (collected.size === 0) {
-                interaction.followUp({ 
-                    content: 'You did not provide a user ID in time.', 
-                    flags: MessageFlags.Ephemeral,
-                });
-            }
-        });
+        //     await interaction.followUp({ 
+        //         content: `<@${member.id}> has been added as moderator.`, 
+        //         flags: MessageFlags.Ephemeral, 
+        //     });
+        // });
+
+        // collector.on('end', (collected) => {
+        //     if (collected.size === 0) {
+        //         interaction.followUp({ 
+        //             content: 'You did not provide a user ID in time.', 
+        //             flags: MessageFlags.Ephemeral,
+        //         });
+        //     }
+        // });
     }
 }
 

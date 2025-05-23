@@ -1,5 +1,5 @@
 const { ButtonBuilder, ButtonStyle } = require("discord.js");
-const { TicketUtilities } = require("../../utils/TicketUtils");
+const { TicketUtils } = require("../../utils/TicketUtils");
 const { EmbedManager } = require("../../managers/EmbedManager");
 
 class ReopenTicketButton {
@@ -14,10 +14,10 @@ class ReopenTicketButton {
     
         static async onInteraction(interaction) {
 
-            const ticket = await TicketUtilities.findTicketByChannel(interaction.channel.id);
+            const ticket = await TicketUtils.findTicketByChannel(interaction.channel.id);
 
             if(ticket.moderator) {
-                TicketUtilities.moveTicketToCategory(
+                TicketUtils.moveTicketToCategory(
                     interaction.guild, 
                     ticket.id,
                     interaction.channel, 
@@ -25,7 +25,7 @@ class ReopenTicketButton {
                     // 'solvedTicketsId'
                 );
             } else {
-                TicketUtilities.moveTicketToCategory(
+                TicketUtils.moveTicketToCategory(
                     interaction.guild, 
                     ticket.id, 
                     interaction.channel, 

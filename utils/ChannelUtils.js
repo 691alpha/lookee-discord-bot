@@ -3,6 +3,8 @@ const { EmbedManager } = require("../managers/EmbedManager");
 const { ForwardToTicketButton } = require("../buttons/interactions/ForwardToTicketButton");
 const { TicketCreationSuccessComponent } = require("../components/TicketCreationSuccessComponent");
 const { TicketCreationSuccessChannelComponent } = require("../components/TicketCreationSuccessChannelComponent");
+const { TicketUtils } = require("./TicketUtils");
+const { LocalisationManager } = require("../managers/LocalisationManager");
 
 module.exports = class ChannelUtils {
     /**

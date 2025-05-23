@@ -3,6 +3,8 @@ const { LocalisationManager } = require("../managers/LocalisationManager");
 const { AddUserTicketButton } = require("../buttons/interactions/AddUserTicketButton");
 const { AssignModeratorButton } = require("../buttons/interactions/AssignModeratorButton");
 const { AssignSelfModeratorButton } = require("../buttons/interactions/AssignSelfModeratorButton");
+const { AddSupporterTicketButton } = require("../buttons/interactions/AddSupporterTicketButton");
+const { RemoveUserTicketButton } = require("../buttons/interactions/RemoveUserTicketButton");
 
 class TicketModeratorActionsComponent {
     static async create(interaction) {
@@ -22,7 +24,9 @@ class TicketModeratorActionsComponent {
             row => row.addComponents(
                 AddUserTicketButton.create(lang),
                 AssignModeratorButton.create(lang),
-                AssignSelfModeratorButton.create(lang)
+                AssignSelfModeratorButton.create(lang),
+                AddSupporterTicketButton.create(lang),
+                RemoveUserTicketButton.create(lang)
 
             ));
 

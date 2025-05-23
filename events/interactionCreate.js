@@ -1,6 +1,7 @@
 const { Collection, Events, MessageFlags } = require('discord.js');
 const { ModalManager } = require('../managers/ModalManager.js');
 const { ButtonManager } = require('../managers/ButtonManager.js');
+const { SelectMenuManager } = require('../managers/SelectMenuManager.js');
 
 module.exports = {
 	name: Events.InteractionCreate,
@@ -9,6 +10,8 @@ module.exports = {
 		if (interaction.isModalSubmit()) ModalManager.dispatch(interaction);
 
 		if (interaction.isButton()) ButtonManager.dispatch(interaction);
+
+		if (interaction.isMentionableSelectMenu()) SelectMenuManager.dispatch(interaction);
 
 		if (!interaction.isChatInputCommand()) return;
 

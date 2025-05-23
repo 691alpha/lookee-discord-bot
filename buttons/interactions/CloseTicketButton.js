@@ -1,5 +1,5 @@
 const { ButtonBuilder, ButtonStyle, MessageFlags, PermissionsBitField, ActionRowBuilder } = require("discord.js");
-const { TicketUtilities } = require("../../utils/TicketUtils");
+const { TicketUtils } = require("../../utils/TicketUtils");
 const { ReopenTicketButton } = require("../interactions/ReopenTicketButton");
 const { EmbedManager } = require("../../managers/EmbedManager");
 const { LocalisationManager } = require("../../managers/LocalisationManager");
@@ -15,8 +15,8 @@ class CloseTicketButton {
     }
 
     static async onInteraction(interaction) {
-        const ticket = await TicketUtilities.findTicketByChannel(interaction.channel.id);
-        TicketUtilities.moveTicketToCategory(
+        const ticket = await TicketUtils.findTicketByChannel(interaction.channel.id);
+        TicketUtils.moveTicketToCategory(
             interaction.guild, 
             ticket.id, 
             interaction.channel, 

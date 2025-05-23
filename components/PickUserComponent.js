@@ -1,9 +1,8 @@
 const { ContainerBuilder, TextDisplayBuilder } = require("discord.js");
 const { PickUserSelectionMenu } = require("../menus/PickUserSelectionMenu");
 const { LocalisationManager } = require("../managers/LocalisationManager");
-const { PickModeratorSelectionMenu } = require("../menus/PickModeratorSelectionMenu");
 
-class AssignModeratorComponent {
+class PickUserComponent {
     static async create(interaction) {
         const container = new ContainerBuilder();
 
@@ -11,16 +10,16 @@ class AssignModeratorComponent {
 
         const text1 = new TextDisplayBuilder().setContent(
             [
-                ` ${LocalisationManager.getString('pick_user_for_mod', lang)}`,
+                ` ${LocalisationManager.getString('pick_user_to_add', lang)}`,
             ].join('\n'),
         );
         
         container.addTextDisplayComponents(text1);
 
-        container.addActionRowComponents(row => row.addComponents(PickModeratorSelectionMenu.create(lang)));
+        container.addActionRowComponents(row => row.addComponents(PickUserSelectionMenu.create(lang)));
 
         return container;
     }
 }
 
-module.exports.AssignModeratorComponent = AssignModeratorComponent;
+module.exports.PickUserComponent = PickUserComponent;

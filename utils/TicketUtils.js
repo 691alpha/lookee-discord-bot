@@ -1,8 +1,8 @@
 const Tickets = require("../database/models/Tickets");
 const Setups = require("../database/models/Setups");
-const { MessageFlags } = require("discord.js");
+const { MessageFlags, PermissionsBitField } = require("discord.js");
 
-class TicketUtilities {
+class TicketUtils {
     /**
      *  Adds user to the channel with specified permissions.
      * @param {*} channel 
@@ -98,6 +98,46 @@ class TicketUtilities {
             ViewChannel: false
         });
     }
+
+    static async updateChannelDescription(channel, ticket) {
+        const overwrites = channel.permissionOverwrites.cache;
+
+        const mainModeratorId = ticket.moderator;
+        const supportMods = [];
+        let mainMod = [];
+        const user = [];
+    
+        for (const [id, overwrite] of overwrites.entries()) {
+
+            if (id === channel.guild.roles.everyone.id) continue;
+    
+            const isUser = overwrite.type === 1;
+            if (!isUser) continue;
+    
+            const hasManageMessages = overwrite.allow.has(PermissionsBitField.Flags.ManageMessages);
+    
+            if (id === mainModeratorId) {
+                mainMod.push(`<@${id}>`);
+            } else if (hasManageMessages) {
+                supportMods.push(`<@${id}>`);
+            } else {
+                user.push(`<@${id}>`);
+            }
+        }
+    
+        const description = [
+            `**Main Moderator**: ${mainMod.length > 0 ? mainMod.join(', ') : 'None'}`,
+            `**Support Moderators**: ${supportMods.length > 0 ? supportMods.join(', ') : 'None'}`,
+            `**User**: ${user.length > 0 ? user.join(', ') : 'None'}`
+        ].join(' • ');
+    
+        try {
+            channel.setTopic(description);
+
+        } catch (e) {
+            console.log(e);
+        }
+    }
 }
 
-module.exports.TicketUtilities = TicketUtilities;
+module.exports.TicketUtils = TicketUtils;

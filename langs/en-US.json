@@ -28,6 +28,8 @@
     "pick_moderator_action":"Click on the Button with the Moderator Action you want to execute.",
     "add_user_ticket":"Add User",
     "add_moderator_ticket":"Assign Moderator",
-    "add_self_moderator_ticket":"Assign Self Moderator"
+    "add_self_moderator_ticket":"Assign Self Moderator",
+    "pick_user_for_mod":"Pick the User you want to add as Moderator.",
+    "pick_user_to_add":"Pick the User you want to add to the Ticket."
 
 }

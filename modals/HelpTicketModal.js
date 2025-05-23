@@ -3,6 +3,7 @@ const ChannelUtils = require('../utils/ChannelUtils');
 const Setups = require('../database/models/Setups');
 const Tickets = require('../database/models/Tickets');
 const { LocalisationManager } = require('../managers/LocalisationManager');
+const { TicketUtils } = require('../utils/TicketUtils');
 
 class HelpTicketModal {
     static create (lang) {

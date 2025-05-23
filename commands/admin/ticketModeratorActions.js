@@ -13,7 +13,7 @@ module.exports = {
 
         await interaction.reply({
             components: [outputContainer],
-            flags: MessageFlags.IsComponentsV2,
+            flags: [MessageFlags.IsComponentsV2, MessageFlags.Ephemeral],
         })
 
         // const row = new ActionRowBuilder()

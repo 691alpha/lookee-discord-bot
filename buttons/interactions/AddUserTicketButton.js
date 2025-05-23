@@ -1,6 +1,7 @@
 const { ButtonBuilder, ButtonStyle, MessageFlags } = require("discord.js");
-const { TicketUtilities } = require("../../utils/TicketUtils");
+const { TicketUtils } = require("../../utils/TicketUtils");
 const { LocalisationManager } = require("../../managers/LocalisationManager");
+const {PickUserComponent} = require("../../components/PickUserComponent")
 
 class AddUserTicketButton {
     static customId = "AddUserTicketButton";
@@ -14,48 +15,54 @@ class AddUserTicketButton {
 
     static async onInteraction(interaction) {
 
-        await interaction.reply({
-            content: 'Please enter the **User ID** or mention the user to add.',
-            flags: MessageFlags.Ephemeral,
-        });
+        let outputContainer = await PickUserComponent.create(interaction);
+		await interaction.reply({
+			components: [outputContainer],
+			flags: [MessageFlags.IsComponentsV2, MessageFlags.Ephemeral],
+		});
 
-        const collector = interaction.channel.createMessageCollector({
-            filter: m => m.author.id === interaction.user.id,
-            time: 30_000,
-            max: 1
-        });
+        // await interaction.reply({
+        //     content: 'Please enter the **User ID** or mention the user to add.',
+        //     flags: MessageFlags.Ephemeral,
+        // });
 
-        collector.on('collect', async (msg) => {
-            // Extracts username or id by checking if the message mentions an user,
-            // if so it gets the id of the user, 
-            // otherwise it gets the text input (without whitespaces)
-            const userId = msg.mentions.users.first()?.id || msg.content.trim();
+        // const collector = interaction.channel.createMessageCollector({
+        //     filter: m => m.author.id === interaction.user.id,
+        //     time: 30_000,
+        //     max: 1
+        // });
 
-            // gets the guild member by user id
-            const member = await interaction.guild.members.fetch(userId).catch(() => null);
+        // collector.on('collect', async (msg) => {
+        //     // Extracts username or id by checking if the message mentions an user,
+        //     // if so it gets the id of the user, 
+        //     // otherwise it gets the text input (without whitespaces)
+        //     const userId = msg.mentions.users.first()?.id || msg.content.trim();
 
-            if (!member) return TicketUtilities.gettingMemberFail(interaction);
+        //     // gets the guild member by user id
+        //     const member = await interaction.guild.members.fetch(userId).catch(() => null);
 
-            await TicketUtilities.addUserToChannel(interaction.channel, member, {
-                ViewChannel: true,
-                SendMessages: true,
-                ReadMessageHistory: true,
-            });
+        //     if (!member) return TicketUtils.gettingMemberFail(interaction);
 
-            await interaction.followUp({ 
-                content: `<@${member.id}> added to the ticket.`, 
-                flags: MessageFlags.Ephemeral 
-            });
-        });
+        //     await TicketUtils.addUserToChannel(interaction.channel, member, {
+        //         ViewChannel: true,
+        //         SendMessages: true,
+        //         ReadMessageHistory: true,
+        //     });
 
-        collector.on('end', (collected) => {
-            if (collected.size === 0) {
-                interaction.followUp({ 
-                    content: 'No response in time.', 
-                    flags: MessageFlags.Ephemeral 
-                });
-            }
-        });
+        //     await interaction.followUp({ 
+        //         content: `<@${member.id}> added to the ticket.`, 
+        //         flags: MessageFlags.Ephemeral 
+        //     });
+        // });
+
+        // collector.on('end', (collected) => {
+        //     if (collected.size === 0) {
+        //         interaction.followUp({ 
+        //             content: 'No response in time.', 
+        //             flags: MessageFlags.Ephemeral 
+        //         });
+        //     }
+        // });
     }
 }
 

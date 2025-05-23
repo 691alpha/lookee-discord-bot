@@ -1,6 +1,7 @@
 const { ButtonBuilder, ButtonStyle, MessageFlags, PermissionsBitField } = require("discord.js");
-const { TicketUtilities } = require("../../utils/TicketUtils");
+const { TicketUtils } = require("../../utils/TicketUtils");
 const { LocalisationManager } = require("../../managers/LocalisationManager");
+const Tickets = require("../../database/models/Tickets");
 
 class AssignSelfModeratorButton {
     static customId = "AssignSelfModeratorButton";
@@ -14,31 +15,40 @@ class AssignSelfModeratorButton {
 
     static async onInteraction(interaction) {
         const member = interaction.member;
-        const ticket = await TicketUtilities.findTicketByChannel(interaction.channel.id);
+        const ticket = await TicketUtils.findTicketByChannel(interaction.channel.id);
 
-        if (!ticket) return TicketUtilities.searchTicketFail(interaction);
+        const currentTicket = await Tickets.findOne({ where: { channelId: interaction.channel.id } });
+        const moderator = currentTicket.moderator;
 
-        await TicketUtilities.addUserToChannel(interaction.channel, member, {
-            ViewChannel: true,
-            SendMessages: true,
-            ReadMessageHistory: true,
-            ManageMessages: true,
-            ManageChannels: true,
-            AddReactions: true,
-            AttachFiles: true,
-            EmbedLinks: true
-        });
+        if (!ticket) return TicketUtils.searchTicketFail(interaction);
 
-        await TicketUtilities.assignModerator(
-            ticket.id, 
-            member.id, 
-            interaction.guild, 
-            interaction.channel);
-
-        await interaction.reply({
-            content: `You are now assigned as moderator for this ticket.`,
-            flags: MessageFlags.Ephemeral
-        });
+        if(moderator === interaction.user.id) {
+            await interaction.reply({
+                content: `You are already assigned as moderator for this ticket.`,
+                flags: MessageFlags.Ephemeral
+            });
+        } else {
+            await TicketUtils.addUserToChannel(interaction.channel, member, {
+                ViewChannel: true,
+                SendMessages: true,
+                ReadMessageHistory: true,
+                ManageMessages: true,
+                AddReactions: true,
+                AttachFiles: true,
+                EmbedLinks: true
+            });
+    
+            await TicketUtils.assignModerator(
+                ticket.id, 
+                member.id, 
+                interaction.guild, 
+                interaction.channel);
+    
+            await interaction.reply({
+                content: `You are now assigned as moderator for this ticket.`,
+                flags: MessageFlags.Ephemeral
+            });
+        }
     }
 }
 
