@@ -1,6 +1,6 @@
 const { Model, Sequelize } = require("sequelize");
 
-module.exports = class Setups extends Model {
+module.exports = class PatchNoteNodes extends Model {
 
     static init(sequelize) {
         return super.init({
@@ -9,34 +9,29 @@ module.exports = class Setups extends Model {
                 allowNull: false,
                 primaryKey: true,
             },
-            guildId: {
+            patchNoteId: {
+                type: Sequelize.STRING,
+                allowNull: true,
+            },
+            status: {
+                type: Sequelize.ENUM('planned', 'done', 'published'),
+                allowNull: false,
+            },
+            content: {
                 type: Sequelize.STRING,
                 allowNull: false,
-                field: 'guildId'
             },
-            unassignedTicketsCategoryId: {
+            authorId: {
                 type: Sequelize.STRING,
-                allowNull: true,
+                allowNull: false,
             },
-            assignedTicketsCategoryId: {
-                type: Sequelize.STRING,
-                allowNull: true,
-            },
-            closedTicketsCategoryId: {
-                type: Sequelize.STRING,
-                allowNull: true,
-            },
-            announcementChannelId: {
-                type: Sequelize.STRING,
-                allowNull: true,
-            },
-            defaultLang: {
+            guildId: {
                 type: Sequelize.STRING,
                 allowNull: false,
             },
         }, {
             sequelize,
-            tableName: 'setups',
+            tableName: 'patchnote_nodes',
         });
     }
 };

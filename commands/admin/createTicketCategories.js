@@ -33,6 +33,7 @@ module.exports = {
             assignedTicketsCategoryId: assignedCategory.id,
             unassignedTicketsCategoryId: unassignedCategory.id,
             closedTicketsCategoryId: closedCategory.id,
+            announcementChannelId: null,
             defaultLang: 'en-US', // or interaction.locale or your own logic
         });
 

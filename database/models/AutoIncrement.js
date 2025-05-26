@@ -16,7 +16,13 @@ module.exports = class AutoIncrement extends Model {
       },
       tickets: {
         type: Sequelize.BIGINT,
-      }
+      },
+      patchnote_nodes: {
+        type: Sequelize.BIGINT,
+      },
+      patchnotes: {
+        type: Sequelize.BIGINT,
+      },
     }, {
       sequelize,
       tableName: 'auto_increments',

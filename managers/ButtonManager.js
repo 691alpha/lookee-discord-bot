@@ -25,7 +25,7 @@ class ButtonManager {
         const button = ButtonManager.getButton(prefix);
         
         if (!button) {
-            // console.warn(`[ButtonManager] No handler found for ${customId}`);
+            //console.warn(`[ButtonManager] No handler found for ${customId}`);
             return;
         }
         

@@ -5,6 +5,8 @@ const {LocalisationManager} = require('../managers/LocalisationManager.js');
 const SetupModel = require('./models/Setups.js');
 const AutoIncrementModel = require('./models/AutoIncrement.js');
 const TicketModel = require('./models/Tickets.js');
+const PatchnoteModal = require('./models/PatchNotes.js');
+const PatchNoteNodes = require('./models/PatchNoteNodes.js')
 
 dotenv.config();
 
@@ -32,6 +34,8 @@ module.exports = class Database {
                 this.initConnection(SetupModel);
                 this.initConnection(AutoIncrementModel);
                 this.initConnection(TicketModel);
+                this.initConnection(PatchnoteModal);
+                this.initConnection(PatchNoteNodes);
             
                 await this.sequelize.sync({force: this.force});
                 console.log(this.force ? `Drop and re-sync db.` : "Sync db.")
