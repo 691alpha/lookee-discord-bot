@@ -22,8 +22,8 @@ class PatchNoteAddNodeComponent {
         container.addTextDisplayComponents(text1);
 
         container.addActionRowComponents(row => row.addComponents(
-            PatchNoteAddNodeModalButton.create('planned'),
-            PatchNoteAddNodeModalButton.create('done')
+            PatchNoteAddNodeModalButton.create('planned', lang),
+            PatchNoteAddNodeModalButton.create('done', lang)
         ));
 
         return container;

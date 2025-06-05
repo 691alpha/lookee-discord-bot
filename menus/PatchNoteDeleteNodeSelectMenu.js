@@ -1,18 +1,20 @@
-const { MessageFlags, ModalBuilder, TextInputBuilder, TextInputStyle, ActionRowBuilder, StringSelectMenuBuilder } = require("discord.js");
+const { MessageFlags, StringSelectMenuBuilder } = require("discord.js");
 const PatchNoteNodes = require("../database/models/PatchNoteNodes");
+const { LocalisationManager } = require("../managers/LocalisationManager");
 
 class PatchNoteDeleteNodeSelectMenu {
     static customId = "PatchNoteDeleteNodeSelectMenu";
 
     static create(lang, nodes) {
+
         return new StringSelectMenuBuilder()
                     .setCustomId(PatchNoteDeleteNodeSelectMenu.customId)
-                    .setPlaceholder('Select a patch note node to edit...')
+                    .setPlaceholder(LocalisationManager.getString('patchnote_select_delete_placeholder', lang))
                     .addOptions(
                         nodes.slice(0, 25).map(node => ({
                             label: node.content.slice(0, 80),
                             value: node.id.toString(),
-                            description: `Status: ${node.status}`,
+                            description: LocalisationManager.getString('patchnote_node_status_description', lang).replace('{status}', node.status),
                         }))
                     );
     }
@@ -21,9 +23,11 @@ class PatchNoteDeleteNodeSelectMenu {
         const selectedId = interaction.values[0];
         const node = await PatchNoteNodes.findByPk(selectedId);
 
+        const lang = interaction?.locale ?? 'en-US';
+
         if (!node) {
             return interaction.reply({
-                content: 'Could not find the selected patch note node.',
+                content: LocalisationManager.getString('patchnote_node_delete_not_found', lang),
                 flags: MessageFlags.Ephemeral
             });
         }

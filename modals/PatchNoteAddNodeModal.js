@@ -13,23 +13,25 @@ class PatchNoteAddNodeModal {
             .setCustomId(PatchNoteAddNodeModal.customId)
             .setTitle(LocalisationManager.getString('patchnote_add_node_modal_title', lang));
 		
-		const description = new TextInputBuilder()
-            .setMinLength(10)
-            .setMaxLength(1_000)
-			.setLabel(LocalisationManager.getString('patchnote_add_node_modal_input_description', lang))
-            .setCustomId('patchNoteAddNodeModalDescription')
-            .setPlaceholder(LocalisationManager.getString('patchnote_add_node_modal_placeholder_description', lang))
-            .setRequired(true)
-            .setStyle(TextInputStyle.Paragraph);
+		for (let i = 1; i <= 5; i++) {
+            const input = new TextInputBuilder()
+                .setCustomId(`patchNoteNodeContent${i}`)
+                .setLabel(LocalisationManager.getString('patchnote_add_node_modal_input_label', lang).replace('{index}', i))
+                .setStyle(TextInputStyle.Paragraph)
+                .setMinLength(10)
+                .setMaxLength(1000)
+                .setRequired(i === 1);
 
-		const firstActionRow = new ActionRowBuilder().addComponents(description);
-
-		modal.addComponents(firstActionRow);
+            modal.addComponents(new ActionRowBuilder().addComponents(input));
+        }
 
         return modal;
 	}
 
     static async onSubmit(interaction) {
+
+        const lang = interaction?.locale ?? 'en-US';
+        
 		const { db } = interaction.client;
 
         await interaction.deferReply({ flags: MessageFlags.Ephemeral });
@@ -37,19 +39,31 @@ class PatchNoteAddNodeModal {
         const status = PatchNoteAddNodeModal.pendingStatuses.get(interaction.user.id) ?? 'planned';
         PatchNoteAddNodeModal.pendingStatuses.delete(interaction.user.id);
 
-		const patchNoteNodeId = await db.getNextId('patchnote_nodes');
+        const nodes = [];
 
-		await PatchNoteNodes.create({
-            id: patchNoteNodeId,
-			patchNoteId: null,
-            status: status,
-            content: interaction.fields.getTextInputValue('patchNoteAddNodeModalDescription'),
-            authorId: interaction.user.id,
-            guildId: interaction.guild.id
-        })
+		for (let i = 1; i <= 5; i++) {
+            const fieldId = `patchNoteNodeContent${i}`;
+            const value = interaction.fields.getTextInputValue(fieldId)?.trim();
+            if (value) {
+                const patchNoteNodeId = await db.getNextId('patchnote_nodes');
+                nodes.push({
+                    id: patchNoteNodeId,
+                    patchNoteId: null,
+                    status,
+                    content: value,
+                    authorId: interaction.user.id,
+                    guildId: interaction.guild.id
+                });
+            }
+        }
+
+        await PatchNoteNodes.bulkCreate(nodes);
 
         await interaction.editReply({
-            content: `Patch note node added with status **${status}**.`
+            content: LocalisationManager
+            .getString('patchnote_create_success', lang)
+            .replace('{count}', nodes.length)
+            .replace('{status}', LocalisationManager.getString(status, lang))
         });
 
     }

@@ -7,6 +7,7 @@ class PatchNoteDeleteNodeButton {
     static customId = "PatchNoteDeleteNodeButton";
 
     static create(lang) {
+        
         return new ButtonBuilder()
             .setCustomId(PatchNoteDeleteNodeButton.customId)
             .setLabel(LocalisationManager.getString('delete_node_patchnote_node_button', lang))
@@ -14,6 +15,9 @@ class PatchNoteDeleteNodeButton {
     }
 
     static async onInteraction(interaction) {
+
+        const lang = interaction?.locale ?? 'en-US';
+        
         await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 
         const nodes = await PatchNoteNodes.findAll({
@@ -25,20 +29,16 @@ class PatchNoteDeleteNodeButton {
 
         if (!nodes.length) {
             return interaction.editReply({
-                content: 'No patch notes with status `done` or `planned` to edit.'
+                content: LocalisationManager.getString('patchnote_no_nodes_delete', lang)
             });
         }
 
-        const lang = interaction?.locale ?? 'en-US';
-
-        const placeholder = LocalisationManager.getString('delete_node_selection', lang)
-
-        const selectMenu = PatchNoteNodeSelectMenu.create(lang, nodes, placeholder, 'delete')
+        const selectMenu = PatchNoteNodeSelectMenu.create(lang, nodes, 'delete')
 
         const row = new ActionRowBuilder().addComponents(selectMenu);
 
         await interaction.editReply({
-            content: 'Choose a patchnote node to delete:',
+            content: LocalisationManager.getString('patchnote_select_delete_prompt', lang),
             components: [row]
         });
     }

@@ -1,6 +1,7 @@
 const { MessageFlags, ActionRowBuilder, TextInputBuilder, ModalBuilder, TextInputStyle } = require("discord.js");
 const PatchNoteNodes = require("../database/models/PatchNoteNodes");
 const { ModalManager } = require("../managers/ModalManager");
+const { LocalisationManager } = require('../managers/LocalisationManager');
 
 class PatchNoteEditNodeModal {
 
@@ -13,7 +14,7 @@ class PatchNoteEditNodeModal {
         
         const modal = new ModalBuilder()
             .setCustomId(customId)
-            .setTitle(`Edit Patchnote Node`);
+            .setTitle(LocalisationManager.getString('patchnote_edit_node_modal_title', lang))
 
         const descriptionInput = new TextInputBuilder()
             .setCustomId("patchNoteEditNodeModalDescription")
@@ -30,6 +31,8 @@ class PatchNoteEditNodeModal {
     }
     static async onSubmit(interaction) {
 
+        const lang = interaction?.locale ?? 'en-US';
+
         const customId = interaction.customId;
         const {params} = ModalManager.getCustomIdData(customId);
         const nodeId = params.nodeId;
@@ -38,7 +41,7 @@ class PatchNoteEditNodeModal {
 
         if (!node) {
             return interaction.reply({
-                content: "Node not found.",
+                content: LocalisationManager.getString('patchnote_node_not_found', lang),
                 flags: MessageFlags.Ephemeral
             });
         }
@@ -49,7 +52,7 @@ class PatchNoteEditNodeModal {
         await node.save();
 
         await interaction.reply({
-            content: "Patchnote node updated.",
+            content: LocalisationManager.getString('patchnote_node_updated', lang),
             flags: MessageFlags.Ephemeral
         });
     }

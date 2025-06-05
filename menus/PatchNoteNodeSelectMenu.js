@@ -1,27 +1,30 @@
-const { MessageFlags, ModalBuilder, TextInputBuilder, TextInputStyle, ActionRowBuilder, StringSelectMenuBuilder } = require("discord.js");
+const { MessageFlags, StringSelectMenuBuilder } = require("discord.js");
 const PatchNoteNodes = require("../database/models/PatchNoteNodes");
 const { PatchNoteEditNodeModal } = require("../modals/PatchNoteEditNodeModal");
 const { ModalManager } = require("../managers/ModalManager");
+const { LocalisationManager } = require("../managers/LocalisationManager");
 
 class PatchNoteNodeSelectMenu {
     static customId = "PatchNoteNodeSelectMenu";
 
-    static create(lang, nodes, placeholder, type) {
+    static create(lang, nodes, type) {
+        
         const menu = new StringSelectMenuBuilder()
         .setCustomId(`${PatchNoteNodeSelectMenu.customId}/type=${type}`)
-        .setPlaceholder(placeholder)
         .addOptions(
             nodes.slice(0, 25).map(node => ({
                 label: node.content.slice(0, 80),
                 value: node.id.toString(),
-                description: `Status: ${node.status}`,
+                description: `${LocalisationManager.getString('patchnote_node_status_description', lang)}${node.status}`,
             }))
         );
 
     if (type === "delete") {
         menu.setMinValues(1).setMaxValues(Math.min(25, nodes.length));
+        menu.setPlaceholder(LocalisationManager.getString('patchnote_select_delete_placeholder'))
     } else if (type === "edit") {
         menu.setMinValues(1).setMaxValues(1);
+        menu.setPlaceholder(LocalisationManager.getString('patchnote_select_edit_placeholder'))
     }
 
     return menu;
@@ -43,7 +46,7 @@ class PatchNoteNodeSelectMenu {
 
             if (!node) {
                 return interaction.reply({
-                    content: 'Could not find the selected patch note node.',
+                    content: LocalisationManager.getString('patchnote_node_edit_not_found', lang),
                     flags: MessageFlags.Ephemeral
                 });
             }
@@ -58,7 +61,7 @@ class PatchNoteNodeSelectMenu {
             );
 
             return interaction.reply({
-                content: `Deleted ${selectedIds.length} node(s).`,
+                content: LocalisationManager.getString('patchnote_node_deleted', lang).replace('{count}', selectedIds.length),
                 flags: MessageFlags.Ephemeral
             });
         }

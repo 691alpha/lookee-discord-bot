@@ -8,6 +8,7 @@ class PatchNotePublishButton {
     static customId = "PatchNotePublishButton";
 
     static create(lang) {
+        
         return new ButtonBuilder()
         .setCustomId(PatchNotePublishButton.customId)
         .setLabel(LocalisationManager.getString('create_patchnote_node_button', lang))
@@ -25,9 +26,11 @@ class PatchNotePublishButton {
             }
         });
 
+        const lang = interaction?.locale ?? 'en-US';
+
         if (!nodes.length) {
             return interaction.editReply({
-                content: 'No patch notes with status `done` or `planned` to publish.'
+                content: LocalisationManager.getString('patchnote_publish_no_nodes', lang)
             });
         }
 
@@ -51,7 +54,7 @@ class PatchNotePublishButton {
             await node.save();
         }
 
-        return interaction.editReply('Patch Note published.');
+        return interaction.editReply(LocalisationManager.getString('patchnote_published', lang));
     }
 }
 

@@ -6,6 +6,7 @@ class PatchNoteAddNodeButton {
     static customId = "PatchNoteAddNodeButton";
 
     static create(lang) {
+
         return new ButtonBuilder()
         .setCustomId(PatchNoteAddNodeButton.customId)
         .setLabel(LocalisationManager.getString('create_patchnote_node_button', lang))
@@ -13,8 +14,6 @@ class PatchNoteAddNodeButton {
     }
 
     static async onInteraction(interaction) {
-
-        const lang = interaction?.locale ?? 'en-US';
 
         return interaction.showModal(PatchNoteAddNodeComponent.create(lang));
     }

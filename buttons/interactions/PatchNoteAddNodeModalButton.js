@@ -5,10 +5,11 @@ const { PatchNoteAddNodeModal } = require("../../modals/PatchNoteAddNodeModal");
 class PatchNoteAddNodeModalButton {
     static customId = "PatchNoteAddNodeModalButton";
 
-    static create(status) {
+    static create(status, lang) {
+
         return new ButtonBuilder()
         .setCustomId(`${PatchNoteAddNodeModalButton.customId}:${status}`)
-        .setLabel(LocalisationManager.getString(status))
+        .setLabel(LocalisationManager.getString(status), lang)
         .setStyle(ButtonStyle.Secondary);
     }
 

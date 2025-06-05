@@ -9,11 +9,11 @@ class PatchNoteComponent {
     static async create(interaction) {
         const container = new ContainerBuilder();
 
-        
+        const lang = interaction?.locale ?? 'en-US';
 
         const text1 = new TextDisplayBuilder().setContent(
             [
-                "Here's where your latest patch notes will appear."
+                LocalisationManager.getString('patchnote_section_empty', lang)
             ].join('\n'),
         );
         
@@ -29,11 +29,11 @@ class PatchNoteComponent {
             return `- ${node.content}`;
         });
 
+        const lang = interaction?.locale ?? 'en-US';
+
         const output = lines.length > 0
             ? lines.join('\n')
-            : '*No patch note entries found.*';
-
-        const lang = interaction?.locale ?? 'en-US';
+            : LocalisationManager.getString('patchnote_section_empty', lang);
 
         const title = new TextDisplayBuilder().setContent(
                 `Patch Note ${new Date().toLocaleString(lang, {

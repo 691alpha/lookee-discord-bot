@@ -7,6 +7,7 @@ class PatchNoteEditNodeButton {
     static customId = "PatchNoteEditNodeButton";
 
     static create(lang) {
+
         return new ButtonBuilder()
             .setCustomId(PatchNoteEditNodeButton.customId)
             .setLabel(LocalisationManager.getString('edit_node_patchnote_node_button', lang))
@@ -23,22 +24,20 @@ class PatchNoteEditNodeButton {
             }
         });
 
+        const lang = interaction?.locale ?? 'en-US';
+
         if (!nodes.length) {
             return interaction.editReply({
-                content: 'No patch notes with status `done` or `planned` to edit.'
+                content: LocalisationManager.getString('patchnote_no_nodes_edit', lang)
             });
         }
 
-        const lang = interaction?.locale ?? 'en-US';
-
-        const placeholder = LocalisationManager.getString('edit_node_selection', lang)
-
-        const selectMenu = PatchNoteNodeSelectMenu.create(lang, nodes, placeholder, 'edit')
+        const selectMenu = PatchNoteNodeSelectMenu.create(lang, nodes, 'edit')
 
         const row = new ActionRowBuilder().addComponents(selectMenu);
 
         await interaction.editReply({
-            content: 'Choose a patchnote node to edit:',
+            content: LocalisationManager.getString('patchnote_select_edit_prompt', lang),
             components: [row]
         });
     }
