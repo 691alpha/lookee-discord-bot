@@ -26,14 +26,69 @@ class ModalManager {
         }
     }
 
+    /**
+     * 
+     * @param {*} interaction 
+     * @returns 
+     */
     static dispatch(interaction) {
-        const { customId } = interaction;
+        let { customId } = interaction;
 
-        const modal = ModalManager.getModal(customId);
+        // customId = customId.split('-')[0];
+        // what does that do
+        ModalManager.checkCustomIdLength(customId);
+        const {customModalId, params} = ModalManager.getCustomIdData(customId);
+        let modal;
+
+        if(customModalId){
+            modal = ModalManager.getModal(customModalId);
+        } else {
+            modal = ModalManager.getModal(customId);
+        }
         
         if (!modal) return;
         
-        modal.onSubmit(interaction);
+        // Passes the params if provided otherwise empty dictionary
+        modal.onSubmit(interaction, params ?? {});
+    }
+
+    /**
+     * Checks if the CustomId extends the maximum length of a customId from discord
+     * @param {string} customId 
+     */
+    static checkCustomIdLength(customId) {
+        if(customId.length > 100) {
+            throw new Error("CustomId is too long.");
+        }
+    }
+    /**
+     * CustomIdClassName/id=toto/key=value/hahahaha=dodododo
+     * @param {*} customId 
+     * @returns 
+     */
+    static getCustomIdData(customId) {
+        let params = {};
+        let id;
+        if (customId.includes("/")) {
+            let tmp = customId.split("/");
+            let key;
+            let value;
+
+            // Removes the first element
+            id = tmp.shift();
+
+            tmp.forEach((element) => {
+                if(!element.includes("=")) return;
+
+                key = element.split('=')[0];
+                value = element.split('=')[1];
+                params[key] = value;
+            });
+            return { customModalId: id, params };
+        } else {
+            return { customId: customId };
+        }
+
     }
 
     static getModal(key) {

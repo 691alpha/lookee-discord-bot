@@ -1,10 +1,13 @@
 const { ActionRowBuilder, ModalBuilder, TextInputBuilder, TextInputStyle } = require('discord.js');
 
 class ReloadModal {
+
+	static customId = "ReloadModal";
+	
     static create () {
 
         const modal = new ModalBuilder()
-			.setCustomId('ReloadModal')
+			.setCustomId(ReloadModal.customId)
 			.setTitle('Test Modal');
 
 		// Add components to modal

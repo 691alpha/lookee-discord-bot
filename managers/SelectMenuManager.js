@@ -20,7 +20,7 @@ class SelectMenuManager {
 
     static dispatch(interaction) {
         const fullId = interaction.customId;
-        const prefix = fullId.split(":")[0];
+        const prefix = fullId.split("/")[0];
 
         const menu = SelectMenuManager.getMenu(prefix);
 

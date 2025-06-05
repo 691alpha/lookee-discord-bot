@@ -9,6 +9,8 @@ class PatchNoteComponent {
     static async create(interaction) {
         const container = new ContainerBuilder();
 
+        
+
         const text1 = new TextDisplayBuilder().setContent(
             [
                 "Here's where your latest patch notes will appear."

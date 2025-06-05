@@ -11,7 +11,8 @@ module.exports = {
 
 		if (interaction.isButton()) ButtonManager.dispatch(interaction);
 
-		if (interaction.isMentionableSelectMenu()) SelectMenuManager.dispatch(interaction);
+		if (interaction.isMentionableSelectMenu() || interaction.isStringSelectMenu())
+			SelectMenuManager.dispatch(interaction);
 
 		if (!interaction.isChatInputCommand()) return;
 

@@ -5,11 +5,12 @@ const PatchNoteNodes = require('../database/models/PatchNoteNodes');
 class PatchNoteAddNodeModal {
 
     static pendingStatuses = new Map();
+    static customId = "PatchNoteAddNodeModal";
 
-    static create (lang) {
+    static create(lang) {
 
         const modal = new ModalBuilder()
-            .setCustomId('PatchNoteAddNodeModal')
+            .setCustomId(PatchNoteAddNodeModal.customId)
             .setTitle(LocalisationManager.getString('patchnote_add_node_modal_title', lang));
 		
 		const description = new TextInputBuilder()

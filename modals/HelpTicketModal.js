@@ -6,10 +6,13 @@ const { LocalisationManager } = require('../managers/LocalisationManager');
 const { TicketUtils } = require('../utils/TicketUtils');
 
 class HelpTicketModal {
+
+    static customId = "HelpTicketModal";
+    
     static create (lang) {
 
         const modal = new ModalBuilder()
-            .setCustomId('HelpTicketModal')
+            .setCustomId(HelpTicketModal.customId)
             .setTitle(LocalisationManager.getString('help_modal_title', lang));
 
 		const title = new TextInputBuilder()
