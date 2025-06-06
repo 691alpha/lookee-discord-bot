@@ -4,20 +4,23 @@ const {
 } = require('discord.js');
 
 const { LocalisationManager } = require('../managers/LocalisationManager');
+const PatchNoteNodes = require('../database/models/PatchNoteNodes');
 
 class PatchNoteComponent {
-    static async create(interaction) {
-        const container = new ContainerBuilder();
+    static async create(nodes, interaction) {
+        //const container = new ContainerBuilder();
 
         const lang = interaction?.locale ?? 'en-US';
 
-        const text1 = new TextDisplayBuilder().setContent(
-            [
-                LocalisationManager.getString('patchnote_section_empty', lang)
-            ].join('\n'),
-        );
+        // const text1 = new TextDisplayBuilder().setContent(
+        //     [
+        //         LocalisationManager.getString('patchnote_section_empty', lang)
+        //     ].join('\n'),
+        // );
+
+        const container = PatchNoteComponent.buildFromNodes(nodes, interaction);
         
-        container.addTextDisplayComponents(text1);
+        //container.addTextDisplayComponents(text1);
 
         return container;
     }
@@ -36,7 +39,7 @@ class PatchNoteComponent {
             : LocalisationManager.getString('patchnote_section_empty', lang);
 
         const title = new TextDisplayBuilder().setContent(
-                `Patch Note ${new Date().toLocaleString(lang, {
+                `**Patch Note** ${new Date().toLocaleString(lang, {
                     weekday: 'short',
                     year: 'numeric',
                     month: 'long',

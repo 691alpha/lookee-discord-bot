@@ -3,6 +3,7 @@ const PatchNoteNodes = require("../database/models/PatchNoteNodes");
 const { PatchNoteEditNodeModal } = require("../modals/PatchNoteEditNodeModal");
 const { ModalManager } = require("../managers/ModalManager");
 const { LocalisationManager } = require("../managers/LocalisationManager");
+const { PatchnoteUtils } = require("../utils/PatchnoteUtils");
 
 class PatchNoteNodeSelectMenu {
     static customId = "PatchNoteNodeSelectMenu";
@@ -59,6 +60,8 @@ class PatchNoteNodeSelectMenu {
                 { status: 'deleted' },
                 { where: { id: selectedIds } }
             );
+
+            PatchnoteUtils.updateAllPatchNotePreviews(interaction);
 
             return interaction.reply({
                 content: LocalisationManager.getString('patchnote_node_deleted', lang).replace('{count}', selectedIds.length),

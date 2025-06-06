@@ -2,6 +2,7 @@ const { MessageFlags, ActionRowBuilder, TextInputBuilder, ModalBuilder, TextInpu
 const PatchNoteNodes = require("../database/models/PatchNoteNodes");
 const { ModalManager } = require("../managers/ModalManager");
 const { LocalisationManager } = require('../managers/LocalisationManager');
+const { PatchnoteUtils } = require("../utils/PatchnoteUtils");
 
 class PatchNoteEditNodeModal {
 
@@ -50,6 +51,8 @@ class PatchNoteEditNodeModal {
 
         node.content = newContent;
         await node.save();
+
+        PatchnoteUtils.updateAllPatchNotePreviews(interaction);
 
         await interaction.reply({
             content: LocalisationManager.getString('patchnote_node_updated', lang),
