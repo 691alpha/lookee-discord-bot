@@ -6,7 +6,7 @@ const Tickets = require("../database/models/Tickets");
 class PickModeratorSelectionMenu {
     static customId = "PickModeratorSelectionMenu";
 
-    static create(lang) {
+    static create() {
         return new MentionableSelectMenuBuilder()
             .setCustomId(PickModeratorSelectionMenu.customId)
             // .setLabel(`${LocalisationManager.getString('add_moderator_ticket', lang)}`)
@@ -25,11 +25,10 @@ class PickModeratorSelectionMenu {
 
         const selected = interaction.values.filter(id => interaction.guild.members.cache.has(id));
 
-        if (!selected.length) {
-            return interaction.reply({
-                content: 'No valid user selected.',
-                flags: MessageFlags.Ephemeral,
-            });
+        if (!selected || selected.length === 0) {
+            throw EmptyResultError(LocalisationManager.getString(
+                'no_valid_user_selected', lang
+            ));
         }
 
         const currentTicket = await Tickets.findOne({ where: { channelId: interaction.channel.id } });
@@ -57,6 +56,8 @@ class PickModeratorSelectionMenu {
             interaction.channel
         );
 
+
+        // Checks which confirmation message should be sent depending on the previous channel status
         if(!hasModerator) {
             await interaction.reply({
                 content: `Added Moderator: ${selected.map(id => `<@${id}>`).join(', ')}.`,

@@ -2,6 +2,7 @@ const { ButtonBuilder, ButtonStyle, MessageFlags, StringSelectMenuBuilder, Actio
 const { LocalisationManager } = require("../../managers/LocalisationManager");
 const PatchNoteNodes = require("../../database/models/PatchNoteNodes");
 const { PatchNoteNodeSelectMenu } = require("../../menus/PatchNoteNodeSelectMenu");
+const { PatchnoteUtils } = require("../../utils/PatchnoteUtils");
 
 class PatchNoteEditNodeButton {
     static customId = "PatchNoteEditNodeButton";
@@ -15,28 +16,21 @@ class PatchNoteEditNodeButton {
     }
 
     static async onInteraction(interaction) {
-        await interaction.deferReply({ flags: MessageFlags.Ephemeral });
+        // await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 
-        const nodes = await PatchNoteNodes.findAll({
-            where: {
-                guildId: interaction.guild.id,
-                status: ['done', 'planned']
-            }
-        });
+        PatchnoteUtils.findAllNodes(interaction, 'edit');
 
         const lang = interaction?.locale ?? 'en-US';
 
-        if (!nodes.length) {
-            return interaction.editReply({
-                content: LocalisationManager.getString('patchnote_no_nodes_edit', lang)
-            });
-        }
+        const nodes = await PatchnoteUtils.findAllNodes(interaction.guild.id, lang, 'edit');
+
+        if(!nodes.length) return;
 
         const selectMenu = PatchNoteNodeSelectMenu.create(lang, nodes, 'edit')
 
         const row = new ActionRowBuilder().addComponents(selectMenu);
 
-        await interaction.editReply({
+        await interaction.reply({
             content: LocalisationManager.getString('patchnote_select_edit_prompt', lang),
             components: [row]
         });

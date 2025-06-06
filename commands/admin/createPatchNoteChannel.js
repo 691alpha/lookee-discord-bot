@@ -3,7 +3,8 @@ const { PatchNoteComponent } = require('../../components/PatchNoteComponent');
 const { PatchNoteButtonComponent } = require('../../components/PatchNoteButtonComponent');
 const PatchNoteNodes = require('../../database/models/PatchNoteNodes');
 const PatchNotePreviews = require('../../database/models/PatchNotesPreviews');
-const { PatchnoteUtils } = require('../../utils/PatchnoteUtils');
+
+// Send a component in the current channel to manage patchnotes.
 
 module.exports = {
     category: 'admin',

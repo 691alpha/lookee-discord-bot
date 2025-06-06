@@ -4,13 +4,10 @@ const {
 } = require('discord.js');
 
 const { LocalisationManager } = require('../managers/LocalisationManager');
-const PatchNoteNodes = require('../database/models/PatchNoteNodes');
 
 class PatchNoteComponent {
     static async create(nodes, interaction) {
         //const container = new ContainerBuilder();
-
-        const lang = interaction?.locale ?? 'en-US';
 
         // const text1 = new TextDisplayBuilder().setContent(
         //     [
@@ -25,6 +22,12 @@ class PatchNoteComponent {
         return container;
     }
 
+    /**
+     * Creates a component out of all given nodes formatted and a title
+     * @param {*} nodes List of all nodes which should be in the patchnote
+     * @param {*} interaction 
+     * @returns Component with needed information for the patchnote
+     */
     static async buildFromNodes(nodes, interaction) {
         const container = new ContainerBuilder();
 

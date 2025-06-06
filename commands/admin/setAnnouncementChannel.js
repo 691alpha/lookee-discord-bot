@@ -1,6 +1,8 @@
 const {SlashCommandBuilder, MessageFlags} = require('discord.js');
 const Setups = require('../../database/models/Setups');
 
+// Sets the current channel as 'announcement' channel which is used to send patchnotes
+
 module.exports = {
     category: 'admin',
     cooldown: 0,

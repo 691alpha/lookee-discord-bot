@@ -43,6 +43,7 @@ class PatchNoteAddNodeModal {
 
         const nodes = [];
 
+        // Creates 5 different input fields
 		for (let i = 1; i <= 5; i++) {
             const fieldId = `patchNoteNodeContent${i}`;
             const value = interaction.fields.getTextInputValue(fieldId)?.trim();

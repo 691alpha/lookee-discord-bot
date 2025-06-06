@@ -48,15 +48,16 @@ class LocalisationManager {
         }
 
         let outputString = currentLangFile[key] ?? null;
+
         if (!outputString) return lm._lang[langKey]["lm_fallback"];
 
         if (values) {
             Object.entries(values).forEach(entry  => {
                 const [entryKey, entryValue] = entry;
-                outputString = outputString.replaceAll(entryKey, entryValue);
+                const brackedEntryKey = `{${entryKey}}`;
+                outputString = outputString.replaceAll(brackedEntryKey, entryValue);
             });
         }
-
 
         return outputString;
     }

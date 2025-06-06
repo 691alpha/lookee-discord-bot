@@ -16,15 +16,22 @@ class PickUserRemoveSelectionMenu {
     static async onInteraction(interaction) {
         const userId = interaction.values[0];
 
+        if (!userId || userId.length === 0) {
+            throw EmptyResultError(LocalisationManager.getString(
+                'no_valid_user_selected', lang
+            ));
+        }
+
         const ticket = await TicketUtils.findTicketByChannel(interaction.channel.id);
+
         if (!ticket) return TicketUtils.searchTicketFail(interaction);
 
         const member = await interaction.guild.members.fetch(userId).catch(() => null);
+
         if (!member) {
-            return interaction.reply({
-                content: `User <@${userId}> could not be found.`,
-                flags: MessageFlags.Ephemeral,
-            });
+            throw EmptyResultError(LocalisationManager.getString(
+                'user_not_found', lang, {"userId": userId}
+            ));
         }
 
         await interaction.channel.permissionOverwrites.delete(userId);

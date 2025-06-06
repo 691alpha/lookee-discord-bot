@@ -1,6 +1,8 @@
 const {SlashCommandBuilder, ChannelType, MessageFlags} = require('discord.js');
 const Setups = require('../../database/models/Setups');
 
+// Creates all needed categories for the server, doesn't check if they already exist
+
 module.exports = {
     category: 'admin',
     cooldown: 0,

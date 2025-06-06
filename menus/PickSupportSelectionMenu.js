@@ -4,7 +4,7 @@ const { TicketUtils } = require("../utils/TicketUtils");
 class PickSupportSelectionMenu {
     static customId = "PickSupportSelectionMenu";
 
-    static create(lang) {
+    static create() {
         return new MentionableSelectMenuBuilder()
             .setCustomId(PickSupportSelectionMenu.customId)
             .setMinValues(1)
@@ -16,6 +16,13 @@ class PickSupportSelectionMenu {
         if (!ticket) return TicketUtils.searchTicketFail(interaction);
 
         const selected = interaction.values[0];
+
+        if (!selected || selected.length === 0) {
+            throw EmptyResultError(LocalisationManager.getString(
+                'no_valid_user_selected', lang
+            ));
+        }
+        
         const member = await interaction.guild.members.fetch(selected).catch(() => null);
         if (!member) return TicketUtils.gettingMemberFail(interaction);
 

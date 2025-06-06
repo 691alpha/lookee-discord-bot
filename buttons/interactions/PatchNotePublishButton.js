@@ -3,6 +3,7 @@ const { LocalisationManager } = require("../../managers/LocalisationManager");
 const PatchNoteNodes = require("../../database/models/PatchNoteNodes");
 const { PatchNoteComponent } = require("../../components/PatchNoteComponent");
 const Setups = require("../../database/models/Setups");
+const { PatchnoteUtils } = require("../../utils/PatchnoteUtils");
 
 class PatchNotePublishButton {
     static customId = "PatchNotePublishButton";
@@ -19,20 +20,11 @@ class PatchNotePublishButton {
 
         await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 
-        const nodes = await PatchNoteNodes.findAll({
-            where: {
-                guildId: interaction.guild.id,
-                status: ['done', 'planned']
-            }
-        });
-
         const lang = interaction?.locale ?? 'en-US';
 
-        if (!nodes.length) {
-            return interaction.editReply({
-                content: LocalisationManager.getString('patchnote_publish_no_nodes', lang)
-            });
-        }
+        const nodes = await PatchnoteUtils.findAllNodes(interaction.guild.id, lang, 'publish');
+
+        if(!nodes.length) return;
 
         const container = await PatchNoteComponent.buildFromNodes(nodes, interaction);
 

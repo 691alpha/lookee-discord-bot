@@ -1,11 +1,11 @@
 const { ButtonBuilder, ButtonStyle, MessageFlags } = require("discord.js");
 const { LocalisationManager } = require("../../managers/LocalisationManager");
-const {PatchNoteAddNodeComponent} = require("../../components/PatchNoteAddNodeComponent")
+const { PatchNoteAddNodeComponent } = require("../../components/PatchNoteAddNodeComponent")
 
 class PatchNoteAddNodePickStatusButton {
     static customId = "PatchNoteAddNodePickStatusButton";
 
-    static create(status, lang) {
+    static create( lang) {
 
         return new ButtonBuilder()
         .setCustomId(`${PatchNoteAddNodePickStatusButton.customId}`)
@@ -19,15 +19,10 @@ class PatchNoteAddNodePickStatusButton {
 
         let outputContainer = await PatchNoteAddNodeComponent.create(lang);
 
-        await interaction.deferReply({flags: MessageFlags.Ephemeral});
-
-        await interaction.followUp({
+        return await interaction.reply({
             components: [outputContainer],
             flags: MessageFlags.IsComponentsV2,
         })
-
-        return;
-
     }
 }
 

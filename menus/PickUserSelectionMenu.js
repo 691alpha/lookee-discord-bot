@@ -1,4 +1,4 @@
-const { ComponentType, MessageFlags, MentionableSelectMenuBuilder } = require("discord.js");
+const { MessageFlags, MentionableSelectMenuBuilder } = require("discord.js");
 const { LocalisationManager } = require("../managers/LocalisationManager");
 const { TicketUtils } = require("../utils/TicketUtils");
 
@@ -18,19 +18,21 @@ class PickUserSelectionMenu {
     static async onInteraction(interaction) {
 
         const ticket = await TicketUtils.findTicketByChannel(interaction.channel.id);
+
         if (!ticket) return TicketUtils.searchTicketFail(interaction);
 
         const selected = interaction.values.filter(id => interaction.guild.members.cache.has(id));
 
-        if (!selected.length) {
-            return interaction.reply({
-                content: 'No valid user selected.',
-                flags: MessageFlags.Ephemeral,
-            });
+        if (!selected || selected.length === 0) {
+            throw EmptyResultError(LocalisationManager.getString(
+                'no_valid_user_selected', lang
+            ));
         }
 
         for (const userId of selected) {
+
             const member = await interaction.guild.members.fetch(userId).catch(() => null);
+
             if (!member) continue;
 
             await TicketUtils.addUserToChannel(interaction.channel, member, {

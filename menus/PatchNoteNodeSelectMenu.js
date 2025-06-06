@@ -41,16 +41,16 @@ class PatchNoteNodeSelectMenu {
         
         const lang = interaction?.locale ?? 'en-US';
 
+        // Checks what the menu should show depending on the type
         if (type === 'edit') {
             const selectedId = selectedIds[0];
             const node = await PatchNoteNodes.findByPk(selectedId);
 
             if (!node) {
-                return interaction.reply({
-                    content: LocalisationManager.getString('patchnote_node_edit_not_found', lang),
-                    flags: MessageFlags.Ephemeral
-                });
-            }
+            throw EmptyResultError(LocalisationManager.getString(
+                'patchnote_node_edit_not_found', lang
+            ));
+        }
 
             return interaction.showModal(PatchNoteEditNodeModal.create(lang, node, node.id));
 

@@ -35,7 +35,7 @@ class ModalManager {
         let { customId } = interaction;
 
         // customId = customId.split('-')[0];
-        // what does that do
+        // Splitts the data given in the customId in modal name and parameters
         ModalManager.checkCustomIdLength(customId);
         const {customModalId, params} = ModalManager.getCustomIdData(customId);
         let modal;
@@ -48,8 +48,13 @@ class ModalManager {
         
         if (!modal) return;
         
-        // Passes the params if provided otherwise empty dictionary
-        modal.onSubmit(interaction, params ?? {});
+        try {
+            // Passes the params if provided otherwise empty dictionary
+            modal.onSubmit(interaction, params ?? {});
+        } catch (e) {
+            if(interaction.replied) interaction.followUp(e.message);
+            else interaction.reply({content: e.message, flags: MessageFlags.Ephemeral});
+        }
     }
 
     /**

@@ -26,7 +26,12 @@ class SelectMenuManager {
 
         if (!menu) return;
 
-        menu.onInteraction(interaction);
+        try {
+            menu.onInteraction(interaction);
+        } catch (e) {
+            if(interaction.replied) interaction.followUp(e.message);
+            else interaction.reply(e.message);
+        }
     }
 
     static getMenu(key) {

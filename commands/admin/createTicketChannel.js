@@ -1,5 +1,7 @@
-const {SlashCommandBuilder, ActionRowBuilder, MessageFlags} = require('discord.js');
+const {SlashCommandBuilder, MessageFlags} = require('discord.js');
 const { CreateTicketComponent } = require('../../components/CreateTicketComponent.js');
+
+// Sends a component to create a new ticket in the current channel
 
 module.exports = {
     category: 'admin',

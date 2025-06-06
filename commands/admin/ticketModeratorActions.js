@@ -1,5 +1,7 @@
-const { SlashCommandBuilder, ActionRowBuilder, MessageFlags } = require('discord.js');
+const { SlashCommandBuilder, MessageFlags } = require('discord.js');
 const { TicketModeratorActionsComponent } = require('../../components/TicketModeratorActionsComponent')
+
+// Sends a component in the current channel to manage the ticket assigned to the channel
 
 module.exports = {
     category: 'admin',

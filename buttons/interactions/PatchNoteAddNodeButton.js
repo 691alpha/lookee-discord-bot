@@ -1,4 +1,4 @@
-const { ButtonBuilder, ButtonStyle, MessageFlags } = require("discord.js");
+const { ButtonBuilder, ButtonStyle } = require("discord.js");
 const { LocalisationManager } = require("../../managers/LocalisationManager");
 const { PatchNoteAddNodeComponent } = require("../../components/PatchNoteAddNodeComponent");
 

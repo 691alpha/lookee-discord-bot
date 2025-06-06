@@ -99,6 +99,11 @@ class TicketUtils {
         });
     }
 
+    /**
+     * Updates the channel's description to include the names of all current channel members
+     * @param {*} channel 
+     * @param {*} ticket 
+     */
     static async updateChannelDescription(channel, ticket) {
         const overwrites = channel.permissionOverwrites.cache;
 

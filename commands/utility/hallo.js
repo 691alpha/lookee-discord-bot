@@ -8,7 +8,7 @@ module.exports = {
         .setName('hallo')
         .setDescription('Hallos the user.'),
     async execute(interaction) {
-        let string = LocalisationManager.getString('error', interaction.locale, {"{error}": "something went wrong :ccc", "{test}": "teeest"});
+        let string = LocalisationManager.getString('error', interaction.locale, {"error": "something went wrong :ccc", "test": "teeest"});
         interaction.reply(string);
     },
 };

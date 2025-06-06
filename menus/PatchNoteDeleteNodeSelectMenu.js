@@ -26,10 +26,9 @@ class PatchNoteDeleteNodeSelectMenu {
         const lang = interaction?.locale ?? 'en-US';
 
         if (!node) {
-            return interaction.reply({
-                content: LocalisationManager.getString('patchnote_node_delete_not_found', lang),
-                flags: MessageFlags.Ephemeral
-            });
+            throw EmptyResultError(LocalisationManager.getString(
+                'patchnote_node_delete_not_found', lang
+            ));
         }
 
         await PatchNoteNodes.update(
