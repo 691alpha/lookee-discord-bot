@@ -14,6 +14,10 @@ module.exports = {
         const { db } = interaction.client;
         const guildId = interaction.guild.id;
 
+        const setup = await Setups.findOne({
+            where: {guildId: guildId}
+        })
+
         const assignedCategory = await interaction.guild.channels.create({
             name: 'assigned tickets',
             type: ChannelType.GuildCategory,
@@ -28,20 +32,33 @@ module.exports = {
             name: 'closed tickets',
             type: ChannelType.GuildCategory,
         });
+        if(!setup) {
+            
+            await Setups.create({
+                id: await db.getNextId('setups'),
+                guildId: guildId,
+                assignedTicketsCategoryId: assignedCategory.id,
+                unassignedTicketsCategoryId: unassignedCategory.id,
+                closedTicketsCategoryId: closedCategory.id,
+                announcementChannelId: null,
+                defaultLang: 'en-US',
+            });
+            await interaction.reply({
+                content: `Created ticket categories and saved setup to database.`,
+                flags: MessageFlags.Ephemeral
+            }); 
+        } else {
+            await setup.update({
+                assignedTicketsCategoryId: assignedCategory.id,
+                unassignedTicketsCategoryId: unassignedCategory.id,
+                closedTicketsCategoryId: closedCategory.id
+            });
+            await interaction.reply({
+                content: `Updated ticket categories and saved setup to database.`,
+                flags: MessageFlags.Ephemeral
+            }); 
+        }
 
-        await Setups.create({
-            id: await db.getNextId('setups'),
-            guildId: guildId,
-            assignedTicketsCategoryId: assignedCategory.id,
-            unassignedTicketsCategoryId: unassignedCategory.id,
-            closedTicketsCategoryId: closedCategory.id,
-            announcementChannelId: null,
-            defaultLang: 'en-US',
-        });
 
-        await interaction.reply({
-            content: `Created ticket categories and saved setup to database.`,
-            flags: MessageFlags.Ephemeral
-        }); 
     },
 };

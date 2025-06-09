@@ -11,19 +11,10 @@ const Formats = require('../database/models/Formats');
 
 class PatchNoteComponent {
     static async create(nodes, interaction) {
-        //const container = new ContainerBuilder();
-
-        // const text1 = new TextDisplayBuilder().setContent(
-        //     [
-        //         LocalisationManager.getString('patchnote_section_empty', lang)
-        //     ].join('\n'),
-        // );
 
         const container = await PatchNoteComponent.buildFromNodes(nodes, interaction);
 
         container.setAccentColor(0x5e5e5e); 
-        
-        //container.addTextDisplayComponents(text1);
 
         return container;
     }

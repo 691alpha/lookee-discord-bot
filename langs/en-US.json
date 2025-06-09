@@ -72,6 +72,7 @@
   "set_patchnote_version_format": "Set patchnote version format to: ",
   "patchnote_increase_version_button_label": "Increase version",
   "patchnote_create_version_format_label": "Input you new format",
-  "set_patchnote_version_format_button_label": "Change format"
+  "set_patchnote_version_format_button_label": "Change format",
+  "patchnote_no_announcement_channel_found": "No announcement channel found. Set with `/set_annoucement_channel.`"
 
 }

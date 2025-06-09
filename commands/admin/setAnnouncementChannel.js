@@ -11,16 +11,25 @@ module.exports = {
         .setDescription('Sets the current channel as announcement channel.'),
     async execute(interaction) {
 
-        const setups = await Setups.findAll(
-            { announcementChannelId: interaction.channel.id },
-            { where: {  guildId: interaction.guild.id }}
-        );
+        const setups = await Setups.findAll({
+            where: {
+                guildId: interaction.guild.id
+            }
+        });
 
         if(!setups || setups.length === 0) {
-            return interaction.reply({
-                    content: 'Please create a setup first using /create-ticket-categories.',
-                    flags: MessageFlags.Ephemeral
-                })
+
+            const { db } = interaction.client;
+
+            await Setups.create({
+                id: await db.getNextId('setups'),
+                guildId: interaction.guild.id,
+                assignedTicketsCategoryId: null,
+                unassignedTicketsCategoryId: null,
+                closedTicketsCategoryId: null,
+                announcementChannelId: interaction.channel.id,
+                defaultLang: 'en-US',
+            });
         }
 
         await Setups.update(

@@ -61,14 +61,10 @@ class PatchnoteUtils {
         });
 
         if (!nodes || nodes.length === 0) {
-            throw EmptyResultError(LocalisationManager.getString(
+            throw new EmptyResultError(LocalisationManager.getString(
                 'patchnote_no_nodes', lang, {"action": action}
             ));
             
-            // TODO: remove this
-            // interaction.reply({
-            //     content: LocalisationManager.getString('patchnote_no_nodes', lang, {"action": action})  
-            // });
         }
 
         return nodes;
