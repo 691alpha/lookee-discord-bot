@@ -17,10 +17,9 @@ class PatchNoteEditNodeButton {
 
     static async onInteraction(interaction) {
         // await interaction.deferReply({ flags: MessageFlags.Ephemeral });
-
-        PatchnoteUtils.findAllNodes(interaction, 'edit');
-
         const lang = interaction?.locale ?? 'en-US';
+
+        PatchnoteUtils.findAllNodes(interaction.guild.id, lang, 'edit');
 
         const nodes = await PatchnoteUtils.findAllNodes(interaction.guild.id, lang, 'edit');
 

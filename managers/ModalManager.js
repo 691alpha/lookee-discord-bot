@@ -31,7 +31,7 @@ class ModalManager {
      * @param {*} interaction 
      * @returns 
      */
-    static dispatch(interaction) {
+    static async dispatch(interaction) {
         let { customId } = interaction;
 
         // customId = customId.split('-')[0];
@@ -48,13 +48,7 @@ class ModalManager {
         
         if (!modal) return;
         
-        try {
-            // Passes the params if provided otherwise empty dictionary
-            modal.onSubmit(interaction, params ?? {});
-        } catch (e) {
-            if(interaction.replied) interaction.followUp(e.message);
-            else interaction.reply({content: e.message, flags: MessageFlags.Ephemeral});
-        }
+        await modal.onSubmit(interaction, params ?? {});
     }
 
     /**

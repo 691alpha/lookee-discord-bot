@@ -6,13 +6,22 @@ const { SelectMenuManager } = require('../managers/SelectMenuManager.js');
 module.exports = {
 	name: Events.InteractionCreate,
 	async execute(interaction) {
-
-		if (interaction.isModalSubmit()) ModalManager.dispatch(interaction);
-
-		if (interaction.isButton()) ButtonManager.dispatch(interaction);
-
-		if (interaction.isMentionableSelectMenu() || interaction.isStringSelectMenu())
-			SelectMenuManager.dispatch(interaction);
+		// explain shits
+		try {
+			if (interaction.isModalSubmit()) await ModalManager.dispatch(interaction);
+	
+			if (interaction.isButton()) await ButtonManager.dispatch(interaction);
+	
+			if (interaction.isMentionableSelectMenu() || interaction.isStringSelectMenu())
+				await SelectMenuManager.dispatch(interaction);
+		} catch (error) {
+			console.error(error);
+			if (interaction.replied || interaction.deferred) {
+				await interaction.followUp({ content: 'There was an error while executing this interaction!', flags: MessageFlags.Ephemeral });
+			} else {
+				await interaction.reply({ content: 'There was an error while executing this interaction!', flags: MessageFlags.Ephemeral });
+			}
+		}
 
 		if (!interaction.isChatInputCommand()) return;
 

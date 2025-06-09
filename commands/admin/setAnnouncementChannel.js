@@ -11,6 +11,18 @@ module.exports = {
         .setDescription('Sets the current channel as announcement channel.'),
     async execute(interaction) {
 
+        const setups = await Setups.findAll(
+            { announcementChannelId: interaction.channel.id },
+            { where: {  guildId: interaction.guild.id }}
+        );
+
+        if(!setups || setups.length === 0) {
+            return interaction.reply({
+                    content: 'Please create a setup first using /create-ticket-categories.',
+                    flags: MessageFlags.Ephemeral
+                })
+        }
+
         await Setups.update(
                     { announcementChannelId: interaction.channel.id },
                     { where: { guildId: interaction.guild.id } }

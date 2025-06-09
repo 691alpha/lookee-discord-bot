@@ -18,7 +18,7 @@ class SelectMenuManager {
         }
     }
 
-    static dispatch(interaction) {
+    static async dispatch(interaction) {
         const fullId = interaction.customId;
         const prefix = fullId.split("/")[0];
 
@@ -26,12 +26,7 @@ class SelectMenuManager {
 
         if (!menu) return;
 
-        try {
-            menu.onInteraction(interaction);
-        } catch (e) {
-            if(interaction.replied) interaction.followUp(e.message);
-            else interaction.reply(e.message);
-        }
+        await menu.onInteraction(interaction);
     }
 
     static getMenu(key) {

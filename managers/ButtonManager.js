@@ -22,7 +22,7 @@ class ButtonManager {
         }
     }
 
-    static dispatch(interaction) {
+    static async dispatch(interaction) {
         const fullId = interaction.customId;
         const prefix = fullId.split(":")[0];
 
@@ -33,12 +33,7 @@ class ButtonManager {
             return;
         }
 
-        try {
-            button.onInteraction(interaction);
-        } catch (e) {
-            if(interaction.replied) interaction.followUp(e.message);
-            else interaction.reply({content: e.message, flags: MessageFlags.Ephemeral});
-        }
+        await button.onInteraction(interaction);
     }
 
     static getButton(key) {

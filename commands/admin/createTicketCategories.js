@@ -36,12 +36,12 @@ module.exports = {
             unassignedTicketsCategoryId: unassignedCategory.id,
             closedTicketsCategoryId: closedCategory.id,
             announcementChannelId: null,
-            defaultLang: 'en-US', // or interaction.locale or your own logic
+            defaultLang: 'en-US',
         });
 
         await interaction.reply({
             content: `Created ticket categories and saved setup to database.`,
             flags: MessageFlags.Ephemeral
-        });
+        }); 
     },
 };
