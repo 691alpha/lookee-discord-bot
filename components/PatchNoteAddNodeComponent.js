@@ -7,15 +7,13 @@ const { LocalisationManager } = require('../managers/LocalisationManager');
 const { PatchNoteAddNodeModalButton } = require('../buttons/interactions/PatchNoteAddNodeModalButton');
 
 class PatchNoteAddNodeComponent {
-    static async create(interaction) {
+    static async create(lang) {
 
         const container = new ContainerBuilder();
 
-        const lang = interaction?.locale ?? 'en-US';
-
         const text1 = new TextDisplayBuilder().setContent(
             [
-                `# ${LocalisationManager.getString('add_patchnote_node', lang)}`,
+                `### ${LocalisationManager.getString('add_patchnote_node', lang)}`,
             ].join('\n'),
         );
         

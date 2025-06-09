@@ -45,7 +45,7 @@
   "patchnote_create_success": "Added {count} patch note node(s) with status {status}.",
   "patchnote_create_failure": "Failed to save patch note node: {error}",
   "patchnote_section_title": "Patch Notes",
-  "patchnote_section_empty": "No patch notes have been added yet.",
+  "patchnote_section_empty": "No patchnote nodes have been added yet.",
   "patchnote_add_node_modal_input_label": "Patch Note Content",
   "patchnote_edit_node_modal_title": "Edit Patchnote Node",
   "patchnote_node_not_found": "Node not found.",
@@ -62,6 +62,16 @@
   "patchnote_node_pick_status": "Add new node(s)",
   "delete_node_patchnote_node_button": "Delete node(s)",
   "edit_node_patchnote_node_button": "Edit node(s)",
-  "patchnote_node_status_description": "Status: "
+  "patchnote_node_status_description": "Status: ",
+  "forward_patchnote_button": "Patchnote",
+  "patchnote_section_planned": "Planned",
+  "patchnote_section_done": "Done",
+  "patchnote_version_button": "Version",
+  "patchnote_version_created": "New patchnote version created with:",
+  "patchnote_increase_version_placeholder": "Choose a value to increase",
+  "set_patchnote_version_format": "Set patchnote version format to: ",
+  "patchnote_increase_version_button_label": "Increase version",
+  "patchnote_create_version_format_label": "Input you new format",
+  "set_patchnote_version_format_button_label": "Change format"
 
 }

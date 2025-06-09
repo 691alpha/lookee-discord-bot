@@ -31,7 +31,8 @@ class PatchNoteEditNodeButton {
 
         await interaction.reply({
             content: LocalisationManager.getString('patchnote_select_edit_prompt', lang),
-            components: [row]
+            components: [row],
+            flags: MessageFlags.Ephemeral
         });
     }
 }

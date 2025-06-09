@@ -32,7 +32,7 @@ class PatchnoteUtils {
                 const channel = await client.channels.fetch(preview.channelId);
                 const message = await channel.messages.fetch(preview.messageId);
 
-                const container = await PatchNoteComponent.buildFromNodes(nodes, interaction);
+                const container = await PatchNoteComponent.create(nodes, interaction);
                 let outputButtons = await PatchNoteButtonComponent.create(interaction);
                 await message.edit({ 
                     components: [container,outputButtons],

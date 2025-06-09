@@ -8,6 +8,8 @@ const TicketModel = require('./models/Tickets.js');
 const PatchnoteModal = require('./models/PatchNotes.js');
 const PatchNoteNodes = require('./models/PatchNoteNodes.js');
 const PatchNotePreviews = require('./models/PatchNotesPreviews.js');
+const Formats = require('./models/Formats.js');
+const Versions = require('./models/Versions.js');
 
 dotenv.config();
 
@@ -38,6 +40,8 @@ module.exports = class Database {
                 this.initConnection(PatchnoteModal);
                 this.initConnection(PatchNoteNodes);
                 this.initConnection(PatchNotePreviews);
+                this.initConnection(Formats);
+                this.initConnection(Versions);
             
                 await this.sequelize.sync({force: this.force});
                 console.log(this.force ? `Drop and re-sync db.` : "Sync db.")

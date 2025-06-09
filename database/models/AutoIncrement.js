@@ -23,6 +23,12 @@ module.exports = class AutoIncrement extends Model {
       patchnotes: {
         type: Sequelize.BIGINT,
       },
+      versions: {
+        type: Sequelize.BIGINT,
+      },
+      formats: {
+        type: Sequelize.BIGINT,
+      },
     }, {
       sequelize,
       tableName: 'auto_increments',
