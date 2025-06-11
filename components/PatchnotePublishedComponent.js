@@ -3,7 +3,7 @@ const { LocalisationManager } = require('../managers/LocalisationManager');
 const { ForwardToPatchnoteButton } = require('../buttons/interactions/ForwardToPatchnoteButton');
 
 class PatchnotePublishedComponent {
-    static async create(tempChannel, guildId, lang) {
+    static async create(patchnoteMessage, guildId, lang) {
         const container = new ContainerBuilder();
 
         const text1 = new TextDisplayBuilder().setContent(
@@ -26,7 +26,12 @@ class PatchnotePublishedComponent {
 
         container.addActionRowComponents(
             row => row.addComponents(
-                ForwardToPatchnoteButton.create(tempChannel.id, guildId, lang)
+                ForwardToPatchnoteButton.create(
+                    patchnoteMessage.id, 
+                    patchnoteMessage.channel.id, 
+                    guildId, 
+                    lang
+                )
             ));
 
         return container;

@@ -14,6 +14,7 @@ module.exports = {
         //         lang
         //     )),
     async execute(interaction) {
+        const lang = interaction?.locale ?? 'en-US';
 
         const setups = await Setups.findAll({
             where: {

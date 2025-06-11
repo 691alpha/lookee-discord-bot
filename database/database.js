@@ -10,7 +10,7 @@ const PatchNoteNode = require('./models/PatchNoteNodes.js');
 const PatchNotePreview = require('./models/PatchNotesPreviews.js');
 const Format = require('./models/Formats.js');
 const Version = require('./models/Versions.js');
-const Message = require('./models/Messages.js');
+// const Message = require('./models/Messages.js');
 
 dotenv.config();
 
@@ -43,17 +43,17 @@ module.exports = class Database {
                 this.initConnection(PatchNotePreview);
                 this.initConnection(Format);
                 this.initConnection(Version);
-                this.initConnection(Message);
+                // this.initConnection(Message);
                 
                 // Foreign keys
-                Version.hasOne(Format, {foreignKey: 'formatId'});
-                Format.belongsTo(Version, {foreignKey: 'formatId'})
+                // Version.hasOne(Format, {foreignKey: 'formatId'});
+                // Format.belongsTo(Version, {foreignKey: 'formatId'})
 
-                PatchNoteNode.hasOne(PatchNote, {foreignKey: 'patchnoteId'});
-                PatchNote.belongsToMany(PatchNoteNode, {foreignKey: 'patchnoteId'});
+                // PatchNoteNode.hasOne(PatchNote, {foreignKey: 'patchnoteId'});
+                // PatchNote.belongsToMany(PatchNoteNode, {foreignKey: 'patchnoteId'});
 
-                TicketModel.hasMany(Message, {foreignKey: 'ticketMessage'});
-                Message.belongsTo(TicketModel, {foreignKey: 'ticketId'});
+                // TicketModel.hasMany(Message, {foreignKey: 'ticketMessage'});
+                // Message.belongsTo(TicketModel, {foreignKey: 'ticketId'});
 
                 await this.sequelize.sync({force: this.force});
                 console.log(this.force ? `Drop and re-sync db.` : "Sync db.")

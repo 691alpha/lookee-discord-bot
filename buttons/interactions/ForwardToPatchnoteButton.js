@@ -4,17 +4,17 @@ const { LocalisationManager } = require("../../managers/LocalisationManager");
 class ForwardToPatchnoteButton {
     static customId = "ForwardToPatchnoteButton";
 
-    static create(channelId, guildId, lang) {
+    static create(messageId, channelId, guildId, lang) {
         return new ButtonBuilder()
             .setLabel(LocalisationManager.getString('forward_patchnote_button', lang))
             .setStyle(ButtonStyle.Link)
-            .setURL(`discord://discord.com/channels/${guildId}/${channelId}`)
+            .setURL(`discord://discord.com/channels/${guildId}/${channelId}/${messageId}`)
     }
 
     static async onInteraction(interaction) {
-        const [prefix, channelId] = interaction.customId.split(":");
+        const [prefix, messageId] = interaction.customId.split(":");
 
-        if (!channelId || !interaction.guild.channels.cache.has(channelId)) {
+        if (!messageId || !interaction.guild.channels.cache.has(messageId.channel)) {
             return interaction.reply({
                 content: LocalisationManager.getString('no_channel_linked', lang),
                 flags: MessageFlags.Ephemeral

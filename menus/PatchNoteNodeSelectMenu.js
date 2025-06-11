@@ -4,9 +4,6 @@ const { ModalManager } = require("../managers/ModalManager");
 const { LocalisationManager } = require("../managers/LocalisationManager");
 const { PatchnoteUtils } = require("../utils/PatchnoteUtils");
 const PatchNoteNodes = require("../database/models/PatchNoteNodes");
-const PatchNoteSelectedNodesNotFoundComponent = require(
-    '../components/responses/PatchNoteSelectedNodesNotFoundComponent'
-);
 const { NoVariableResponseComponent } = require("../components/responses/NoVariableResponseComponent");
 
 class PatchNoteNodeSelectMenu {

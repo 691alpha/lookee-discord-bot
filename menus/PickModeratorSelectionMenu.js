@@ -37,7 +37,10 @@ class PickModeratorSelectionMenu {
         });
         
         if (!currentTicket) {
-            const container = TicketNotFound.create(lang);
+            const container = NoVariableResponseComponent.create(
+                    'ticket_not_found', 
+                    lang
+                );
 
             interaction.reply({
                 components: [container],

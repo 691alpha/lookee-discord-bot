@@ -1,14 +1,13 @@
 const { ButtonBuilder, ButtonStyle, MessageFlags } = require("discord.js");
 const { LocalisationManager } = require("../../managers/LocalisationManager");
 const { PatchNoteComponent } = require("../../components/PatchNoteComponent");
-const Setups = require("../../database/models/Setups");
-const Versions = require("../../database/models/Versions");
 const { PatchnoteUtils } = require("../../utils/PatchnoteUtils");
 const { PatchnotePublishedComponent } = require("../../components/PatchnotePublishedComponent");
-const Formats = require("../../database/models/Formats");
 const { PatchNoteNoNodesComponent } = require("../../components/responses/PatchNoteNoNodesComponent");
-const { PatchNoteNoAnnouncementChannelComponent } = require("../../components/responses/PatchNoteNoAnnouncementChannelComponent");
-const { PatchNoteNoSetupComponent } = require("../../components/responses/PatchNoteNoSetupComponent");
+const { NoVariableResponseComponent } = require("../../components/responses/NoVariableResponseComponent");
+const Setups = require("../../database/models/Setups");
+const Versions = require("../../database/models/Versions");
+const Formats = require("../../database/models/Formats");
 
 class PatchNotePublishButton {
     static customId = "PatchNotePublishButton";
@@ -32,7 +31,10 @@ class PatchNotePublishButton {
         const setup = await Setups.findOne({ where: { guildId: interaction.guild.id } });
 
         if (!setup) {
-            const container = await PatchNoteNoSetupComponent.create(lang);
+            const container = await NoVariableResponseComponent.create(
+                'patchnote_no_setup_found', 
+                lang
+            );
 
             return await interaction.editReply({
                 components: [container],
@@ -43,7 +45,10 @@ class PatchNotePublishButton {
         announcementChannel = client.channels.cache.get(setup.announcementChannelId);
 
         if (!announcementChannel) {
-            const container = await PatchNoteNoAnnouncementChannelComponent.create(lang);
+            const container = await NoVariableResponseComponent.create(
+                'patchnote_no_announcement_channel_found', 
+                lang
+            );
 
             return await interaction.editReply({
                 components: [container],
@@ -66,7 +71,7 @@ class PatchNotePublishButton {
 
         const container = await PatchNoteComponent.create(nodes, lang);
 
-        await announcementChannel.send({
+        const patchnoteMessage = await announcementChannel.send({
             components: [container],
             flags: [MessageFlags.IsComponentsV2, MessageFlags.Ephemeral],
         });
@@ -77,7 +82,7 @@ class PatchNotePublishButton {
         }
 
         const containerPublished = await PatchnotePublishedComponent.create(
-            announcementChannel,
+            patchnoteMessage,
             interaction.guild.id,
             lang
         );
@@ -117,7 +122,8 @@ class PatchNotePublishButton {
         })
     
         if(!announcementChannel) {
-            const containerNoAnnouncement = await PatchNoteNoAnnouncementChannelComponent.create(
+            const containerNoAnnouncement = await NoVariableResponseComponent.create(
+                'patchnote_no_announcement_channel_found', 
                 lang
             );
     
