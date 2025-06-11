@@ -34,7 +34,6 @@ class ModalManager {
     static async dispatch(interaction) {
         let { customId } = interaction;
 
-        // customId = customId.split('-')[0];
         // Splitts the data given in the customId in modal name and parameters
         ModalManager.checkCustomIdLength(customId);
         const {customModalId, params} = ModalManager.getCustomIdData(customId);
@@ -61,9 +60,9 @@ class ModalManager {
         }
     }
     /**
-     * CustomIdClassName/id=toto/key=value/hahahaha=dodododo
+     * Extracts the data from a customId by splitting it from the class name
      * @param {*} customId 
-     * @returns 
+     * @returns customId data
      */
     static getCustomIdData(customId) {
         let params = {};

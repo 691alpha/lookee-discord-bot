@@ -6,11 +6,9 @@ const { TicketUtils } = require("../utils/TicketUtils");
 class PickUserSelectionMenu {
     static customId = "PickUserSelectionMenu";
 
-    static create(lang) {
+    static create() {
         return new MentionableSelectMenuBuilder()
             .setCustomId(PickUserSelectionMenu.customId)
-            // .setLabel(`${LocalisationManager.getString('add_moderator_ticket', lang)}`)
-            // .setStyle(ButtonStyle.Secondary)
             .setMinValues(1)
             .setMaxValues(5);
     }
@@ -21,15 +19,18 @@ class PickUserSelectionMenu {
 
         if (!ticket) return TicketUtils.searchTicketFail(interaction);
 
-        const selected = interaction.values.filter(id => interaction.guild.members.cache.has(id));
+        const selectedMember = interaction.values.filter(id => interaction.guild.members.cache.has(id));
 
-        if (!selected || selected.length === 0) {
-            throw EmptyResultError(LocalisationManager.getString(
-                'no_valid_user_selected', lang
-            ));
+        if (!selectedMember || selectedMember.length === 0) {
+            const container = NoVariableResponseComponent.create('no_valid_user_selected', lang);
+
+            interaction.reply({
+                components: [container],
+                flags: [MessageFlags.IsComponentsV2, MessageFlags.Ephemeral]
+            })
         }
 
-        for (const userId of selected) {
+        for (const userId of selectedMember) {
 
             const member = await interaction.guild.members.fetch(userId).catch(() => null);
 
@@ -42,8 +43,15 @@ class PickUserSelectionMenu {
             });
         }
 
+        selectedMember = selectedMember[0];
+        const selectedMembers = selectedMember.map(id => `<@${id}>`).join(', ');
+
         await interaction.reply({
-            content: `Added User: ${selected.map(id => `<@${id}>`).join(', ')}`,
+            content: `${LocalisationManager.getString(
+                        'ticket_added_user', 
+                        lang,
+                        {"{selectedMembers}": selectedMembers}
+                    )}`,
             flags: MessageFlags.Ephemeral,
         });
     }

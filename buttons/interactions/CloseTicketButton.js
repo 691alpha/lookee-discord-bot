@@ -15,6 +15,8 @@ class CloseTicketButton {
     }
 
     static async onInteraction(interaction) {
+        const lang = interaction?.locale ?? 'en-US';
+        
         const ticket = await TicketUtils.findTicketByChannel(interaction.channel.id);
         TicketUtils.moveTicketToCategory(
             interaction.guild, 
@@ -24,7 +26,7 @@ class CloseTicketButton {
         );
 
         const row = new ActionRowBuilder()
-                    .addComponents(ReopenTicketButton.create());
+                    .addComponents(ReopenTicketButton.create(lang));
 
         let outputEmbed = EmbedManager.getEmbed('ticketChannel.movedToClosed');
 

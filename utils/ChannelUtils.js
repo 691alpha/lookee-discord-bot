@@ -5,6 +5,7 @@ const { TicketCreationSuccessComponent } = require("../components/TicketCreation
 const { TicketCreationSuccessChannelComponent } = require("../components/TicketCreationSuccessChannelComponent");
 const { TicketUtils } = require("./TicketUtils");
 const { LocalisationManager } = require("../managers/LocalisationManager");
+const { NoVariableResponseComponent } = require("../components/responses/NoVariableResponseComponent");
 
 module.exports = class ChannelUtils {
     /**
@@ -63,19 +64,19 @@ module.exports = class ChannelUtils {
      * @param {*} tempChannel 
      */
     static async sendTicketCreationSuccess(interaction, tempChannel) {
-        let { client } = interaction;
+        let { client } = interaction;        
+        const lang = interaction?.locale ?? 'en-US';
 
         let outputContainer = await TicketCreationSuccessComponent.create(
             tempChannel, 
-            interaction
+            interaction.guild.id,
+            lang
         );
 
         await interaction.editReply({
             components: [outputContainer],
             flags: [MessageFlags.IsComponentsV2, MessageFlags.Ephemeral],
         })
-
-        const lang = interaction?.locale ?? 'en-US';
 
         let outputContainer2 = await TicketCreationSuccessChannelComponent.create(lang);
         const test = client.channels.cache.get(tempChannel.id)
@@ -104,6 +105,15 @@ module.exports = class ChannelUtils {
     static async runCreateTicketProcess(interaction, categoryId, ticketType, ticketId, lang) {
         // Defer interaction to await for creation of the channel.
         await interaction.deferReply({ flags: MessageFlags.Ephemeral });
+
+        if(!categoryId) {
+            const container = await NoVariableResponseComponent.create('categories_undefined', lang)
+
+            return interaction.editReply({
+                components: [container],
+                flags: [MessageFlags.IsComponentsV2, MessageFlags.Ephemeral]
+            })
+        }
 
         try {
             const creationTicketResult = await ChannelUtils.createTicketChannel(

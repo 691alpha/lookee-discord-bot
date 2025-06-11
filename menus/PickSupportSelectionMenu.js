@@ -15,16 +15,27 @@ class PickSupportSelectionMenu {
         const ticket = await TicketUtils.findTicketByChannel(interaction.channel.id);
         if (!ticket) return TicketUtils.searchTicketFail(interaction);
 
+        // We assume Discord ensures the expected minimum value has been provided.
         const selected = interaction.values[0];
 
-        if (!selected || selected.length === 0) {
-            throw EmptyResultError(LocalisationManager.getString(
-                'no_valid_user_selected', lang
-            ));
+        if (!selectedMember || selectedMember.length === 0) {
+            const container = NoVariableResponseComponent.create('selected_members_not_found', lang);
+
+            interaction.reply({
+                components: [container],
+                flags: [MessageFlags.IsComponentsV2, MessageFlags.Ephemeral]
+            })
         }
         
         const member = await interaction.guild.members.fetch(selected).catch(() => null);
-        if (!member) return TicketUtils.gettingMemberFail(interaction);
+        if (!member) {
+            const container = NoVariableResponseComponent.create('members_not_found', lang);
+            
+            interaction.reply({
+                components: [container],
+                flags: [MessageFlags.IsComponentsV2, MessageFlags.Ephemeral]
+            })
+        }
 
         await TicketUtils.addUserToChannel(interaction.channel, member, {
             ViewChannel: true,
@@ -38,7 +49,10 @@ class PickSupportSelectionMenu {
         });
 
         await interaction.reply({
-            content: `<@${member.id}> has been added as support moderator.`,
+            content: `<@${member.id}> ${LocalisationManager.getString(
+                        'ticket_added_support_moderator', 
+                        lang
+                    )}`,
             flags: MessageFlags.Ephemeral
         });
     }

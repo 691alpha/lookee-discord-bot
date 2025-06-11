@@ -24,7 +24,7 @@ class AssignSelfModeratorButton {
 
         if(moderator === interaction.user.id) {
             await interaction.reply({
-                content: `You are already assigned as moderator for this ticket.`,
+                content: LocalisationManager.getString('arl_moderator', lang),
                 flags: MessageFlags.Ephemeral
             });
         } else {
@@ -45,7 +45,7 @@ class AssignSelfModeratorButton {
                 interaction.channel);
     
             await interaction.reply({
-                content: `You are now assigned as moderator for this ticket.`,
+                content: LocalisationManager.getString('assigned_moderator', lang),
                 flags: MessageFlags.Ephemeral
             });
         }

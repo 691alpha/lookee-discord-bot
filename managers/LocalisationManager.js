@@ -35,10 +35,6 @@ class LocalisationManager {
      * @param {{}} values: optional 
      */
     static getString(key, langKey, values) {
-        // Load singleton
-        // Retrieve the string from local lang
-        // Replace w/ values
-        // Return expected string
         const lm = LocalisationManager.getInstance();
         let currentLangFile = lm._lang[langKey];
         if (!currentLangFile) {

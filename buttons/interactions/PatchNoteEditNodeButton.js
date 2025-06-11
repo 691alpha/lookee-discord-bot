@@ -3,7 +3,7 @@ const { LocalisationManager } = require("../../managers/LocalisationManager");
 const PatchNoteNodes = require("../../database/models/PatchNoteNodes");
 const { PatchNoteNodeSelectMenu } = require("../../menus/PatchNoteNodeSelectMenu");
 const { PatchnoteUtils } = require("../../utils/PatchnoteUtils");
-const { PatchNoteNoNodesComponent } = require("../../components/PatchNoteNoNodesComponent");
+const { PatchNoteNoNodesComponent } = require("../../components/responses/PatchNoteNoNodesComponent");
 
 class PatchNoteEditNodeButton {
     static customId = "PatchNoteEditNodeButton";
@@ -19,30 +19,27 @@ class PatchNoteEditNodeButton {
     static async onInteraction(interaction) {
         await interaction.deferReply({ flags: MessageFlags.Ephemeral });
         const lang = interaction?.locale ?? 'en-US';
-
-        try {
             
-            const nodes = await PatchnoteUtils.findAllNodes(interaction.guild.id, lang, 'edit');
+        const nodes = await PatchnoteUtils.findAllNodes(interaction.guild.id, lang, 'edit');
 
-            if(!nodes.length) return;
-
-            const selectMenu = PatchNoteNodeSelectMenu.create(lang, nodes, 'edit')
-
-            const row = new ActionRowBuilder().addComponents(selectMenu);
-
-            await interaction.editReply({
-                content: LocalisationManager.getString('patchnote_select_edit_prompt', lang),
-                components: [row],
-                flags: MessageFlags.Ephemeral
-            });
-        } catch (error) {
+        if(!nodes || nodes.length === 0) {
             const container = await PatchNoteNoNodesComponent.create(lang, 'edit');
 
-            await interaction.editReply({
+            return await interaction.editReply({
                 components: [container],
                 flags: [MessageFlags.IsComponentsV2, MessageFlags.Ephemeral]
             });
-        }
+        };
+
+        const selectMenu = PatchNoteNodeSelectMenu.create(lang, nodes, 'edit')
+
+        const row = new ActionRowBuilder().addComponents(selectMenu);
+
+        return await interaction.editReply({
+            content: LocalisationManager.getString('patchnote_select_edit_prompt', lang),
+            components: [row],
+            flags: MessageFlags.Ephemeral
+        });
     }
 }
 

@@ -5,11 +5,11 @@ const {LocalisationManager} = require('../managers/LocalisationManager.js');
 const SetupModel = require('./models/Setups.js');
 const AutoIncrementModel = require('./models/AutoIncrement.js');
 const TicketModel = require('./models/Tickets.js');
-const PatchnoteModal = require('./models/PatchNotes.js');
-const PatchNoteNodes = require('./models/PatchNoteNodes.js');
-const PatchNotePreviews = require('./models/PatchNotesPreviews.js');
-const Formats = require('./models/Formats.js');
-const Versions = require('./models/Versions.js');
+const PatchNote = require('./models/PatchNotes.js');
+const PatchNoteNode = require('./models/PatchNoteNodes.js');
+const PatchNotePreview = require('./models/PatchNotesPreviews.js');
+const Format = require('./models/Formats.js');
+const Version = require('./models/Versions.js');
 
 dotenv.config();
 
@@ -34,14 +34,23 @@ module.exports = class Database {
             await this.sequelize.authenticate().then(async () => {
                 console.log(LocalisationManager.getString('database_connection_success', 'en-US'));
                 
+                // // Put foreign keys
+                // Version.hasOne(Format);
+                // Format.belongsTo(Version)
+
+                // PatchNoteNode.hasOne(PatchNote);
+                // PatchNote.belongsTo(PatchNoteNode);
+                
+
+
                 this.initConnection(SetupModel);
                 this.initConnection(AutoIncrementModel);
                 this.initConnection(TicketModel);
-                this.initConnection(PatchnoteModal);
-                this.initConnection(PatchNoteNodes);
-                this.initConnection(PatchNotePreviews);
-                this.initConnection(Formats);
-                this.initConnection(Versions);
+                this.initConnection(PatchNote);
+                this.initConnection(PatchNoteNode);
+                this.initConnection(PatchNotePreview);
+                this.initConnection(Format);
+                this.initConnection(Version);
             
                 await this.sequelize.sync({force: this.force});
                 console.log(this.force ? `Drop and re-sync db.` : "Sync db.")

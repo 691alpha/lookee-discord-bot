@@ -3,10 +3,8 @@ const { PickUserSelectionMenu } = require("../menus/PickUserSelectionMenu");
 const { LocalisationManager } = require("../managers/LocalisationManager");
 
 class PickUserComponent {
-    static async create(interaction) {
+    static async create(lang) {
         const container = new ContainerBuilder();
-
-        const lang = interaction?.locale ?? 'en-US';
 
         const text1 = new TextDisplayBuilder().setContent(
             [
@@ -16,7 +14,9 @@ class PickUserComponent {
         
         container.addTextDisplayComponents(text1);
 
-        container.addActionRowComponents(row => row.addComponents(PickUserSelectionMenu.create(lang)));
+        container.addActionRowComponents(row => row.addComponents(
+            PickUserSelectionMenu.create(lang)
+        ));
 
         return container;
     }

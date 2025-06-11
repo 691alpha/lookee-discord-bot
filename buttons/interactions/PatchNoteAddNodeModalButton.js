@@ -9,7 +9,7 @@ class PatchNoteAddNodeModalButton {
 
         return new ButtonBuilder()
         .setCustomId(`${PatchNoteAddNodeModalButton.customId}:${status}`)
-        .setLabel(LocalisationManager.getString(status), lang)
+        .setLabel(LocalisationManager.getString(status, lang))
         .setStyle(ButtonStyle.Secondary);
     }
 

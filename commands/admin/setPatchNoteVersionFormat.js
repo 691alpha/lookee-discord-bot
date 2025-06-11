@@ -1,4 +1,5 @@
 const {SlashCommandBuilder, MessageFlags} = require('discord.js');
+const { LocalisationManager } = require("../../managers/LocalisationManager");
 const Formats = require('../../database/models/Formats');
 
 module.exports = {
@@ -7,10 +8,18 @@ module.exports = {
     data: new SlashCommandBuilder()
         .setName('set_patchnote_version_format')
         .setDescription('Sets the format for the patchnote version.')
+        // .setDescription(LocalisationManager.getString(
+        //         'set_patchnote_version_format_description_command', 
+        //         lang
+        //     ))
         .addStringOption(option =>
 		    option.setName('input')
                 .setDescription('New patchnote version format here')
                 .setRequired(true)
+                // .setDescription(LocalisationManager.getString(
+                // 'set_patchnote_version_format_description_command_input', 
+                // lang
+                // ))
         ),
     async execute(interaction) {
 
@@ -24,7 +33,10 @@ module.exports = {
         });
 
         await interaction.reply({
-            content: `Set patchnote version format.`,
+            content: LocalisationManager.getString(
+                'set_patchnote_version_format_description_command', 
+                lang
+            ),
             flags: MessageFlags.Ephemeral
         }); 
     },

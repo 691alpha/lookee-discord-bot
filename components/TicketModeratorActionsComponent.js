@@ -7,10 +7,8 @@ const { AddSupporterTicketButton } = require("../buttons/interactions/AddSupport
 const { RemoveUserTicketButton } = require("../buttons/interactions/RemoveUserTicketButton");
 
 class TicketModeratorActionsComponent {
-    static async create(interaction) {
+    static async create(lang) {
         const container = new ContainerBuilder();
-
-        const lang = interaction?.locale ?? 'en-US';
 
         const text1 = new TextDisplayBuilder().setContent(
             [

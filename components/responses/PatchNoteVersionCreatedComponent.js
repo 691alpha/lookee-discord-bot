@@ -1,5 +1,5 @@
 const { ContainerBuilder, TextDisplayBuilder } = require('discord.js');
-const { LocalisationManager } = require('../managers/LocalisationManager');
+const { LocalisationManager } = require('../../managers/LocalisationManager');
 
 class PatchNoteVersionCreatedComponent {
     static async create(lang, result) {

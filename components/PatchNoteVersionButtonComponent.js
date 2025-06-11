@@ -1,14 +1,10 @@
-const {
-    ContainerBuilder,
-} = require('discord.js');
+const { ContainerBuilder } = require('discord.js');
 const { SetPatchNoteVersionFormatButton } = require('../buttons/interactions/SetPatchNoteVersionFormatButton');
 const { PatchNoteIncreaseVersionButton } = require('../buttons/interactions/PatchNoteIncreaseVersionButton');
 
 class PatchNoteVersionButtonComponent {
-    static async create(interaction) {
+    static async create(lang) {
         const container = new ContainerBuilder();
-
-        const lang = interaction?.locale ?? 'en-US';
 
         container.addActionRowComponents(row => row.addComponents(
             PatchNoteIncreaseVersionButton.create(lang),

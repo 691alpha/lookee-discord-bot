@@ -1,9 +1,5 @@
-const {
-    ContainerBuilder,
-    TextDisplayBuilder,
-} = require('discord.js');
-
-const { LocalisationManager } = require('../managers/LocalisationManager');
+const { ContainerBuilder, TextDisplayBuilder } = require('discord.js');
+const { LocalisationManager } = require('../../managers/LocalisationManager');
 
 class PatchNoteNoAnnouncementChannelComponent {
     static async create(lang) {

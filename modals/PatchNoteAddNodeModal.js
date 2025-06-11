@@ -3,7 +3,6 @@ const { LocalisationManager } = require('../managers/LocalisationManager');
 const PatchNoteNodes = require('../database/models/PatchNoteNodes');
 
 class PatchNoteAddNodeModal {
-    
     static pendingStatuses = new Map();
     static customId = "PatchNoteAddNodeModal";
     
@@ -31,11 +30,9 @@ class PatchNoteAddNodeModal {
     static async onSubmit(interaction) {
         
         const { PatchnoteUtils } = require('../utils/PatchnoteUtils');
-        
-        const lang = interaction?.locale ?? 'en-US';
-        
 		const { db } = interaction.client;
-        
+        const lang = interaction?.locale ?? 'en-US';
+
         await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 
         const status = PatchNoteAddNodeModal.pendingStatuses.get(interaction.user.id) ?? 'planned';
@@ -62,12 +59,12 @@ class PatchNoteAddNodeModal {
 
         await PatchNoteNodes.bulkCreate(nodes);
 
-        PatchnoteUtils.updateAllPatchNotePreviews(interaction);
+        PatchnoteUtils.updateAllPatchNotePreviews(interaction.guild.id, interaction.client, lang);
 
         await interaction.editReply({
             content: LocalisationManager
             .getString('patchnote_create_success', lang)
-            .replace('{count}', nodes.length)
+            .replace('{count}', nodes.length) // TODO: make enum
             .replace('{status}', LocalisationManager.getString(status, lang))
         });
 

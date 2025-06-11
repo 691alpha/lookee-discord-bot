@@ -1,11 +1,10 @@
 const { MessageFlags, ActionRowBuilder, TextInputBuilder, ModalBuilder, TextInputStyle } = require("discord.js");
-const PatchNoteNodes = require("../database/models/PatchNoteNodes");
 const { ModalManager } = require("../managers/ModalManager");
 const { LocalisationManager } = require('../managers/LocalisationManager');
 const { PatchnoteUtils } = require("../utils/PatchnoteUtils");
+const PatchNoteNodes = require("../database/models/PatchNoteNodes");
 
 class PatchNoteEditNodeModal {
-
     static customId = `PatchNoteEditNodeModal`;
     
     static create(lang, node, nodeId) {
@@ -52,7 +51,7 @@ class PatchNoteEditNodeModal {
         node.content = newContent;
         await node.save();
 
-        PatchnoteUtils.updateAllPatchNotePreviews(interaction);
+        PatchnoteUtils.updateAllPatchNotePreviews(interaction.guild.id, interaction.client, lang);
 
         await interaction.reply({
             content: LocalisationManager.getString('patchnote_node_updated', lang),

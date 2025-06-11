@@ -1,7 +1,7 @@
 // Require the necessary discord.js classes
 const fs = require('node:fs');
 const path = require('node:path');
-const { Collection, GatewayIntentBits } = require('discord.js');
+const { Collection } = require('discord.js');
 
 const Client = require('./includes/Client.js');
 const dotenv = require('dotenv');

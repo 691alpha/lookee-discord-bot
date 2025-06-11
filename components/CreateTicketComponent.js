@@ -1,16 +1,10 @@
-const {
-    ContainerBuilder,
-    TextDisplayBuilder,
-} = require('discord.js');
-
+const { ContainerBuilder, TextDisplayBuilder } = require('discord.js');
 const { CreateTicketButton } = require('../buttons/interactions/CreateTicketButton');
 const { LocalisationManager } = require('../managers/LocalisationManager');
 
 class CreateTicketComponent {
-    static async create(interaction) {
+    static async create(lang) {
         const container = new ContainerBuilder();
-
-        const lang = interaction?.locale ?? 'en-US';
 
         const text1 = new TextDisplayBuilder().setContent(
             [

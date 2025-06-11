@@ -9,15 +9,17 @@ class RemoveUserTicketButton {
     static create(lang) {
         return new ButtonBuilder()
             .setCustomId(RemoveUserTicketButton.customId)
-            .setLabel(LocalisationManager.getString('remove_user_ticket', lang) || 'Remove User')
+            .setLabel(LocalisationManager.getString('remove_user_ticket', lang))
             .setStyle(ButtonStyle.Danger);
     }
 
     static async onInteraction(interaction) {
         const ticket = await TicketUtils.findTicketByChannel(interaction.channel.id);
+        const lang = interaction?.locale ?? 'en-US';
+
         if (!ticket) return TicketUtils.searchTicketFail(interaction);
 
-        const component = await RemoveUserTicketComponent.create(interaction);
+        const component = await RemoveUserTicketComponent.create(interaction.channel, lang);
         await interaction.reply({
             components: [component],
             flags: [MessageFlags.IsComponentsV2, MessageFlags.Ephemeral],

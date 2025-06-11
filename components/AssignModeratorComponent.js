@@ -4,10 +4,8 @@ const { LocalisationManager } = require("../managers/LocalisationManager");
 const { PickModeratorSelectionMenu } = require("../menus/PickModeratorSelectionMenu");
 
 class AssignModeratorComponent {
-    static async create(interaction) {
+    static async create(lang) {
         const container = new ContainerBuilder();
-
-        const lang = interaction?.locale ?? 'en-US';
 
         const text1 = new TextDisplayBuilder().setContent(
             [
@@ -17,7 +15,9 @@ class AssignModeratorComponent {
         
         container.addTextDisplayComponents(text1);
 
-        container.addActionRowComponents(row => row.addComponents(PickModeratorSelectionMenu.create(lang)));
+        container.addActionRowComponents(row => row.addComponents(
+            PickModeratorSelectionMenu.create(lang)
+        ));
 
         return container;
     }

@@ -1,4 +1,5 @@
 const {SlashCommandBuilder, ChannelType, MessageFlags} = require('discord.js');
+const { LocalisationManager } = require("../../managers/LocalisationManager");
 const Setups = require('../../database/models/Setups');
 
 // Creates all needed categories for the server, doesn't check if they already exist
@@ -9,6 +10,10 @@ module.exports = {
     data: new SlashCommandBuilder()
         .setName('create_ticket_categories')
         .setDescription('Creates all needed categories for ticket management.'),
+        // .setDescription(LocalisationManager.getString(
+        //         'create_categories_description', 
+        //         lang
+        //     )),
     async execute(interaction) {
 
         const { db } = interaction.client;
@@ -44,7 +49,10 @@ module.exports = {
                 defaultLang: 'en-US',
             });
             await interaction.reply({
-                content: `Created ticket categories and saved setup to database.`,
+                content: LocalisationManager.getString(
+                    'create_categories_success',
+                    lang
+                ),
                 flags: MessageFlags.Ephemeral
             }); 
         } else {
@@ -54,7 +62,10 @@ module.exports = {
                 closedTicketsCategoryId: closedCategory.id
             });
             await interaction.reply({
-                content: `Updated ticket categories and saved setup to database.`,
+                content: LocalisationManager.getString(
+                    'updated_categories_success',
+                    lang
+                ),
                 flags: MessageFlags.Ephemeral
             }); 
         }

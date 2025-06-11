@@ -14,10 +14,11 @@ class AddSupporterTicketButton {
     }
 
     static async onInteraction(interaction) {
+        const lang = interaction?.locale ?? 'en-US';
         const ticket = await TicketUtils.findTicketByChannel(interaction.channel.id);
         if (!ticket) return TicketUtils.searchTicketFail(interaction);
 
-        const outputContainer = await AddSupportTicketComponent.create(interaction);
+        const outputContainer = await AddSupportTicketComponent.create(lang);
         await interaction.reply({
             components: [outputContainer],
             flags: [MessageFlags.IsComponentsV2, MessageFlags.Ephemeral],

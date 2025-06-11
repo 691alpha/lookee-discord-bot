@@ -1,17 +1,11 @@
-const {
-    ContainerBuilder,
-    TextDisplayBuilder,
-} = require('discord.js');
-
+const { ContainerBuilder, TextDisplayBuilder } = require('discord.js');
 const { ForwardToTicketButton } = require('../buttons/interactions/ForwardToTicketButton');
 const { LocalisationManager } = require('../managers/LocalisationManager');
 
 class TicketCreationSuccessComponent {
-    static async create(tempChannel, interaction) {
+    static async create(tempChannel, guildId, lang) {
         const container = new ContainerBuilder();
-
-        const lang = interaction?.locale ?? 'en-US';
-
+        
         const text1 = new TextDisplayBuilder().setContent(
             [
                 `# ${LocalisationManager.getString('ticket_created', lang)}`,
@@ -33,7 +27,7 @@ class TicketCreationSuccessComponent {
 
         container.addActionRowComponents(
             row => row.addComponents(
-                ForwardToTicketButton.create(tempChannel.id, interaction.guild.id, lang)
+                ForwardToTicketButton.create(tempChannel.id, guildId, lang)
             ));
 
         return container;

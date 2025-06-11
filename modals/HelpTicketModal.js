@@ -1,12 +1,10 @@
 const { ActionRowBuilder, ModalBuilder, TextInputBuilder, TextInputStyle } = require('discord.js');
+const { LocalisationManager } = require('../managers/LocalisationManager');
 const ChannelUtils = require('../utils/ChannelUtils');
 const Setups = require('../database/models/Setups');
 const Tickets = require('../database/models/Tickets');
-const { LocalisationManager } = require('../managers/LocalisationManager');
-const { TicketUtils } = require('../utils/TicketUtils');
 
 class HelpTicketModal {
-
     static customId = "HelpTicketModal";
     
     static create (lang) {
@@ -47,6 +45,7 @@ class HelpTicketModal {
 		const setup = await Setups.findOne({ where: { guildId } });
 		const ticketId = await db.getNextId('tickets');
         const lang = interaction?.locale ?? 'en-US';
+        
 		const createdTicketChannel = await ChannelUtils.runCreateTicketProcess(
 			interaction,
 			setup.unassignedTicketsCategoryId,

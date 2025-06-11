@@ -1,8 +1,4 @@
-const {
-    ContainerBuilder,
-    TextDisplayBuilder,
-} = require('discord.js');
-
+const { ContainerBuilder, TextDisplayBuilder } = require('discord.js');
 const { HelpTicketButton } = require('../buttons/interactions/HelpTicketButton');
 const { LocalisationManager } = require('../managers/LocalisationManager');
 

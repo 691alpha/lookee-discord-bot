@@ -16,7 +16,7 @@ class ForwardToTicketButton {
 
         if (!channelId || !interaction.guild.channels.cache.has(channelId)) {
             return interaction.reply({
-                content: "There is no channel linked to this button.",
+                content: LocalisationManager.getString('no_channel_linked', lang),
                 flags: MessageFlags.Ephemeral
             });
         }

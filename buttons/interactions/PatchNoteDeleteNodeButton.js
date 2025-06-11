@@ -3,7 +3,7 @@ const { LocalisationManager } = require("../../managers/LocalisationManager");
 const PatchNoteNodes = require("../../database/models/PatchNoteNodes");
 const { PatchNoteNodeSelectMenu } = require("../../menus/PatchNoteNodeSelectMenu");
 const { PatchnoteUtils } = require("../../utils/PatchnoteUtils");
-const { PatchNoteNoNodesComponent } = require("../../components/PatchNoteNoNodesComponent");
+const { PatchNoteNoNodesComponent } = require("../../components/responses/PatchNoteNoNodesComponent");
 
 class PatchNoteDeleteNodeButton {
     static customId = "PatchNoteDeleteNodeButton";
@@ -21,30 +21,26 @@ class PatchNoteDeleteNodeButton {
         const lang = interaction?.locale ?? 'en-US';
         
         await interaction.deferReply({ flags: MessageFlags.Ephemeral });
+        
+        const nodes = await PatchnoteUtils.findAllNodes(interaction.guild.id, lang, 'delete');
 
-        try {
-            const nodes = await PatchnoteUtils.findAllNodes(interaction.guild.id, lang, 'delete');
-
-            if(!nodes.length) return;
-
-            const selectMenu = PatchNoteNodeSelectMenu.create(lang, nodes, 'delete');
-
-            const row = new ActionRowBuilder().addComponents(selectMenu);
-
-            await interaction.editReply({
-                content: LocalisationManager.getString('patchnote_select_delete_prompt', lang),
-                components: [row]
-            });
-        } catch (error) {
-
+        if(!nodes || nodes.length === 0) {
             const container = await PatchNoteNoNodesComponent.create(lang, 'delete');
 
-            await interaction.editReply({
+            return await interaction.editReply({
                 components: [container],
                 flags: [MessageFlags.IsComponentsV2, MessageFlags.Ephemeral]
             });
-        }
+        };
 
+        const selectMenu = PatchNoteNodeSelectMenu.create(lang, nodes, 'delete');
+
+        const row = new ActionRowBuilder().addComponents(selectMenu);
+
+        return await interaction.editReply({
+            content: LocalisationManager.getString('patchnote_select_delete_prompt', lang),
+            components: [row]
+        });
     }
 }
 

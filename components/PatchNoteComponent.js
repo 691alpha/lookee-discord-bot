@@ -10,9 +10,8 @@ const Versions = require('../database/models/Versions');
 const Formats = require('../database/models/Formats');
 
 class PatchNoteComponent {
-    static async create(nodes, interaction) {
-
-        const container = await PatchNoteComponent.buildFromNodes(nodes, interaction);
+    static async create(nodes, lang) {
+        const container = await PatchNoteComponent.buildFromNodes(nodes, lang);
 
         container.setAccentColor(0x5e5e5e); 
 
@@ -22,12 +21,11 @@ class PatchNoteComponent {
     /**
      * Creates a component out of all given nodes formatted and a title
      * @param {*} nodes List of all nodes which should be in the patchnote
-     * @param {*} interaction 
+     * @param {*} lang Language
      * @returns Component with needed information for the patchnote
      */
-    static async buildFromNodes(nodes, interaction) {
+    static async buildFromNodes(nodes, lang) {
         const container = new ContainerBuilder();
-        const lang = interaction?.locale ?? 'en-US';
 
         // Gets all nodes with status 'planned' and 'done'
         const plannedNodes = nodes.filter(node => node.status === 'planned');

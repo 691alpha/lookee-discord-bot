@@ -1,16 +1,10 @@
-const {
-    ContainerBuilder,
-    TextDisplayBuilder,
-} = require('discord.js');
-
+const { ContainerBuilder, TextDisplayBuilder } = require('discord.js');
 const { LocalisationManager } = require('../managers/LocalisationManager');
 const { ForwardToPatchnoteButton } = require('../buttons/interactions/ForwardToPatchnoteButton');
 
 class PatchnotePublishedComponent {
-    static async create(tempChannel, interaction) {
+    static async create(tempChannel, guildId, lang) {
         const container = new ContainerBuilder();
-
-        const lang = interaction?.locale ?? 'en-US';
 
         const text1 = new TextDisplayBuilder().setContent(
             [
@@ -32,7 +26,7 @@ class PatchnotePublishedComponent {
 
         container.addActionRowComponents(
             row => row.addComponents(
-                ForwardToPatchnoteButton.create(tempChannel.id, interaction.guild.id, lang)
+                ForwardToPatchnoteButton.create(tempChannel.id, guildId, lang)
             ));
 
         return container;

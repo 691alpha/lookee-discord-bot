@@ -5,10 +5,10 @@ const { EmbedManager } = require("../../managers/EmbedManager");
 class ReopenTicketButton {
     static customId = "ReopenTicketButton";
     
-        static create() {
+        static create(lang) {
             return new ButtonBuilder()
                 .setCustomId(ReopenTicketButton.customId)
-                .setLabel('Re-open Ticket')
+                .setLabel(LocalisationManager.getString('reopen_ticket_label_button', lang))
                 .setStyle(ButtonStyle.Secondary);
         }
     
@@ -22,7 +22,6 @@ class ReopenTicketButton {
                     ticket.id,
                     interaction.channel, 
                     'assigned', 
-                    // 'solvedTicketsId'
                 );
             } else {
                 TicketUtils.moveTicketToCategory(
@@ -30,7 +29,6 @@ class ReopenTicketButton {
                     ticket.id, 
                     interaction.channel, 
                     'unassigned', 
-                    // 'unsolvedTicketsId'
                 );
             }
 

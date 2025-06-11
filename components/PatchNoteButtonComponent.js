@@ -9,10 +9,8 @@ const { PatchNoteAddNodePickStatusButton } = require('../buttons/interactions/Pa
 const { SetPatchNoteVersionButton } = require('../buttons/interactions/SetPatchNoteVersionButton');
 
 class PatchNoteButtonComponent {
-    static async create(interaction) {
+    static async create(lang) {
         const container = new ContainerBuilder();
-
-        const lang = interaction?.locale ?? 'en-US';
 
         container.addActionRowComponents(row => row.addComponents(
             PatchNoteAddNodePickStatusButton.create(lang),

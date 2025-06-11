@@ -10,7 +10,7 @@ module.exports = class PatchNoteNodes extends Model {
                 primaryKey: true,
             },
             patchNoteId: {
-                type: Sequelize.STRING,
+                type: Sequelize.STRING, // Foreign keys: TODO:TODO:TODO:TODO:
                 allowNull: true,
             },
             status: {

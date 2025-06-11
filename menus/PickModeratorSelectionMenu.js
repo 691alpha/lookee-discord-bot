@@ -1,6 +1,6 @@
-const { ComponentType, MessageFlags, MentionableSelectMenuBuilder } = require("discord.js");
-const { LocalisationManager } = require("../managers/LocalisationManager");
+const { MessageFlags, MentionableSelectMenuBuilder } = require("discord.js");
 const { TicketUtils } = require("../utils/TicketUtils");
+const { NoVariableResponseComponent } = require("../components/responses/NoVariableResponseComponent");
 const Tickets = require("../database/models/Tickets");
 
 class PickModeratorSelectionMenu {
@@ -9,34 +9,54 @@ class PickModeratorSelectionMenu {
     static create() {
         return new MentionableSelectMenuBuilder()
             .setCustomId(PickModeratorSelectionMenu.customId)
-            // .setLabel(`${LocalisationManager.getString('add_moderator_ticket', lang)}`)
-            // .setStyle(ButtonStyle.Secondary)
             .setMinValues(1)
             .setMaxValues(1);
     }
 
     static async onInteraction(interaction) {
-        // await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 
         const ticket = await TicketUtils.findTicketByChannel(interaction.channel.id);
+        const lang = interaction?.locale ?? 'en-US';
         if (!ticket) return TicketUtils.searchTicketFail(interaction);
 
-        let hasModerator = false;
+        let selectedMember = interaction.values.filter(id => interaction.guild.members.cache.has(id));
 
-        const selected = interaction.values.filter(id => interaction.guild.members.cache.has(id));
+        if (!selectedMember || selectedMember.length === 0) {
+            const container = NoVariableResponseComponent.create('members_not_found', lang);
 
-        if (!selected || selected.length === 0) {
-            throw EmptyResultError(LocalisationManager.getString(
-                'no_valid_user_selected', lang
-            ));
+            interaction.reply({
+                components: [container],
+                flags: [MessageFlags.IsComponentsV2, MessageFlags.Ephemeral]
+            })
+        }
+        
+        selectedMember = selectedMember[0];
+
+        const currentTicket = await Tickets.findOne({ 
+            where: { channelId: interaction.channel.id } 
+        });
+        
+        if (!currentTicket) {
+            const container = TicketNotFound.create(lang);
+
+            interaction.reply({
+                components: [container],
+                flags: [MessageFlags.IsComponentsV2, MessageFlags.Ephemeral]
+            })
         }
 
-        const currentTicket = await Tickets.findOne({ where: { channelId: interaction.channel.id } });
         const moderator = currentTicket.moderator;
-        if(moderator) hasModerator = true;
+        const hasModerator = currentTicket.moderator != null;
 
-        const member = await interaction.guild.members.fetch(selected[0]).catch(() => null);
-        if (!member) return;
+        const member = await interaction.guild.members.fetch(selectedMember).catch(() => null);
+        if (!member) {
+            const container = NoVariableResponseComponent.create('selected_members_not_found', lang);
+            
+            interaction.reply({
+                components: [container],
+                flags: [MessageFlags.IsComponentsV2, MessageFlags.Ephemeral]
+            })
+        }
 
         await TicketUtils.addUserToChannel(interaction.channel, member, {
             ViewChannel: true,
@@ -56,21 +76,34 @@ class PickModeratorSelectionMenu {
             interaction.channel
         );
 
+        const selectedMembers = selectedMember.map(id => `<@${id}>`).join(', ');
 
         // Checks which confirmation message should be sent depending on the previous channel status
         if(!hasModerator) {
             await interaction.reply({
-                content: `Added Moderator: ${selected.map(id => `<@${id}>`).join(', ')}.`,
+                content: `${LocalisationManager.getString(
+                        'ticket_added_moderator', 
+                        lang,
+                        {"{selectedMembers}": selectedMembers}
+                    )}`,
                 flags: MessageFlags.Ephemeral,
             });
         } else if(member.user.id === moderator){
             await interaction.reply({
-                content: `User ${selected.map(id => `<@${id}>`).join(', ')} is already the Moderator.`,
+                content: `${LocalisationManager.getString(
+                        'ticket_added_user_is_already_moderator', 
+                        lang,
+                        {"{selectedMembers}": selectedMembers}
+                    )}`,
                 flags: MessageFlags.Ephemeral,
             });
         } else {
             await interaction.reply({
-                content: `User ${selected.map(id => `<@${id}>`).join(', ')} is now the Moderator.`,
+                content: `${LocalisationManager.getString(
+                        'ticket_added_new_moderator', 
+                        lang,
+                        {"{selectedMembers}": selectedMembers}
+                    )}`,
                 flags: MessageFlags.Ephemeral,
             });
         }

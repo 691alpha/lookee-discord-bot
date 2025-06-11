@@ -6,8 +6,9 @@ const Versions = require("../../database/models/Versions");
 const { PatchnoteUtils } = require("../../utils/PatchnoteUtils");
 const { PatchnotePublishedComponent } = require("../../components/PatchnotePublishedComponent");
 const Formats = require("../../database/models/Formats");
-const { PatchNoteNoNodesComponent } = require("../../components/PatchNoteNoNodesComponent");
-const { PatchNoteNoAnnouncementChannelComponent } = require("../../components/PatchNoteNoAnnouncementChannelComponent");
+const { PatchNoteNoNodesComponent } = require("../../components/responses/PatchNoteNoNodesComponent");
+const { PatchNoteNoAnnouncementChannelComponent } = require("../../components/responses/PatchNoteNoAnnouncementChannelComponent");
+const { PatchNoteNoSetupComponent } = require("../../components/responses/PatchNoteNoSetupComponent");
 
 class PatchNotePublishButton {
     static customId = "PatchNotePublishButton";
@@ -30,35 +31,40 @@ class PatchNotePublishButton {
 
         const setup = await Setups.findOne({ where: { guildId: interaction.guild.id } });
 
-        if (!setup) return "Setup not found for this guild."
+        if (!setup) {
+            const container = await PatchNoteNoSetupComponent.create(lang);
+
+            return await interaction.editReply({
+                components: [container],
+                flags: [MessageFlags.IsComponentsV2, MessageFlags.Ephemeral]
+            });
+        }
 
         announcementChannel = client.channels.cache.get(setup.announcementChannelId);
 
         if (!announcementChannel) {
-            const container = await PatchNoteNoAnnouncementChannelComponent.create(lang, 'publish');
+            const container = await PatchNoteNoAnnouncementChannelComponent.create(lang);
 
-            await interaction.editReply({
+            return await interaction.editReply({
                 components: [container],
                 flags: [MessageFlags.IsComponentsV2, MessageFlags.Ephemeral]
             });
         }
 
         const nodes = await PatchnoteUtils.findAllNodes(
-            interaction.guild.id,
-            lang,
-            'publish'
+            interaction.guild.id
         );
 
-        if(!nodes.length) {
+        if(!nodes || nodes.length === 0) {
             const container = await PatchNoteNoNodesComponent.create(lang, 'publish');
 
-            await interaction.editReply({
+            return await interaction.editReply({
                 components: [container],
                 flags: [MessageFlags.IsComponentsV2, MessageFlags.Ephemeral]
             });
         };
 
-        const container = await PatchNoteComponent.create(nodes, interaction);
+        const container = await PatchNoteComponent.create(nodes, lang);
 
         await announcementChannel.send({
             components: [container],
@@ -70,13 +76,17 @@ class PatchNotePublishButton {
             await node.save();
         }
 
-        // don't do that: rename variable
         const containerPublished = await PatchnotePublishedComponent.create(
             announcementChannel,
-            interaction
+            interaction.guild.id,
+            lang
         );
 
-        if(!containerPublished) return "Couldn't send patchnote."
+        if(!containerPublished) {
+            return interaction.editReply(
+                LocalisationManager.getString('patchnote_send_failed', lang)
+            )
+        } 
 
         const latestVersion = await Versions.findOne({ order: [['createdAt', 'DESC']] });
 
@@ -95,25 +105,29 @@ class PatchNotePublishButton {
             major_number: latestVersion?.major_number ?? '0',
             feature_number: latestVersion?.feature_number ?? '0',
             patch_number: (parseInt(latestVersion?.patch_number ?? '0') + 1).toString(),
+            // LocalisationManager not used since it's a value that is the same for everyone
             description: 'Auto increment after publish'
         });
 
-        PatchnoteUtils.updateAllPatchNotePreviews(interaction);
+        PatchnoteUtils.updateAllPatchNotePreviews(interaction.guild.id, interaction.client, lang);
         
         await interaction.editReply({
             components: [containerPublished],
             flags: [MessageFlags.IsComponentsV2, MessageFlags.Ephemeral],
         })
     
-        const containerNoAnnouncement = await PatchNoteNoAnnouncementChannelComponent.create(
-            lang
-        );
+        if(!announcementChannel) {
+            const containerNoAnnouncement = await PatchNoteNoAnnouncementChannelComponent.create(
+                lang
+            );
+    
+            await interaction.editReply({
+                components: [containerNoAnnouncement],
+                flags: [MessageFlags.IsComponentsV2, MessageFlags.Ephemeral]
+            });
+            return;
 
-        await interaction.editReply({
-            components: [containerNoAnnouncement],
-            flags: [MessageFlags.IsComponentsV2, MessageFlags.Ephemeral]
-        });
-        return;
+        }
     }
 }
 

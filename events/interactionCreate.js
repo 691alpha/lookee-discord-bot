@@ -2,11 +2,14 @@ const { Collection, Events, MessageFlags } = require('discord.js');
 const { ModalManager } = require('../managers/ModalManager.js');
 const { ButtonManager } = require('../managers/ButtonManager.js');
 const { SelectMenuManager } = require('../managers/SelectMenuManager.js');
+const { LocalisationManager } = require('../managers/LocalisationManager.js');
 
 module.exports = {
 	name: Events.InteractionCreate,
 	async execute(interaction) {
-		// explain shits
+		// Checks for the type of interaction and calls according manager
+		const lang = interaction?.locale ?? 'en-US';
+		
 		try {
 			if (interaction.isModalSubmit()) await ModalManager.dispatch(interaction);
 	
@@ -17,9 +20,15 @@ module.exports = {
 		} catch (error) {
 			console.error(error);
 			if (interaction.replied || interaction.deferred) {
-				await interaction.followUp({ content: 'There was an error while executing this interaction!', flags: MessageFlags.Ephemeral });
+				await interaction.followUp({ 
+					content: LocalisationManager.getString('error_interaction', lang), 
+					flags: MessageFlags.Ephemeral 
+				});
 			} else {
-				await interaction.reply({ content: 'There was an error while executing this interaction!', flags: MessageFlags.Ephemeral });
+				await interaction.reply({
+					content: LocalisationManager.getString('error_interaction', lang), 
+					flags: MessageFlags.Ephemeral 
+				});
 			}
 		}
 
@@ -28,7 +37,11 @@ module.exports = {
 		const command = interaction.client.commands.get(interaction.commandName);
 
 		if (!command) {
-			console.error(`No command matching ${interaction.commandName} was found.`);
+			console.error(LocalisationManager.getString(
+				'no_matching_command_found', 
+				lang, 
+				{"interaction.commandName": interaction.commandName}
+			));
 			return;
 		}
 
@@ -48,7 +61,17 @@ module.exports = {
 
             if (now < expirationTime) {
                 const expiredTimestamp = Math.round(expirationTime / 1000);
-                return interaction.reply({ content: `Please wait, you are on a cooldown for \`${command.data.name}\`. You can use it again <t:${expiredTimestamp}:R>.`, flags: MessageFlags.Ephemeral });
+                return interaction.reply({
+					content: LocalisationManager.getString(
+						'on_cooldown', 
+						lang,
+						{
+							"command.data.name": command.data.name, 
+							"expiredTimestamp": expiredTimestamp
+						}
+					), 
+					flags: MessageFlags.Ephemeral 
+				});
             }
         }
 
@@ -60,9 +83,15 @@ module.exports = {
 		} catch (error) {
 			console.error(error);
 			if (interaction.replied || interaction.deferred) {
-				await interaction.followUp({ content: 'There was an error while executing this command!', flags: MessageFlags.Ephemeral });
+				await interaction.followUp({
+					content: LocalisationManager.getString('error_command', lang), 
+					flags: MessageFlags.Ephemeral 
+				});
 			} else {
-				await interaction.reply({ content: 'There was an error while executing this command!', flags: MessageFlags.Ephemeral });
+				await interaction.reply({ 
+					content: LocalisationManager.getString('error_command', lang), 
+					flags: MessageFlags.Ephemeral 
+				});
 			}
 		}
 	},

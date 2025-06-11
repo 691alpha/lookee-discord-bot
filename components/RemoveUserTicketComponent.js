@@ -3,9 +3,8 @@ const { PickUserRemoveSelectionMenu } = require("../menus/PickUserRemoveSelectio
 const { LocalisationManager } = require("../managers/LocalisationManager");
 
 class RemoveUserTicketComponent {
-    static async create(interaction) {
+    static async create(channel, lang) {
         const container = new ContainerBuilder();
-        const lang = interaction?.locale ?? 'en-US';
 
         const text = new TextDisplayBuilder().setContent(
             LocalisationManager.getString('pick_user_to_remove', lang)
@@ -14,7 +13,7 @@ class RemoveUserTicketComponent {
         container.addTextDisplayComponents(text);
         container.addActionRowComponents(row => 
             row.addComponents(
-                PickUserRemoveSelectionMenu.create(interaction.channel, lang)
+                PickUserRemoveSelectionMenu.create(channel, lang)
             )
         );
 

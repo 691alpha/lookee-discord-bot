@@ -1,4 +1,5 @@
 const { SlashCommandBuilder, MessageFlags } = require('discord.js');
+const { LocalisationManager } = require("../../managers/LocalisationManager");
 const { TicketModeratorActionsComponent } = require('../../components/TicketModeratorActionsComponent')
 
 // Sends a component in the current channel to manage the ticket assigned to the channel
@@ -9,45 +10,18 @@ module.exports = {
     data: new SlashCommandBuilder()
         .setName('ticket_mod')
         .setDescription('Sends buttons for all Moderator Ticket options.'),
+        // .setDescription(LocalisationManager.getString(
+        //         'ticket_mod_description_command', 
+        //         lang
+        //     )),
     async execute(interaction) {
+        const lang = interaction?.locale ?? 'en-US';
 
-        let outputContainer = await TicketModeratorActionsComponent.create(interaction);
+        let outputContainer = await TicketModeratorActionsComponent.create(lang);
 
         await interaction.reply({
             components: [outputContainer],
             flags: [MessageFlags.IsComponentsV2, MessageFlags.Ephemeral],
         })
-
-        // const row = new ActionRowBuilder()
-        //             .addComponents(AssignModeratorButton.create())
-        //             .addComponents(AddUserTicketButton.create())
-        //             .addComponents(AssignSelfModeratorButton.create())
-        //             .addComponents(CloseTicketButton.create());
-        
-
-        // await interaction.reply({
-        //     content: `Click on the Moderator Action you want to execute.`,
-        //     components: [row],
-        //     flags: MessageFlags.Ephemeral
-        // });
-
-        // const ticket = await Tickets.findOne({ 
-        //     where: {
-        //         id: interaction.channel.id
-        //     },
-        // });
-        // const target = interaction.options.getUser('target');
-
-        // if (target) {
-        //     await ticket.update({
-        //         moderator: target.id,
-        //     })
-        // }
-        // if (!target) {
-        //     await ticket.update({
-        //         moderator: interaction.user.id,
-        //     })
-        // }
-
     },
 };

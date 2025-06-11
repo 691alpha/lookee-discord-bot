@@ -9,7 +9,7 @@ class SetPatchNoteVersionButton {
 
         return new ButtonBuilder()
         .setCustomId(`${SetPatchNoteVersionButton.customId}`)
-        .setLabel(LocalisationManager.getString('patchnote_version_button'), lang)
+        .setLabel(LocalisationManager.getString('patchnote_version_button', lang))
         .setStyle(ButtonStyle.Secondary);
     }
 

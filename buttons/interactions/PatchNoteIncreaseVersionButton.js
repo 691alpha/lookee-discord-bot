@@ -8,7 +8,10 @@ class PatchNoteIncreaseVersionButton {
         static create(lang) {
             return new ButtonBuilder()
                 .setCustomId(PatchNoteIncreaseVersionButton.customId)
-                .setLabel(LocalisationManager.getString('patchnote_increase_version_button_label', lang))
+                .setLabel(LocalisationManager.getString(
+                    'patchnote_increase_version_button_label', 
+                    lang)
+                )
                 .setStyle(ButtonStyle.Secondary);
         }
     
@@ -23,7 +26,9 @@ class PatchNoteIncreaseVersionButton {
             const row = new ActionRowBuilder().addComponents(selectMenu);
 
             await interaction.editReply({
-                content: LocalisationManager.getString('patchnote_increase_version_placeholder', lang),
+                content: LocalisationManager.getString(
+                    'patchnote_increase_version_placeholder', 
+                    lang),
                 components: [row]
             });
         }

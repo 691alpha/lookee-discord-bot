@@ -5,11 +5,11 @@ const { PatchNoteAddNodeComponent } = require("../../components/PatchNoteAddNode
 class PatchNoteAddNodePickStatusButton {
     static customId = "PatchNoteAddNodePickStatusButton";
 
-    static create( lang) {
+    static create(lang) {
 
         return new ButtonBuilder()
         .setCustomId(`${PatchNoteAddNodePickStatusButton.customId}`)
-        .setLabel(LocalisationManager.getString('patchnote_node_pick_status'), lang)
+        .setLabel(LocalisationManager.getString('patchnote_node_pick_status', lang))
         .setStyle(ButtonStyle.Secondary);
     }
 

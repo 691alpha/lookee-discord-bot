@@ -30,7 +30,7 @@ class TicketUtils {
         const setup = await Setups.findOne({ where: { guildId: guild.id } });
 
         if (!setup) {
-            console.log(`Setup not found for guild ${guild.id}`);
+            console.log(`Setup not found for guild ${guild.id}`); // TODO: locatisalitotbtbjbkn
             return;
         }
 
@@ -48,12 +48,17 @@ class TicketUtils {
      * @returns 
      */
     static async findTicketByChannel(channelId) {
-        return await Tickets.findOne({ where: { channelId } });
+        const result = await Tickets.findOne({ where: { channelId } });
+
+        if (!result) return // TODO: ...handle
+        
+        return result;
     }
 
     static searchTicketFail(interaction) {
+        // TODO: kinda useless function too except if used plenty of times
         return interaction.reply({
-            content: "No ticket found for this channel.",
+            content: "No ticket found for this channel.", // TODO: localisation
             flags: MessageFlags.Ephemeral
         });
     }
@@ -64,8 +69,9 @@ class TicketUtils {
      * @returns
      */
     static gettingMemberFail(interaction) {
+        // kinda useless fuunction as wellll
         return interaction.followUp({ 
-            content: 'Could not find a user with that ID or mention.', 
+            content: 'Could not find a user with that ID or mention.', // TODO: localisation
             flags: MessageFlags.Ephemeral,
         });
     }
@@ -87,11 +93,16 @@ class TicketUtils {
         const setup = await Setups.findOne({ where: { guildId: guild.id } });
 
         if (!setup) {
-            console.log(`Setup not found for guild ${guild.id}`);
+            console.log(`Setup not found for guild ${guild.id}`); // TODO: localisation
             return;
         }
 
         // Moves ticket to new category whilst keeping its permissions.
+        
+        // TODO: add comment : 
+        // We assume that the key blablabla newstatus+ticketsCategoryId = proper key
+        // USE AN ENUM if you can and have a lot of scenarios taht justifyu
+        // such a thing
         await channel.setParent(setup[`${newStatus}TicketsCategoryId`], { lockPermissions: false });
 
         await channel.permissionOverwrites.edit(guild.roles.everyone, {
@@ -130,15 +141,15 @@ class TicketUtils {
             }
         }
     
-        const description = [
+        const description = [ // TODO: localsiaiton
             `**Main Moderator**: ${mainMod.length > 0 ? mainMod.join(', ') : 'None'}`,
             `**Support Moderators**: ${supportMods.length > 0 ? supportMods.join(', ') : 'None'}`,
             `**User**: ${user.length > 0 ? user.join(', ') : 'None'}`
         ].join(' • ');
     
+        // TODO: rmv i suppose
         try {
             channel.setTopic(description);
-
         } catch (e) {
             console.log(e);
         }

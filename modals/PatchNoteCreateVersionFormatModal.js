@@ -1,12 +1,11 @@
 const { ActionRowBuilder, ModalBuilder, TextInputBuilder, TextInputStyle, MessageFlags } = require('discord.js');
 const { LocalisationManager } = require('../managers/LocalisationManager');
+const { PatchnoteUtils } = require('../utils/PatchnoteUtils');
+const { PatchNoteVersionFormatCreatedComponent } = require('../components/responses/PatchNoteVersionFormatCreatedComponent');
 const Formats = require('../database/models/Formats');
 const Versions = require('../database/models/Versions');
-const { PatchnoteUtils } = require('../utils/PatchnoteUtils');
-const { PatchNoteVersionFormatCreatedComponent } = require('../components/PatchNoteVersionFormatCreatedComponent');
 
 class PatchNoteCreateVersionFormatModal {
-    
     static customId = "PatchNoteCreateVersionFormatModal";
     
     static create(lang) {
@@ -63,7 +62,7 @@ class PatchNoteCreateVersionFormatModal {
             flags: [MessageFlags.Ephemeral, MessageFlags.IsComponentsV2]
         });
 
-        PatchnoteUtils.updateAllPatchNotePreviews(interaction);
+        PatchnoteUtils.updateAllPatchNotePreviews(interaction.guild.id, interaction.client, lang);
 
     }
 }

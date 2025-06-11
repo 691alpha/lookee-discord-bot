@@ -12,12 +12,10 @@ class PatchnoteUtils {
      * 'planned' or 'done' whilst keeping the button component
      * @param {*} interaction 
      */
-    static async updateAllPatchNotePreviews(interaction) {
+    static async updateAllPatchNotePreviews(guildId, client, lang) {
 
         const { PatchNoteButtonComponent } = require("../components/PatchNoteButtonComponent");
 
-        const guildId = interaction.guild.id;
-        const client = interaction.client;
         const previews = await PatchNotePreviews.findAll({ where: { guildId } });
 
         const nodes = await PatchNoteNodes.findAll({
@@ -32,8 +30,8 @@ class PatchnoteUtils {
                 const channel = await client.channels.fetch(preview.channelId);
                 const message = await channel.messages.fetch(preview.messageId);
 
-                const container = await PatchNoteComponent.create(nodes, interaction);
-                let outputButtons = await PatchNoteButtonComponent.create(interaction);
+                const container = await PatchNoteComponent.create(nodes, lang);
+                let outputButtons = await PatchNoteButtonComponent.create(lang);
                 await message.edit({ 
                     components: [container,outputButtons],
                     flags: MessageFlags.IsComponentsV2
@@ -47,12 +45,10 @@ class PatchnoteUtils {
 
     /**
      * Gets all nodes from the database with a status 'planned' or 'done'
-     * @param {string} guildId 
-     * @param {string} lang 
-     * @param {string} action 
-     * @returns 
+     * @param {string} guildId
+     * @returns the nodes or null if none found
      */
-    static async findAllNodes(guildId, lang, action) {
+    static async findAllNodes(guildId) {
         const nodes = await PatchNoteNodes.findAll({
             where: {
                 guildId: guildId,
@@ -60,12 +56,7 @@ class PatchnoteUtils {
             }
         });
 
-        if (!nodes || nodes.length === 0) {
-            throw new EmptyResultError(LocalisationManager.getString(
-                'patchnote_no_nodes', lang, {"action": action}
-            ));
-            
-        }
+        if (!nodes || nodes.length === 0) return null;
 
         return nodes;
     }
