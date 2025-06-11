@@ -37,6 +37,13 @@ class PatchNoteNodeSelectMenu {
                 lang
             ))
         }
+        if (type === "done" || type === "planned") {
+            menu.setMinValues(1).setMaxValues(Math.min(25, nodes.length));
+            menu.setPlaceholder(LocalisationManager.getString(
+                'patchnote_select_change_status_placeholder',
+                lang
+            ))
+        }
 
         return menu;
     }
@@ -48,7 +55,7 @@ class PatchNoteNodeSelectMenu {
         const type = params.type;
         const selectedIds = interaction.values;
         
-        const lang = interaction?.locale ?? 'en-US';
+        const lang = interaction.locale;
 
         // Checks what the menu should show depending on the type
         if (type === 'edit') {
@@ -83,6 +90,28 @@ class PatchNoteNodeSelectMenu {
                 content: LocalisationManager.getString(
                     'patchnote_node_deleted', 
                     lang).replace('{count}', selectedIds.length),
+                flags: MessageFlags.Ephemeral
+            });
+        }
+        if (type === 'done' || type === 'planned') {
+
+            await PatchNoteNodes.update(
+                { status: type },
+                { where: { id: selectedIds } }
+            );
+
+            PatchnoteUtils.updateAllPatchNotePreviews(
+                interaction.guild.id, 
+                interaction.client, 
+                lang
+            );
+
+            return interaction.reply({
+                content: LocalisationManager.getString(
+                    'patchnote_node_status_changed', 
+                    lang,
+                    {'type': type}
+                ),
                 flags: MessageFlags.Ephemeral
             });
         }

@@ -7,6 +7,7 @@ const { PatchNoteEditNodeButton } = require('../buttons/interactions/PatchNoteEd
 const { PatchNoteDeleteNodeButton } = require('../buttons/interactions/PatchNoteDeleteNodeButton');
 const { PatchNoteAddNodePickStatusButton } = require('../buttons/interactions/PatchNoteAddNodePickStatusButton');
 const { SetPatchNoteVersionButton } = require('../buttons/interactions/SetPatchNoteVersionButton');
+const { PatchNoteChangeStatusButton } = require('../buttons/interactions/PatchNoteChangeStatusButton');
 
 class PatchNoteButtonComponent {
     static async create(lang) {
@@ -17,6 +18,7 @@ class PatchNoteButtonComponent {
             PatchNotePublishButton.create(lang),
             PatchNoteEditNodeButton.create(lang),
             PatchNoteDeleteNodeButton.create(lang),
+            PatchNoteChangeStatusButton.create(lang),
             SetPatchNoteVersionButton.create(lang)
         ));
 

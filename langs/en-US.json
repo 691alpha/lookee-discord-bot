@@ -127,8 +127,12 @@
   "patchnote_edit_version_description_modal_label": "Input the new description.",
   "patchnote_version_description_updated": "Version description updated to: ",
   "no_entry_for_version_found": "No patchnote-version could be found.",
+  "patchnote_change_status_button_label": "Change Status",
   "setup_not_found": "No setup found for server: ",
   "description_label": "Description: ",
+  "patchnote_node_status_changed": "Node status changed to: ",
+  "patchnote_select_pick_status_prompt": "Select a node to change status for.",
+  "patchnote_pick_status_button_label": "{type}",
   
   "log_channel_updated": "Current channel set as log channel.",
   "log_channel_set_and_setup_created": "Current channel set as log channel and server setup created.",
