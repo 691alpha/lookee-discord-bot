@@ -3,6 +3,8 @@ const { ModalManager } = require("../managers/ModalManager");
 const { LocalisationManager } = require('../managers/LocalisationManager');
 const { PatchnoteUtils } = require("../utils/PatchnoteUtils");
 const PatchNoteNodes = require("../database/models/PatchNoteNodes");
+const { NoVariableResponseComponent } = require("../components/responses/NoVariableResponseComponent");
+const { VariableResponseComponent } = require("../components/responses/VariableResponseComponent");
 
 class PatchNoteEditNodeModal {
     static customId = `PatchNoteEditNodeModal`;
@@ -48,15 +50,33 @@ class PatchNoteEditNodeModal {
 
         const newContent = interaction.fields.getTextInputValue("patchNoteEditNodeModalDescription");
 
+        if(newContent === node.content) {
+            const container = NoVariableResponseComponent.create(
+                'patchnote_edit_no_change_made', 
+                lang
+            );
+
+            return interaction.reply({
+                components: [container],
+                flags: [MessageFlags.Ephemeral, MessageFlags.IsComponentsV2]
+            })
+        }
+
         node.content = newContent;
         await node.save();
 
         PatchnoteUtils.updateAllPatchNotePreviews(interaction.guild.id, interaction.client, lang);
 
-        await interaction.reply({
-            content: LocalisationManager.getString('patchnote_node_updated', lang),
-            flags: MessageFlags.Ephemeral
-        });
+        const container = VariableResponseComponent.create(
+            'patchnote_node_updated', 
+            lang,
+            {"newContent": newContent}
+        );
+
+        return await interaction.reply({
+            components: [container],
+            flags: [MessageFlags.Ephemeral, MessageFlags.IsComponentsV2]
+        })
     }
 }
 

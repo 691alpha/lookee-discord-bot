@@ -57,7 +57,8 @@ class PatchNotePublishButton {
         }
 
         const nodes = await PatchnoteUtils.findAllNodes(
-            interaction.guild.id
+            interaction.guild.id,
+            ['done', 'planned']
         );
 
         if(!nodes || nodes.length === 0) {

@@ -50,11 +50,11 @@ class PatchnoteUtils {
      * @param {string} guildId
      * @returns the nodes or null if none found
      */
-    static async findAllNodes(guildId) {
+    static async findAllNodes(guildId, status) {
         const nodes = await PatchNoteNodes.findAll({
             where: {
                 guildId: guildId,
-                status: ['done', 'planned']
+                status: status
             }
         });
 

@@ -5,44 +5,48 @@ const { LocalisationManager } = require("../managers/LocalisationManager");
 const { PatchnoteUtils } = require("../utils/PatchnoteUtils");
 const PatchNoteNodes = require("../database/models/PatchNoteNodes");
 const { NoVariableResponseComponent } = require("../components/responses/NoVariableResponseComponent");
+const { VariableResponseComponent } = require("../components/responses/VariableResponseComponent");
+const { PatchNoteNoNodesComponent } = require("../components/responses/PatchNoteNoNodesComponent");
 
 class PatchNoteNodeSelectMenu {
     static customId = "PatchNoteNodeSelectMenu";
 
-    static create(lang, nodes, type) {
+    static async create(lang, nodes, type, guildId) {
         
         const menu = new StringSelectMenuBuilder()
-        .setCustomId(`${PatchNoteNodeSelectMenu.customId}/type=${type}`)
-        .addOptions(
-            nodes.slice(0, 25).map(node => ({
+            .setCustomId(`${PatchNoteNodeSelectMenu.customId}/type=${type}`)
+
+        let effectiveNodes = nodes;
+
+        if (type === 'Done') {
+            effectiveNodes = await PatchnoteUtils.findAllNodes(guildId, ['planned']);
+        } else if (type === 'Planned') {
+            effectiveNodes = await PatchnoteUtils.findAllNodes(guildId, ['done']);
+        }
+
+        if (!effectiveNodes || effectiveNodes.length === 0) {
+            return null;
+        }
+
+        menu.addOptions(
+            effectiveNodes.slice(0, 25).map(node => ({
                 label: node.content.slice(0, 80),
                 value: node.id.toString(),
                 description: `${LocalisationManager.getString(
-                    'patchnote_node_status_description', 
-                    lang)}${node.status}`,
+                    'patchnote_node_status_description',
+                    lang)}${node.status}`
             }))
         );
 
-        if (type === "delete") {
-            menu.setMinValues(1).setMaxValues(Math.min(25, nodes.length));
-            menu.setPlaceholder(LocalisationManager.getString(
-                'patchnote_select_delete_placeholder',
-                lang
-            ))
-        } 
-        if (type === "edit") {
+        if (type === 'delete') {
+            menu.setMinValues(1).setMaxValues(Math.min(25, effectiveNodes.length));
+            menu.setPlaceholder(LocalisationManager.getString('patchnote_select_delete_placeholder', lang));
+        } else if (type === 'edit') {
             menu.setMinValues(1).setMaxValues(1);
-            menu.setPlaceholder(LocalisationManager.getString(
-                'patchnote_select_edit_placeholder',
-                lang
-            ))
-        }
-        if (type === "Done" || type === "Planned") {
-            menu.setMinValues(1).setMaxValues(Math.min(25, nodes.length));
-            menu.setPlaceholder(LocalisationManager.getString(
-                'patchnote_select_change_status_placeholder',
-                lang
-            ))
+            menu.setPlaceholder(LocalisationManager.getString('patchnote_select_edit_placeholder', lang));
+        } else if (type === 'Done' || type === 'Planned') {
+            menu.setMinValues(1).setMaxValues(Math.min(25, effectiveNodes.length));
+            menu.setPlaceholder(LocalisationManager.getString('patchnote_select_change_status_placeholder', lang));
         }
 
         return menu;
@@ -54,12 +58,12 @@ class PatchNoteNodeSelectMenu {
         const {params} = ModalManager.getCustomIdData(customId);
         const type = params.type;
         const selectedIds = interaction.values;
+        const selectedId = selectedIds[0];
         
         const lang = interaction.locale;
 
         // Checks what the menu should show depending on the type
         if (type === 'edit') {
-            const selectedId = selectedIds[0];
             const node = await PatchNoteNodes.findByPk(selectedId);
 
             if (!node) {
@@ -78,6 +82,19 @@ class PatchNoteNodeSelectMenu {
 
         }
         if (type === 'delete') {
+            const selectedNode = await PatchNoteNodes.findByPk(selectedId);
+
+            if(selectedIds.length === 1 && !selectedNode) {
+                const container = NoVariableResponseComponent.create(
+                    'patchnote_selected_node_alr_deleted', 
+                    lang
+                )
+
+                return interaction.reply({
+                    components: [container],
+                    flags: [MessageFlags.Ephemeral, MessageFlags.IsComponentsV2]
+                })
+            }
 
             await PatchNoteNodes.update(
                 { status: 'deleted' },
@@ -86,12 +103,16 @@ class PatchNoteNodeSelectMenu {
 
             PatchnoteUtils.updateAllPatchNotePreviews(interaction.guild.id, interaction.client, lang);
 
+            const container = VariableResponseComponent.create(
+                'patchnote_node_deleted', 
+                lang,
+                {"count": selectedIds.length}
+            );
+
             return interaction.reply({
-                content: LocalisationManager.getString(
-                    'patchnote_node_deleted', 
-                    lang).replace('{count}', selectedIds.length),
-                flags: MessageFlags.Ephemeral
-            });
+                components: [container],
+                flags: [MessageFlags.Ephemeral, MessageFlags.IsComponentsV2]
+            })
         }
         if (type === 'Done' || type === 'Planned') {
 

@@ -22,7 +22,7 @@ class PatchNoteDeleteNodeButton {
         
         await interaction.deferReply({ flags: MessageFlags.Ephemeral });
         
-        const nodes = await PatchnoteUtils.findAllNodes(interaction.guild.id, lang, 'delete');
+        const nodes = await PatchnoteUtils.findAllNodes(interaction.guild.id, ['done', 'planned']);
 
         if(!nodes || nodes.length === 0) {
             const container = await PatchNoteNoNodesComponent.create(lang, 'delete');
@@ -33,7 +33,12 @@ class PatchNoteDeleteNodeButton {
             });
         };
 
-        const selectMenu = PatchNoteNodeSelectMenu.create(lang, nodes, 'delete');
+        const selectMenu = await PatchNoteNodeSelectMenu.create(
+            lang, 
+            nodes, 
+            'delete', 
+            interaction.guild.id
+        );
 
         const row = new ActionRowBuilder().addComponents(selectMenu);
 

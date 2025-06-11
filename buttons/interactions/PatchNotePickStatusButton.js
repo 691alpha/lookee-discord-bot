@@ -26,8 +26,7 @@ class PatchNotePickStatusButton {
             
         const nodes = await PatchnoteUtils.findAllNodes(
             interaction.guild.id, 
-            lang, 
-            'pick status'
+            ['done', 'planned']
         );
 
         if(!nodes || nodes.length === 0) {
@@ -39,14 +38,18 @@ class PatchNotePickStatusButton {
             });
         };
 
-        const selectMenu = PatchNoteNodeSelectMenu.create(lang, nodes, type)
+        const selectMenu = await PatchNoteNodeSelectMenu.create(
+            lang, 
+            nodes, 
+            type, 
+            interaction.guild.id
+        );
 
         const row = new ActionRowBuilder().addComponents(selectMenu);
 
         return await interaction.editReply({
             content: LocalisationManager.getString('patchnote_select_pick_status_prompt', lang),
-            components: [row],
-            flags: MessageFlags.Ephemeral
+            components: [row]
         });
     }
 }

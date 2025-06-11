@@ -1,8 +1,5 @@
 const { ButtonBuilder, ButtonStyle, MessageFlags, ActionRowBuilder } = require("discord.js");
 const { LocalisationManager } = require("../../managers/LocalisationManager")
-const { PatchNoteNodeSelectMenu } = require("../../menus/PatchNoteNodeSelectMenu");
-const { PatchnoteUtils } = require("../../utils/PatchnoteUtils");
-const { PatchNoteNoNodesComponent } = require("../../components/responses/PatchNoteNoNodesComponent");
 const { PatchNoteEditVersionDescriptionModal } = require("../../modals/PatchNoteEditVersionDescriptionModal");
 
 class PatchNoteEditVersionDescriptionButton {

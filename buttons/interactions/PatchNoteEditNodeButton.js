@@ -20,7 +20,7 @@ class PatchNoteEditNodeButton {
         await interaction.deferReply({ flags: MessageFlags.Ephemeral });
         const lang = interaction.locale;
             
-        const nodes = await PatchnoteUtils.findAllNodes(interaction.guild.id, lang, 'edit');
+        const nodes = await PatchnoteUtils.findAllNodes(interaction.guild.id, ['done', 'planned']);
 
         if(!nodes || nodes.length === 0) {
             const container = await PatchNoteNoNodesComponent.create(lang, 'edit');
@@ -31,7 +31,12 @@ class PatchNoteEditNodeButton {
             });
         };
 
-        const selectMenu = PatchNoteNodeSelectMenu.create(lang, nodes, 'edit')
+        const selectMenu = await PatchNoteNodeSelectMenu.create(
+            lang, 
+            nodes, 
+            'edit', 
+            interaction.guild.id
+        )
 
         const row = new ActionRowBuilder().addComponents(selectMenu);
 
