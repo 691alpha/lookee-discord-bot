@@ -20,7 +20,7 @@ class PatchNoteEditVersionDescriptionButton {
     }
 
     static async onInteraction(interaction) {
-        const lang = interaction?.locale ?? 'en-US';
+        const lang = interaction.locale;
 
         return interaction.showModal(PatchNoteEditVersionDescriptionModal.create(lang));
     }

@@ -20,11 +20,11 @@ class PatchNoteChangeStatusButton {
         await interaction.deferReply({ flags: MessageFlags.Ephemeral });
         const lang = interaction.locale;
             
-        const container = PatchNotePickStatusComponent.create(lang, nodes, type)
+        const container = await PatchNotePickStatusComponent.create(lang)
 
         return await interaction.editReply({
             components: [container],
-            flags: MessageFlags.Ephemeral
+            flags: [MessageFlags.Ephemeral, MessageFlags.IsComponentsV2]
         });
     }
 }

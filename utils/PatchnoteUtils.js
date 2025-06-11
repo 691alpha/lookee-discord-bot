@@ -2,8 +2,6 @@ const { MessageFlags } = require("discord.js");
 const { PatchNoteComponent } = require("../components/PatchNoteComponent");
 const PatchNoteNodes = require("../database/models/PatchNoteNodes");
 const PatchNotePreviews = require("../database/models/PatchNotesPreviews");
-const { LocalisationManager } = require("../managers/LocalisationManager");
-const { EmptyResultError } = require("sequelize");
 
 class PatchnoteUtils {
     
@@ -14,7 +12,8 @@ class PatchnoteUtils {
      */
     static async updateAllPatchNotePreviews(guildId, client, lang) {
 
-        const { PatchNoteButtonComponent } = require("../components/PatchNoteButtonComponent");
+        const { PatchNoteButtonComponentOne } = require('../components/PatchNoteButtonComponentOne');
+        const { PatchNoteButtonComponentTwo } = require('../components/PatchNoteButtonComponentTwo');
 
         const previews = await PatchNotePreviews.findAll({ where: { guildId } });
 
@@ -31,9 +30,12 @@ class PatchnoteUtils {
                 const message = await channel.messages.fetch(preview.messageId);
 
                 const container = await PatchNoteComponent.create(nodes, lang);
-                let outputButtons = await PatchNoteButtonComponent.create(lang);
+
+                let outputButtonsOne = await PatchNoteButtonComponentOne.create(lang);
+                let outputButtonsTwo = await PatchNoteButtonComponentTwo.create(lang);
+
                 await message.edit({ 
-                    components: [container,outputButtons],
+                    components: [container, outputButtonsOne, outputButtonsTwo],
                     flags: MessageFlags.IsComponentsV2
                 });
             } catch (e) {

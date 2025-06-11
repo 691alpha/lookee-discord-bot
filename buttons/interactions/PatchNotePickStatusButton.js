@@ -10,7 +10,7 @@ class PatchNotePickStatusButton {
     static create(lang, type) {
 
         return new ButtonBuilder()
-            .setCustomId(PatchNotePickStatusButton.customId)
+            .setCustomId(`${PatchNotePickStatusButton.customId}:${type}`)
             .setLabel(LocalisationManager.getString(
                 'patchnote_pick_status_button_label', 
                 lang,
@@ -21,6 +21,7 @@ class PatchNotePickStatusButton {
 
     static async onInteraction(interaction) {
         await interaction.deferReply({ flags: MessageFlags.Ephemeral });
+        const [prefix, type] = interaction.customId.split(":");
         const lang = interaction.locale;
             
         const nodes = await PatchnoteUtils.findAllNodes(

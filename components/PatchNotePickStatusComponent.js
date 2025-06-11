@@ -6,8 +6,8 @@ class PatchNotePickStatusComponent {
         const container = new ContainerBuilder();
 
         container.addActionRowComponents(row => row.addComponents(
-            PatchNotePickStatusButton.create(lang, 'done'),
-            PatchNotePickStatusButton.create(lang, 'planned')
+            PatchNotePickStatusButton.create(lang, 'Planned'),
+            PatchNotePickStatusButton.create(lang, 'Done')
         ));
 
         return container;

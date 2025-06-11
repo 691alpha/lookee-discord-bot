@@ -37,7 +37,7 @@ class PatchNoteNodeSelectMenu {
                 lang
             ))
         }
-        if (type === "done" || type === "planned") {
+        if (type === "Done" || type === "Planned") {
             menu.setMinValues(1).setMaxValues(Math.min(25, nodes.length));
             menu.setPlaceholder(LocalisationManager.getString(
                 'patchnote_select_change_status_placeholder',
@@ -93,7 +93,7 @@ class PatchNoteNodeSelectMenu {
                 flags: MessageFlags.Ephemeral
             });
         }
-        if (type === 'done' || type === 'planned') {
+        if (type === 'Done' || type === 'Planned') {
 
             await PatchNoteNodes.update(
                 { status: type },
@@ -111,7 +111,7 @@ class PatchNoteNodeSelectMenu {
                     'patchnote_node_status_changed', 
                     lang,
                     {'type': type}
-                ),
+                ).replace('{count}', selectedIds.length),
                 flags: MessageFlags.Ephemeral
             });
         }

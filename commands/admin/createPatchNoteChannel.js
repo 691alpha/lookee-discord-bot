@@ -1,6 +1,7 @@
 const {SlashCommandBuilder, MessageFlags} = require('discord.js');
 const { PatchNoteComponent } = require('../../components/PatchNoteComponent');
-const { PatchNoteButtonComponent } = require('../../components/PatchNoteButtonComponent');
+const { PatchNoteButtonComponentOne } = require('../../components/PatchNoteButtonComponentOne');
+const { PatchNoteButtonComponentTwo } = require('../../components/PatchNoteButtonComponentTwo');
 const { LocalisationManager } = require("../../managers/LocalisationManager");
 const PatchNoteNodes = require('../../database/models/PatchNoteNodes');
 const PatchNotePreviews = require('../../database/models/PatchNotesPreviews');
@@ -18,7 +19,7 @@ module.exports = {
         //     lang
         // )),
     async execute(interaction) {
-        const lang = interaction?.locale ?? 'en-US';
+        const lang = interaction.locale;
 
         const nodes = await PatchNoteNodes.findAll({
             where: {
@@ -28,10 +29,11 @@ module.exports = {
         });
 
         let outputContainer = await PatchNoteComponent.create(nodes, lang);
-        let outputButtons = await PatchNoteButtonComponent.create(lang);
+        let outputButtonsOne = await PatchNoteButtonComponentOne.create(lang);
+        let outputButtonsTwo = await PatchNoteButtonComponentTwo.create(lang);
 
         const sentMessage = await interaction.channel.send({
-            components: [outputContainer, outputButtons],
+            components: [outputContainer, outputButtonsOne, outputButtonsTwo],
             flags: MessageFlags.IsComponentsV2
         });
 

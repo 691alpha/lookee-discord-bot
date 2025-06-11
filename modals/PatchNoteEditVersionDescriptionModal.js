@@ -34,7 +34,7 @@ class PatchNoteEditVersionDescriptionModal {
 	}
     
     static async onSubmit(interaction) {
-        const lang = interaction?.locale ?? 'en-US';
+        const lang = interaction.locale;
         
         await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 
@@ -51,7 +51,10 @@ class PatchNoteEditVersionDescriptionModal {
             { where: { id: latestEntry.id } }
         );
 
-        const container = await PatchNoteVersionDescriptionEditedComponent.create(lang, newDescription)
+        const container = await PatchNoteVersionDescriptionEditedComponent.create(
+            lang, 
+            newDescription
+        )
 
         await interaction.editReply({
             components: [container],

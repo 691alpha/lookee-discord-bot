@@ -130,7 +130,7 @@
   "patchnote_change_status_button_label": "Change Status",
   "setup_not_found": "No setup found for server: ",
   "description_label": "Description: ",
-  "patchnote_node_status_changed": "Node status changed to: ",
+  "patchnote_node_status_changed": "Node status of {count} node(s) changed to: {type}",
   "patchnote_select_pick_status_prompt": "Select a node to change status for.",
   "patchnote_pick_status_button_label": "{type}",
   
