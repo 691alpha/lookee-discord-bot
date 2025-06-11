@@ -1,6 +1,7 @@
 const { ContainerBuilder } = require('discord.js');
 const { SetPatchNoteVersionFormatButton } = require('../buttons/interactions/SetPatchNoteVersionFormatButton');
 const { PatchNoteIncreaseVersionButton } = require('../buttons/interactions/PatchNoteIncreaseVersionButton');
+const { PatchNoteEditVersionDescriptionButton } = require('../buttons/interactions/PatchNoteEditVersionDescriptionButton');
 
 class PatchNoteVersionButtonComponent {
     static async create(lang) {
@@ -8,7 +9,8 @@ class PatchNoteVersionButtonComponent {
 
         container.addActionRowComponents(row => row.addComponents(
             PatchNoteIncreaseVersionButton.create(lang),
-            SetPatchNoteVersionFormatButton.create(lang)
+            SetPatchNoteVersionFormatButton.create(lang),
+            PatchNoteEditVersionDescriptionButton.create(lang)
         ));
 
         return container;

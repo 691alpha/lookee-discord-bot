@@ -30,8 +30,8 @@ class TicketUtils {
         const setup = await Setups.findOne({ where: { guildId: guild.id } });
 
         if (!setup) {
-            console.log(`Setup not found for guild ${guild.id}`); // TODO: locatisalitotbtbjbkn
-            return;
+            return console.log(`
+                ${LocalisationManager.getString('setup_not_found', lang)}${guild.id}`);
         }
 
         // Moves ticket to new category whilst keeping its permissions.
@@ -50,15 +50,15 @@ class TicketUtils {
     static async findTicketByChannel(channelId) {
         const result = await Tickets.findOne({ where: { channelId } });
 
-        if (!result) return // TODO: ...handle
+        if (!result) return console.log(`
+                ${LocalisationManager.getString('ticket_not_found', lang)}`);
         
         return result;
     }
 
     static searchTicketFail(interaction) {
-        // TODO: kinda useless function too except if used plenty of times
         return interaction.reply({
-            content: "No ticket found for this channel.", // TODO: localisation
+            content: LocalisationManager.getString('ticket_not_found', lang),
             flags: MessageFlags.Ephemeral
         });
     }
@@ -69,9 +69,8 @@ class TicketUtils {
      * @returns
      */
     static gettingMemberFail(interaction) {
-        // kinda useless fuunction as wellll
         return interaction.followUp({ 
-            content: 'Could not find a user with that ID or mention.', // TODO: localisation
+            content: LocalisationManager.getString('could_not_find_user_with_id', lang),
             flags: MessageFlags.Ephemeral,
         });
     }
@@ -93,66 +92,20 @@ class TicketUtils {
         const setup = await Setups.findOne({ where: { guildId: guild.id } });
 
         if (!setup) {
-            console.log(`Setup not found for guild ${guild.id}`); // TODO: localisation
-            return;
+            return console.log(`
+                ${LocalisationManager.getString('setup_not_found', lang)}${guild.id}`);
         }
 
         // Moves ticket to new category whilst keeping its permissions.
-        
-        // TODO: add comment : 
-        // We assume that the key blablabla newstatus+ticketsCategoryId = proper key
-        // USE AN ENUM if you can and have a lot of scenarios taht justifyu
-        // such a thing
-        await channel.setParent(setup[`${newStatus}TicketsCategoryId`], { lockPermissions: false });
+        // We assume that all keys are properly named with: status + 'TicketsCategoryId'
+        await channel.setParent(
+            setup[`${newStatus}TicketsCategoryId`], 
+            { lockPermissions: false }
+        );
 
         await channel.permissionOverwrites.edit(guild.roles.everyone, {
             ViewChannel: false
         });
-    }
-
-    /**
-     * Updates the channel's description to include the names of all current channel members
-     * @param {*} channel 
-     * @param {*} ticket 
-     */
-    static async updateChannelDescription(channel, ticket) {
-        const overwrites = channel.permissionOverwrites.cache;
-
-        const mainModeratorId = ticket.moderator;
-        const supportMods = [];
-        let mainMod = [];
-        const user = [];
-    
-        for (const [id, overwrite] of overwrites.entries()) {
-
-            if (id === channel.guild.roles.everyone.id) continue;
-    
-            const isUser = overwrite.type === 1;
-            if (!isUser) continue;
-    
-            const hasManageMessages = overwrite.allow.has(PermissionsBitField.Flags.ManageMessages);
-    
-            if (id === mainModeratorId) {
-                mainMod.push(`<@${id}>`);
-            } else if (hasManageMessages) {
-                supportMods.push(`<@${id}>`);
-            } else {
-                user.push(`<@${id}>`);
-            }
-        }
-    
-        const description = [ // TODO: localsiaiton
-            `**Main Moderator**: ${mainMod.length > 0 ? mainMod.join(', ') : 'None'}`,
-            `**Support Moderators**: ${supportMods.length > 0 ? supportMods.join(', ') : 'None'}`,
-            `**User**: ${user.length > 0 ? user.join(', ') : 'None'}`
-        ].join(' • ');
-    
-        // TODO: rmv i suppose
-        try {
-            channel.setTopic(description);
-        } catch (e) {
-            console.log(e);
-        }
     }
 }
 

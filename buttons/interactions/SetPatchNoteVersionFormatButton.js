@@ -1,7 +1,9 @@
 const { ButtonBuilder, ButtonStyle, MessageFlags } = require("discord.js");
 const { LocalisationManager } = require("../../managers/LocalisationManager");
+const { PatchNoteCreateVersionFormatModal } = require('../../modals/PatchNoteCreateVersionFormatModal');
+const { format } = require("mysql2");
 const Formats = require('../../database/models/Formats');
-const { PatchNoteCreateVersionFormatModal } = require('../../modals/PatchNoteCreateVersionFormatModal')
+const { NoVariableResponseComponent } = require("../../components/responses/NoVariableResponseComponent");
 
 class SetPatchNoteVersionFormatButton {
     static customId = "SetPatchNoteVersionFormatButton";
@@ -18,9 +20,27 @@ class SetPatchNoteVersionFormatButton {
 
     static async onInteraction(interaction) {
 
-        const lang = interaction?.locale ?? 'en-US';
+        const lang = interaction.locale;
 
-        return interaction.showModal(PatchNoteCreateVersionFormatModal.create(lang));
+        const latestFormat= await Formats.findOne({
+            order: [['createdAt', 'DESC']],
+        });
+
+        if(!latestFormat || latestFormat.length === 0) {
+            
+            
+            return interaction.reply({
+                components: [
+                    NoVariableResponseComponent.create('latest_format_not_found', lang)
+                ],
+                flags: [MessageFlags.Ephemeral, MessageFlags.IsComponentsV2]
+            })
+        }
+
+        return interaction.showModal(PatchNoteCreateVersionFormatModal.create(
+            latestFormat.value, 
+            lang
+        ));
     }
 }
 

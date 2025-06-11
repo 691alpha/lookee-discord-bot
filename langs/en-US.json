@@ -40,6 +40,7 @@
   "ticket_created_channel_close": "Click the button if you want to close the ticket.",
   "ticket_close": "Close Ticket",
   "ticket_not_found": "The current ticket could not be found.",
+  "could_not_find_user_with_id": "Could not find a user with that ID or mention.",
   "selected_members_not_found": "Selected member(s) could not be found.",
   "members_not_found": "Member(s) could not be found.",
   "selected_user_not_found": "User {userId} could not be found.",
@@ -52,6 +53,10 @@
   "ticket_mod_description_command": "Sends buttons for all Moderator Ticket options.",
   "categories_undefined": "Ticket categories undefined. Define with `/create_ticket_categories.`",
   "reopen_ticket_label_button": "Re-open Ticket",
+  "added_moderator": "Added moderator: ",
+  "added_support_moderator": "Added support moderator: ",
+  "added_user": "Added user: ",
+  "none_label": "None",
   
   "pick_moderator_action": "Click on the Button with the Moderator Action you want to execute.",
   "add_user_ticket": "Add User",
@@ -116,6 +121,19 @@
   "patchnote_version_patch_label": "Patch",
   "patchnote_version_major_description": "Major changes including multiple new features or additions.",
   "patchnote_version_feature_description": "A group of patches leading to a new functionality.",
-  "patchnote_version_patch_description": "A modification or bug-fix to\n the server, not worth a full update of its own."
+  "patchnote_version_patch_description": "A modification or bug-fix to\n the server, not worth a full update of its own.",
+  "edit_version_description_patchnote_node_button": "Edit Description",
+  "patchnote_edit_version_description_modal_title": "Edit description of the patchnote versions",
+  "patchnote_edit_version_description_modal_label": "Input the new description.",
+  "patchnote_version_description_updated": "Version description updated to: ",
+  "no_entry_for_version_found": "No patchnote-version could be found.",
+  "setup_not_found": "No setup found for server: ",
+  "description_label": "Description: ",
+  
+  "log_channel_updated": "Current channel set as log channel.",
+  "log_channel_set_and_setup_created": "Current channel set as log channel and server setup created.",
 
+
+  "db_default_version_format": "{major}.{feature}.{patch}",
+  "db_default_version_desc": "This is a very good version." 
 }

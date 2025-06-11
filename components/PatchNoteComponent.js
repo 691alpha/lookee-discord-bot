@@ -78,10 +78,8 @@ class PatchNoteComponent {
                     .replace('{feature}', version.feature_number)
                     .replace('{patch}', version.patch_number);
 
-            }
-
-            if (format?.format) {
-                formattedVersion = format.format
+            } else if (format.value) {
+                formattedVersion = format.value
                     .replace('{major}', version.major_number)
                     .replace('{feature}', version.feature_number)
                     .replace('{patch}', version.patch_number);

@@ -3,6 +3,7 @@ const { LocalisationManager } = require("../managers/LocalisationManager");
 const { PatchnoteUtils } = require("../utils/PatchnoteUtils");
 const { PatchNoteVersionCreatedComponent } = require("../components/responses/PatchNoteVersionCreatedComponent");
 const Versions = require("../database/models/Versions");
+const { NoVariableResponseComponent } = require("../components/responses/NoVariableResponseComponent");
 
 class PatchNoteSelectVersionValueMenu {
     static customId = "PatchNoteSelectVersionValueMenu";
@@ -50,23 +51,15 @@ class PatchNoteSelectVersionValueMenu {
         });
 
         if(!latestEntry) {
-            const result = await Versions.create({
-                id: await db.getNextId('versions'),
-                formatId: '0',
-                major_number: '0',
-                feature_number: '0',
-                patch_number: '0',
-                description: 'First Entry' // TODO: put the actual input nah? add a set current version desc cbutton
-            });
+            const container = NoVariableResponseComponent.create(
+                'no_entry_for_version_found', 
+                lang
+            );
 
-            const container = await PatchNoteVersionCreatedComponent.create(lang, result);
-
-            interaction.reply({
+            return interaction.reply({
                 components: [container],
                 flags: [MessageFlags.Ephemeral, MessageFlags.IsComponentsV2]
             });
-
-            return;
         }
  
         latestEntry[selectedValue] = (parseInt(latestEntry[selectedValue]) + 1).toString();

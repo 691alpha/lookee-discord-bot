@@ -31,7 +31,7 @@ class PatchNotePublishButton {
         const setup = await Setups.findOne({ where: { guildId: interaction.guild.id } });
 
         if (!setup) {
-            const container = await NoVariableResponseComponent.create(
+            const container = NoVariableResponseComponent.create(
                 'patchnote_no_setup_found', 
                 lang
             );
@@ -45,7 +45,7 @@ class PatchNotePublishButton {
         announcementChannel = client.channels.cache.get(setup.announcementChannelId);
 
         if (!announcementChannel) {
-            const container = await NoVariableResponseComponent.create(
+            const container = NoVariableResponseComponent.create(
                 'patchnote_no_announcement_channel_found', 
                 lang
             );
@@ -94,27 +94,24 @@ class PatchNotePublishButton {
         } 
 
         const latestVersion = await Versions.findOne({ order: [['createdAt', 'DESC']] });
-
-        if(!latestVersion.formatId) {
-            await Formats.create({
-                id: await interaction.client.db.getNextId('formats'),
-                format: '{major}.{feature}.{patch}'
-            })
-        }
-
+        
+        if(!latestVersion || !latestVersion.id) {
+            return interaction.reply("not good no version could be found schlecht");
+        } 
+        
         const latestFormat = await Formats.findOne({ order: [['createdAt', 'DESC']] });
 
+
         await Versions.create({
-            id: await interaction.client.db.getNextId('versions'),
+            id: await client.db.getNextId('versions'),
             formatId: latestVersion?.formatId ?? latestFormat.id,
             major_number: latestVersion?.major_number ?? '0',
             feature_number: latestVersion?.feature_number ?? '0',
             patch_number: (parseInt(latestVersion?.patch_number ?? '0') + 1).toString(),
-            // LocalisationManager not used since it's a value that is the same for everyone
-            description: 'Auto increment after publish'
+            description: LocalisationManager.getString("db_default_version_desc", lang)
         });
 
-        PatchnoteUtils.updateAllPatchNotePreviews(interaction.guild.id, interaction.client, lang);
+        PatchnoteUtils.updateAllPatchNotePreviews(interaction.guild.id, client, lang);
         
         await interaction.editReply({
             components: [containerPublished],
@@ -122,7 +119,7 @@ class PatchNotePublishButton {
         })
     
         if(!announcementChannel) {
-            const containerNoAnnouncement = await NoVariableResponseComponent.create(
+            const containerNoAnnouncement = NoVariableResponseComponent.create(
                 'patchnote_no_announcement_channel_found', 
                 lang
             );

@@ -8,19 +8,26 @@ const Versions = require('../database/models/Versions');
 class PatchNoteCreateVersionFormatModal {
     static customId = "PatchNoteCreateVersionFormatModal";
     
-    static create(lang) {
+    static create(formatValue, lang) {
         
         const modal = new ModalBuilder()
-        .setCustomId(PatchNoteCreateVersionFormatModal.customId)
-        .setTitle(LocalisationManager.getString('patchnote_create_version_format', lang));
+            .setCustomId(PatchNoteCreateVersionFormatModal.customId)
+            .setTitle(LocalisationManager.getString(
+                'patchnote_create_version_format', 
+                lang
+            ));
 		
         const input = new TextInputBuilder()
-        .setCustomId(`patchNoteVersionFormatInput`)
-        .setLabel(LocalisationManager.getString('patchnote_create_version_format_label', lang))
-        .setStyle(TextInputStyle.Paragraph)
-        .setMinLength(5)
-        .setMaxLength(1000)
-        .setRequired(true);
+            .setCustomId(`patchNoteVersionFormatInput`)
+            .setLabel(LocalisationManager.getString(
+                'patchnote_create_version_format_label', 
+                lang
+            ))
+            .setStyle(TextInputStyle.Paragraph)
+            .setMinLength(0)
+            .setMaxLength(50)
+            .setValue(formatValue ?? "")
+            .setRequired(true);
             
         modal.addComponents(new ActionRowBuilder().addComponents(input));
         
@@ -37,23 +44,19 @@ class PatchNoteCreateVersionFormatModal {
 
         const newContent = interaction.fields.getTextInputValue("patchNoteVersionFormatInput");
 
-        await Formats.create({
+        const createdFormat = await Formats.create({
             id: await db.getNextId('formats'),
-            format: newContent
+            value: newContent
         });
 
-        const latestEntry = await Versions.findOne({
-            order: [['createdAt', 'DESC']],
+        await Versions.create({
+            id: await db.getNextId('versions'),
+            formatId: createdFormat.id,
+            major_number: 0,
+            feature_number: 0,
+            patch_number: 0,
+            description: 'Initial version'
         });
-
-        const latestFormat = await Formats.findOne({ 
-            order: [['createdAt', 'DESC']] 
-        });
-
-        await Versions.update(
-            { formatId: latestFormat.id },
-            { where: { id: latestEntry.id } }
-        );
 
         const container = await PatchNoteVersionFormatCreatedComponent.create(lang, newContent)
 

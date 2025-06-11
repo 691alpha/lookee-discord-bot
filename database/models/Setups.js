@@ -30,6 +30,10 @@ module.exports = class Setups extends Model {
                 type: Sequelize.STRING,
                 allowNull: true,
             },
+            logChannelId: {
+                type: Sequelize.STRING,
+                allowNull: true,
+            },
             defaultLang: {
                 type: Sequelize.STRING,
                 allowNull: false,

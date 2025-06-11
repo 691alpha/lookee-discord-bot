@@ -107,7 +107,7 @@ module.exports = class ChannelUtils {
         await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 
         if(!categoryId) {
-            const container = await NoVariableResponseComponent.create(
+            const container = NoVariableResponseComponent.create(
                 'categories_undefined', 
                 lang
             )

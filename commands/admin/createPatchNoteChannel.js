@@ -66,7 +66,7 @@ module.exports = {
             );
         }
 
-        const container = await NoVariableResponseComponent.create(
+        const container = NoVariableResponseComponent.create(
             'patchnote_edit_msg_sent', 
             lang
         );

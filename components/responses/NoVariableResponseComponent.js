@@ -2,7 +2,7 @@ const { ContainerBuilder, TextDisplayBuilder } = require('discord.js');
 const { LocalisationManager } = require('../../managers/LocalisationManager');
 
 class NoVariableResponseComponent {
-    static async create(placeholder, lang) {
+    static create(placeholder, lang) {
 
         const container = new ContainerBuilder();
 

@@ -25,11 +25,11 @@ module.exports = {
 
         const { db } = interaction.client;
 
-        const format = interaction.options.addStringOption('input');
+        const newFormatValue = interaction.options.addStringOption('input');
 
         await Formats.create({
             id: await db.getNextId('formats'),
-            format: format
+            value: newFormatValue
         });
 
         await interaction.reply({

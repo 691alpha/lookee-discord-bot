@@ -33,6 +33,7 @@ module.exports = {
                 unassignedTicketsCategoryId: null,
                 closedTicketsCategoryId: null,
                 announcementChannelId: interaction.channel.id,
+                logChannelId: null,
                 defaultLang: 'en-US',
             });
         }

@@ -46,6 +46,7 @@ module.exports = {
                 unassignedTicketsCategoryId: unassignedCategory.id,
                 closedTicketsCategoryId: closedCategory.id,
                 announcementChannelId: null,
+                logChannelId: null,
                 defaultLang: 'en-US',
             });
             await interaction.reply({

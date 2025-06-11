@@ -8,8 +8,8 @@ const TicketModel = require('./models/Tickets.js');
 const PatchNote = require('./models/PatchNotes.js');
 const PatchNoteNode = require('./models/PatchNoteNodes.js');
 const PatchNotePreview = require('./models/PatchNotesPreviews.js');
-const Format = require('./models/Formats.js');
-const Version = require('./models/Versions.js');
+const Formats = require('./models/Formats.js');
+const Versions = require('./models/Versions.js');
 // const Message = require('./models/Messages.js');
 
 dotenv.config();
@@ -41,16 +41,16 @@ module.exports = class Database {
                 this.initConnection(PatchNote);
                 this.initConnection(PatchNoteNode);
                 this.initConnection(PatchNotePreview);
-                this.initConnection(Format);
-                this.initConnection(Version);
+                this.initConnection(Formats);
+                this.initConnection(Versions);
                 // this.initConnection(Message);
                 
                 // Foreign keys
-                // Version.hasOne(Format, {foreignKey: 'formatId'});
-                // Format.belongsTo(Version, {foreignKey: 'formatId'})
+                Formats.hasMany(Versions, {foreignKey: 'formatId'});
+                Versions.belongsTo(Formats, {foreignKey: 'formatId'});
 
-                // PatchNoteNode.hasOne(PatchNote, {foreignKey: 'patchnoteId'});
-                // PatchNote.belongsToMany(PatchNoteNode, {foreignKey: 'patchnoteId'});
+                PatchNote.hasMany(PatchNoteNode, {foreignKey: 'patchnoteId'});
+                PatchNoteNode.belongsTo(PatchNote, {foreignKey: 'patchnoteId'});
 
                 // TicketModel.hasMany(Message, {foreignKey: 'ticketMessage'});
                 // Message.belongsTo(TicketModel, {foreignKey: 'ticketId'});
@@ -59,6 +59,7 @@ module.exports = class Database {
                 console.log(this.force ? `Drop and re-sync db.` : "Sync db.")
 
                 this.initAutoIncrement();
+                this.initDefaultPatchNoteVersion();
             }).catch((e) => console.log(e));
         } catch (error) {
             console.error(LocalisationManager.getString('database_connection_fail', 'en-US'), error);
@@ -97,5 +98,35 @@ module.exports = class Database {
                 messages: 0
             });
         });
+    }
+
+    async initDefaultPatchNoteVersion() {
+        const foundFormats = await Formats.findAll();
+        const foundVersions = await Versions.findAll();
+        let format;
+
+        if (foundFormats.length == 0) {
+            format = await Formats.create({
+                id: await this.getNextId('formats'),
+                value: LocalisationManager.getString("db_default_version_format")
+            });
+            console.log("Default Format created.");
+        } else {
+            format = await Formats.findOne({
+                order: [['createdAt', 'DESC']],
+            })
+        }
+
+        if (foundVersions.length == 0) {
+            await Versions.create({
+                id: await this.getNextId('versions'),
+                formatId: format.id,
+                major_number: 0,
+                feature_number: 0,
+                patch_number: 0,
+                description: LocalisationManager.getString("db_default_version_desc")
+            });
+            console.log("Default Version created.");
+        }
     }
 }

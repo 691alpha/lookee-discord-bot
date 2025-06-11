@@ -8,20 +8,16 @@ module.exports = class Versions extends Model {
                 allowNull: false,
                 primaryKey: true,
             },
-            // formatId: {
-            //     type: Sequelize.STRING,
-            //     allowNull: true,
-            // },
             major_number: {
-                type: Sequelize.STRING,
+                type: Sequelize.INTEGER,
                 allowNull: false,
             },
             feature_number: {
-                type: Sequelize.STRING,
+                type: Sequelize.INTEGER,
                 allowNull: false,
             },
             patch_number: {
-                type: Sequelize.STRING,
+                type: Sequelize.INTEGER,
                 allowNull: false,
             },
             description: {

@@ -8,9 +8,9 @@ module.exports = class Formats extends Model {
                 allowNull: false,
                 primaryKey: true,
             },
-            format: {
+            value: {
                 type: Sequelize.STRING,
-                allowNull: true,
+                allowNull: false,
             }
         }, {
             sequelize,
