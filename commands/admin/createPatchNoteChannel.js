@@ -73,7 +73,7 @@ module.exports = {
 
         interaction.reply({
             components: [container],
-            flags: MessageFlags.Ephemeral
+            flags: [MessageFlags.Ephemeral, MessageFlags.IsComponentsV2]
         })
     },
 };

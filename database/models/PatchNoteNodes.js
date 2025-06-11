@@ -9,10 +9,10 @@ module.exports = class PatchNoteNodes extends Model {
                 allowNull: false,
                 primaryKey: true,
             },
-            patchNoteId: {
-                type: Sequelize.STRING, // Foreign keys: TODO:TODO:TODO:TODO:
-                allowNull: true,
-            },
+            // patchNoteId: {
+            //     type: Sequelize.STRING,
+            //     allowNull: true,
+            // },
             status: {
                 type: Sequelize.ENUM('planned', 'done', 'published', 'deleted'),
                 allowNull: false,

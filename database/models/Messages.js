@@ -13,10 +13,10 @@ Messages.init(
             type: DataTypes.INTEGER,
             allowNull: false,
         },
-        ticket: {
-            type: DataTypes.STRING,
-            allowNull: false,
-        },
+        // ticket: {
+        //     type: DataTypes.STRING,
+        //     allowNull: false,
+        // },
         content: {
             type: DataTypes.STRING,
             allowNull: false,
