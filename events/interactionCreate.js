@@ -8,7 +8,7 @@ module.exports = {
 	name: Events.InteractionCreate,
 	async execute(interaction) {
 		// Checks for the type of interaction and calls according manager
-		const lang = interaction?.locale ?? 'en-US';
+		const lang = interaction.locale;
 		
 		try {
 			if (interaction.isModalSubmit()) await ModalManager.dispatch(interaction);

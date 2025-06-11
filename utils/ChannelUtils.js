@@ -65,7 +65,7 @@ module.exports = class ChannelUtils {
      */
     static async sendTicketCreationSuccess(interaction, tempChannel) {
         let { client } = interaction;        
-        const lang = interaction?.locale ?? 'en-US';
+        const lang = interaction.locale;
 
         let outputContainer = await TicketCreationSuccessComponent.create(
             tempChannel, 

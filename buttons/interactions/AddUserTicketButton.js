@@ -14,7 +14,7 @@ class AddUserTicketButton {
     }
 
     static async onInteraction(interaction) {
-        const lang = interaction?.locale ?? 'en-US';
+        const lang = interaction.locale;
 
         let outputContainer = await PickUserComponent.create(lang);
 		await interaction.reply({

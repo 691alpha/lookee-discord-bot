@@ -31,7 +31,7 @@ class PatchNoteEditNodeModal {
     }
     static async onSubmit(interaction) {
 
-        const lang = interaction?.locale ?? 'en-US';
+        const lang = interaction.locale;
 
         const customId = interaction.customId;
         const {params} = ModalManager.getCustomIdData(customId);

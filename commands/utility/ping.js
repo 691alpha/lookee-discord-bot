@@ -6,7 +6,7 @@ module.exports = {
 		.setName('ping')
 		.setDescription('Replies with Pong!'),
 	async execute(interaction) {
-		const lang = interaction?.locale ?? 'en-US';
+		const lang = interaction.locale;
 
 		let outputContainer = await AssignModeratorComponent.create(lang);
 		

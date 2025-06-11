@@ -43,7 +43,7 @@ class PatchNoteSelectVersionValueMenu {
 
     static async onInteraction(interaction) {
         const { db } = interaction.client;
-        const lang = interaction?.locale ?? 'en-US';
+        const lang = interaction.locale;
         const selectedValue = interaction.values[0];
 
         const latestEntry = await Versions.findOne({

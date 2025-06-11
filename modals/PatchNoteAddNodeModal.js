@@ -31,7 +31,7 @@ class PatchNoteAddNodeModal {
         
         const { PatchnoteUtils } = require('../utils/PatchnoteUtils');
 		const { db } = interaction.client;
-        const lang = interaction?.locale ?? 'en-US';
+        const lang = interaction.locale;
 
         await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 

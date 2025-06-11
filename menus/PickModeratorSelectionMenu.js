@@ -16,7 +16,7 @@ class PickModeratorSelectionMenu {
     static async onInteraction(interaction) {
 
         const ticket = await TicketUtils.findTicketByChannel(interaction.channel.id);
-        const lang = interaction?.locale ?? 'en-US';
+        const lang = interaction.locale;
         if (!ticket) return TicketUtils.searchTicketFail(interaction);
 
         let selectedMember = interaction.values.filter(id => interaction.guild.members.cache.has(id));

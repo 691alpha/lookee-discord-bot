@@ -44,7 +44,7 @@ class HelpTicketModal {
 		const guildId = interaction.guildId.toString(); 
 		const setup = await Setups.findOne({ where: { guildId } });
 		const ticketId = await db.getNextId('tickets');
-        const lang = interaction?.locale ?? 'en-US';
+        const lang = interaction.locale;
         
 		const createdTicketChannel = await ChannelUtils.runCreateTicketProcess(
 			interaction,

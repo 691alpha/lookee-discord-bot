@@ -15,7 +15,7 @@ class PatchNoteAddNodePickStatusButton {
 
     static async onInteraction(interaction) {
 
-        const lang = interaction?.locale ?? 'en-US';
+        const lang = interaction.locale;
 
         let outputContainer = await PatchNoteAddNodeComponent.create(lang);
 

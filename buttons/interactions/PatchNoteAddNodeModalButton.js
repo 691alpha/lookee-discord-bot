@@ -17,7 +17,7 @@ class PatchNoteAddNodeModalButton {
 
         const status = interaction.component.label.toLowerCase(); 
 
-        const lang = interaction?.locale ?? 'en-US';
+        const lang = interaction.locale;
 
         PatchNoteAddNodeModal.pendingStatuses.set(interaction.user.id, status);
 

@@ -36,7 +36,7 @@ class PatchNoteCreateVersionFormatModal {
     
     static async onSubmit(interaction) {
         
-        const lang = interaction?.locale ?? 'en-US';
+        const lang = interaction.locale;
         
 		const { db } = interaction.client;
         

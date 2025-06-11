@@ -24,7 +24,7 @@ class PatchNotePublishButton {
 
         await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 
-        const lang = interaction?.locale ?? 'en-US';
+        const lang = interaction.locale;
         let { client } = interaction;
         let announcementChannel;
 

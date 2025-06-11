@@ -15,7 +15,7 @@ module.exports = {
         //         lang
         //     )),
     async execute(interaction) {
-        const lang = interaction?.locale ?? 'en-US';
+        const lang = interaction.locale;
         let outputContainer = await CreateTicketComponent.create(lang);
 
         await interaction.reply({

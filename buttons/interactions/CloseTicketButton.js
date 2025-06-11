@@ -15,7 +15,7 @@ class CloseTicketButton {
     }
 
     static async onInteraction(interaction) {
-        const lang = interaction?.locale ?? 'en-US';
+        const lang = interaction.locale;
         
         const ticket = await TicketUtils.findTicketByChannel(interaction.channel.id);
         TicketUtils.moveTicketToCategory(

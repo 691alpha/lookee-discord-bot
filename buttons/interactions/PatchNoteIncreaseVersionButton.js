@@ -17,7 +17,7 @@ class PatchNoteIncreaseVersionButton {
     
         static async onInteraction(interaction) {
 
-            const lang = interaction?.locale ?? 'en-US';
+            const lang = interaction.locale;
         
             await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 

@@ -14,7 +14,7 @@ class HelpTicketButton {
 
     static onInteraction(interaction) {
 
-        const lang = interaction?.locale ?? 'en-US';
+        const lang = interaction.locale;
 
         return interaction.showModal(HelpTicketModal.create(lang));
     }
