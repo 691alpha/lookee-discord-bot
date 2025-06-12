@@ -1,6 +1,6 @@
 const { Sequelize, QueryTypes } = require('sequelize');
 const dotenv = require('dotenv');
-const {LocalisationManager} = require('../managers/LocalisationManager.js');
+const { LocalisationManager } = require('../managers/LocalisationManager.js');
 
 const SetupModel = require('./models/Setups.js');
 const AutoIncrementModel = require('./models/AutoIncrement.js');
@@ -34,7 +34,7 @@ module.exports = class Database {
         try {
             await this.sequelize.authenticate().then(async () => {
                 console.log(LocalisationManager.getString('database_connection_success', 'en-US'));
-                    
+
                 this.initConnection(SetupModel);
                 this.initConnection(AutoIncrementModel);
                 this.initConnection(TicketModel);
@@ -44,18 +44,18 @@ module.exports = class Database {
                 this.initConnection(Formats);
                 this.initConnection(Versions);
                 // this.initConnection(Message);
-                
-                // Foreign keys
-                Formats.hasMany(Versions, {foreignKey: 'formatId'});
-                Versions.belongsTo(Formats, {foreignKey: 'formatId'});
 
-                PatchNote.hasMany(PatchNoteNode, {foreignKey: 'patchnoteId'});
-                PatchNoteNode.belongsTo(PatchNote, {foreignKey: 'patchnoteId'});
+                // Foreign keys
+                Formats.hasMany(Versions, { foreignKey: 'formatId' });
+                Versions.belongsTo(Formats, { foreignKey: 'formatId' });
+
+                PatchNote.hasMany(PatchNoteNode, { foreignKey: 'patchnoteId' });
+                PatchNoteNode.belongsTo(PatchNote, { foreignKey: 'patchnoteId' });
 
                 // TicketModel.hasMany(Message, {foreignKey: 'ticketMessage'});
                 // Message.belongsTo(TicketModel, {foreignKey: 'ticketId'});
 
-                await this.sequelize.sync({force: this.force});
+                await this.sequelize.sync({ force: this.force });
                 console.log(this.force ? `Drop and re-sync db.` : "Sync db.")
 
                 this.initAutoIncrement();
@@ -72,16 +72,16 @@ module.exports = class Database {
         if (table_status == null)
             return 0;
 
-        let ai = table_status[0][table]+1;
+        let ai = table_status[0][table] + 1;
         this.sequelize.query(`UPDATE auto_increments SET ${table} = ${ai} LIMIT 1`);
 
         let date = BigInt(Date.now());
         let shardId = BigInt(1010);
-        
+
         let id = date << BigInt(64 - 41);
         id |= shardId << BigInt(64 - 41 - 13);
         id |= BigInt(ai % 1024);
-        
+
         return id.toString();
     }
 
@@ -92,7 +92,7 @@ module.exports = class Database {
 
     initAutoIncrement() {
         AutoIncrementModel.findAll().then(data => {
-            if(data.length == 0) AutoIncrementModel.create({
+            if (data.length == 0) AutoIncrementModel.create({
                 setups: 0,
                 tickets: 0,
                 messages: 0
