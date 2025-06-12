@@ -11,7 +11,7 @@ class PatchNoteGetPingRoleButton {
         return new ButtonBuilder()
         .setCustomId(`${PatchNoteGetPingRoleButton.customId}`)
         .setLabel(LocalisationManager.getString(
-            'patchnote_get_ping_role_button_label', 
+            'patchnote_toggle_ping_role_button_label', 
             lang
         ))
         .setStyle(ButtonStyle.Secondary);
@@ -33,7 +33,7 @@ class PatchNoteGetPingRoleButton {
             interaction.member.roles.remove(newRole);
 
             let outputContainer = NoVariableResponseComponent.create(
-                'patchnote_ping_role_arl_added', 
+                'patchnote_ping_role_removed', 
                 lang
             );
 
