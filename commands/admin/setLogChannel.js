@@ -26,6 +26,7 @@ module.exports = {
                 announcementChannelId: null,
                 logChannelId: channelId,
                 defaultLang: lang,
+                patchnoteRoleId: null
             });
 
             await interaction.reply({

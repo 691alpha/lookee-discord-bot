@@ -83,7 +83,7 @@ class PatchNoteSelectVersionValueMenu {
             description: latestEntry.description
         });
 
-        PatchnoteUtils.updateAllPatchNotePreviews(interaction.guild.id, interaction.client, lang);
+        PatchnoteUtils.updateAllPatchNotePreviews(interaction.guild, interaction.client, lang);
         
         const container = await PatchNoteVersionCreatedComponent.create(lang, creationResult);
         

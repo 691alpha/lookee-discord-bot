@@ -11,7 +11,7 @@ class PatchNoteTranslateButton {
         return new ButtonBuilder()
         .setCustomId(`${PatchNoteTranslateButton.customId}`)
         .setLabel(LocalisationManager.getString('patchnote_translate_button_label', lang))
-        .setStyle(ButtonStyle.Secondary);
+        .setStyle(ButtonStyle.Primary);
     }
 
     static async onInteraction(interaction) {

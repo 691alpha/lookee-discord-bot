@@ -71,11 +71,15 @@ class PatchNotePublishButton {
             });
         };
 
-        const container = await PatchNoteComponent.create(nodes, lang);
-        const translateComponent = await PatchNoteTranslateButtonComponent.create(lang);
+        const container = await PatchNoteComponent.create(
+            nodes, 
+            lang, 
+            'publish', 
+            interaction.guild
+        );
 
         const patchnoteMessage = await announcementChannel.send({
-            components: [container, translateComponent],
+            components: [container],
             flags: [MessageFlags.IsComponentsV2, MessageFlags.Ephemeral],
         });
 
@@ -114,7 +118,7 @@ class PatchNotePublishButton {
             description: LocalisationManager.getString("db_default_version_desc", lang)
         });
 
-        PatchnoteUtils.updateAllPatchNotePreviews(interaction.guild.id, client, lang);
+        PatchnoteUtils.updateAllPatchNotePreviews(interaction.guild, client, lang);
         
         await interaction.editReply({
             components: [containerPublished],

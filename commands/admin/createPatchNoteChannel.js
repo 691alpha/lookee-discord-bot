@@ -1,4 +1,4 @@
-const {SlashCommandBuilder, MessageFlags} = require('discord.js');
+const {SlashCommandBuilder, MessageFlags, PermissionsBitField} = require('discord.js');
 const { PatchNoteComponent } = require('../../components/PatchNoteComponent');
 const { PatchNoteButtonComponentOne } = require('../../components/PatchNoteButtonComponentOne');
 const { PatchNoteButtonComponentTwo } = require('../../components/PatchNoteButtonComponentTwo');
@@ -6,7 +6,6 @@ const { LocalisationManager } = require("../../managers/LocalisationManager");
 const PatchNoteNodes = require('../../database/models/PatchNoteNodes');
 const PatchNotePreviews = require('../../database/models/PatchNotesPreviews');
 const { NoVariableResponseComponent } = require('../../components/responses/NoVariableResponseComponent');
-const { PatchNoteTranslateButtonComponent } = require('../../components/PatchNoteTranslateButtonComponent');
 
 // Send a component in the current channel to manage patchnotes.
 module.exports = {
@@ -14,11 +13,12 @@ module.exports = {
     cooldown: 0,
     data: new SlashCommandBuilder()
         .setName('create_patchnote_component')
-        .setDescription('Sends a Patchnote component in the current channel.'),
+        .setDescription('Sends a Patchnote component in the current channel.')
         // .setDescription(LocalisationManager.getString(
         //     'create_patchnote_component_description', 
         //     lang
-        // )),
+        // ))
+        .setDefaultMemberPermissions(PermissionsBitField.Flags.Administrator),
     async execute(interaction) {
         const lang = interaction.locale;
 
@@ -29,7 +29,12 @@ module.exports = {
             }
         });
 
-        let outputContainer = await PatchNoteComponent.create(nodes, lang);
+        let outputContainer = await PatchNoteComponent.create(
+            nodes, 
+            lang, 
+            'edit', 
+            interaction.guild
+        );
         let outputButtonsOne = await PatchNoteButtonComponentOne.create(lang);
         let outputButtonsTwo = await PatchNoteButtonComponentTwo.create(lang);
 

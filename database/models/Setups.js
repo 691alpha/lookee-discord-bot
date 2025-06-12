@@ -38,6 +38,10 @@ module.exports = class Setups extends Model {
                 type: Sequelize.STRING,
                 allowNull: false,
             },
+            patchnoteRoleId: {
+                type: Sequelize.STRING,
+                allowNull: true,
+            },
         }, {
             sequelize,
             tableName: 'setups',

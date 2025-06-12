@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, ActionRowBuilder } = require('discord.js');
+const { SlashCommandBuilder, ActionRowBuilder, PermissionsBitField } = require('discord.js');
 // const { ConfirmButton } = require('../../buttons/components/ConfirmButton');
 // const { CancelButton } = require('../../buttons/components/CancelButton');
 
@@ -8,6 +8,7 @@ module.exports = {
     data: new SlashCommandBuilder()
         .setName('kick')
         .setDescription('Tests modal.')
+        .setDefaultMemberPermissions(PermissionsBitField.Flags.Administrator)
         .addUserOption(option =>
             option.setName('target')
                 .setDescription('The user to kick')

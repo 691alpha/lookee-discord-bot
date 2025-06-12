@@ -1,4 +1,4 @@
-const {SlashCommandBuilder, MessageFlags} = require('discord.js');
+const {SlashCommandBuilder, MessageFlags, PermissionsBitField} = require('discord.js');
 const { LocalisationManager } = require("../../managers/LocalisationManager");
 const Setups = require('../../database/models/Setups');
 
@@ -7,11 +7,12 @@ module.exports = {
     cooldown: 0,
     data: new SlashCommandBuilder()
         .setName('create_setup')
-        .setDescription('Creates a setup for the current guild.'),
+        .setDescription('Creates a setup for the current guild.')
         // .setDescription(LocalisationManager.getString(
         //         'create_setup_description', 
         //         lang
         //     )),
+        .setDefaultMemberPermissions(PermissionsBitField.Flags.Administrator),
     async execute(interaction) {
         const { db } = interaction.client;
 
@@ -24,12 +25,13 @@ module.exports = {
                 announcementChannelId: null,
                 logChannelId: null,
                 defaultLang: 'en-US',
+                patchnoteRoleId: null
             });
 
         await interaction.reply({
             content: LocalisationManager.getString(
                 'setup_created', 
-                lang
+                interaction.locale
             ),
             flags: MessageFlags.Ephemeral,
         })

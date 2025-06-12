@@ -45,5 +45,18 @@ for (const file of eventFiles) {
 	}
 }
 
+const logEventsPath = path.join(__dirname, 'events', 'LogEvents');
+const logEventFiles = fs.readdirSync(logEventsPath).filter(file => file.endsWith('.js'));
+
+for (const file of logEventFiles) {
+	const filePath = path.join(logEventsPath, file);
+	const event = require(filePath);
+	if (event.once) {
+		client.once(event.name, (...args) => event.execute(...args));
+	} else {
+		client.on(event.name, (...args) => event.execute(...args));
+	}
+}
+
 // Log in to Discord with your client's token
 client.login(process.env.DISCORD_TOKEN);

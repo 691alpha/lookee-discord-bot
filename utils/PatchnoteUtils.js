@@ -2,7 +2,7 @@ const { MessageFlags } = require("discord.js");
 const { PatchNoteComponent } = require("../components/PatchNoteComponent");
 const PatchNoteNodes = require("../database/models/PatchNoteNodes");
 const PatchNotePreviews = require("../database/models/PatchNotesPreviews");
-const { PatchNoteTranslateButtonComponent } = require("../components/PatchNoteTranslateButtonComponent");
+const Setups = require('../database/models/Setups');
 
 class PatchnoteUtils {
     
@@ -11,11 +11,12 @@ class PatchnoteUtils {
      * 'planned' or 'done' whilst keeping the button component
      * @param {*} interaction 
      */
-    static async updateAllPatchNotePreviews(guildId, client, lang) {
+    static async updateAllPatchNotePreviews(guild, client, lang) {
 
         const { PatchNoteButtonComponentOne } = require('../components/PatchNoteButtonComponentOne');
         const { PatchNoteButtonComponentTwo } = require('../components/PatchNoteButtonComponentTwo');
 
+        const guildId = guild.id;
         const previews = await PatchNotePreviews.findAll({ where: { guildId } });
 
         const nodes = await PatchNoteNodes.findAll({
@@ -30,7 +31,12 @@ class PatchnoteUtils {
                 const channel = await client.channels.fetch(preview.channelId);
                 const message = await channel.messages.fetch(preview.messageId);
 
-                const outputContainer = await PatchNoteComponent.create(nodes, lang);
+                const outputContainer = await PatchNoteComponent.create(
+                    nodes, 
+                    lang, 
+                    'edit', 
+                    guild
+                );
                 let outputButtonsOne = await PatchNoteButtonComponentOne.create(lang);
                 let outputButtonsTwo = await PatchNoteButtonComponentTwo.create(lang);
 
@@ -65,6 +71,44 @@ class PatchnoteUtils {
         if (!nodes || nodes.length === 0) return null;
 
         return nodes;
+    }
+
+    static async checkPatchnoteRole(guild) {
+        const setup = await Setups.findOne({ where: { guildId: guild.id } });
+        if(!setup) console.log ('No setup found, create setup');
+
+        let role = setup.patchnoteRoleId
+            ? guild.roles.cache.get(setup.patchnoteRoleId)
+            : null;
+
+        if (!role) {
+            role = await guild.roles.create({
+                name: 'Patchnote Ping',
+                mentionable: true,
+                reason: 'Auto-created for patchnote pinging',
+            });
+
+            if (setup) {
+                await Setups.update(
+                    { patchnoteRoleId: role.id },
+                    { where: { guildId: guild.id } }
+                );
+            } else {
+                await Setups.create({
+                    id: await db.getNextId('setups'),
+                    guildId: guildId,
+                    assignedTicketsCategoryId: null,
+                    unassignedTicketsCategoryId: null,
+                    closedTicketsCategoryId: null,
+                    announcementChannelId: null,
+                    logChannelId: null,
+                    defaultLang: 'en-US',
+                    patchnoteRoleId: role.id
+                });
+            }
+        }
+
+        return role;
     }
 }
 

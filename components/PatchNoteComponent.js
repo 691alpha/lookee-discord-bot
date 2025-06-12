@@ -1,17 +1,17 @@
 const {
     ContainerBuilder,
     TextDisplayBuilder,
-    Colors,
     SeparatorBuilder,
 } = require('discord.js');
 
 const { LocalisationManager } = require('../managers/LocalisationManager');
 const Versions = require('../database/models/Versions');
 const Formats = require('../database/models/Formats');
+const { PatchNoteTranslateButton } = require('../buttons/interactions/PatchNoteTranslateButton');
 
 class PatchNoteComponent {
-    static async create(nodes, lang) {
-        const container = await PatchNoteComponent.buildFromNodes(nodes, lang);
+    static async create(nodes, lang, mode, guild) {
+        const container = await PatchNoteComponent.buildFromNodes(nodes, lang, mode, guild);
 
         container.setAccentColor(0x5e5e5e); 
 
@@ -24,7 +24,9 @@ class PatchNoteComponent {
      * @param {*} lang Language
      * @returns Component with needed information for the patchnote
      */
-    static async buildFromNodes(nodes, lang) {
+    static async buildFromNodes(nodes, lang, mode, guild) {
+        const { PatchnoteUtils } = require('../utils/PatchnoteUtils');
+
         const container = new ContainerBuilder();
 
         // Gets all nodes with status 'planned' and 'done'
@@ -87,23 +89,69 @@ class PatchNoteComponent {
         }
 
         const title = new TextDisplayBuilder().setContent(
-                `## Patchnote ${formattedVersion} \n ${new Date().toLocaleString(lang, {
-                    weekday: 'short',
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit',
-                    second: '2-digit',
-                    hour12: false
-                })}`);
+            `## Patchnote ${formattedVersion} \n ${new Date().toLocaleString(lang, {
+                weekday: 'short',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: false
+            })}`);
 
         // const text = new TextDisplayBuilder().setContent(fullOutput);
+        if(mode === 'edit') {
+            container.addTextDisplayComponents(title);
+            container.addTextDisplayComponents(doneText);
+            container.addSeparatorComponents(separator);
+            container.addTextDisplayComponents(plannedText); 
+            
+            return container;
+        }
 
-        container.addTextDisplayComponents(title);
-        container.addTextDisplayComponents(doneText);
-        container.addSeparatorComponents(separator);
-        container.addTextDisplayComponents(plannedText);
+        const { PatchNoteGetPingRoleButton } = require(
+            '../buttons/interactions/PatchNoteGetPingRoleButton'
+        );
+                
+        const newRole = await PatchnoteUtils.checkPatchnoteRole(guild);
+        const pingText = new TextDisplayBuilder().setContent([
+            `-# Patch notes will be released whenever changes are made to the server.`,
+            `-# These updates won’t follow a strict schedule — they're simply here to keep everyone informed.`,
+            ``,
+            `-# To obtain the role <@&${newRole.id}> to be notified about future patch notes,`,
+            `-# click the button below.`
+            ].join('\n'),
+        );
+
+        if(plannedLines.length < 1) {
+            container.addTextDisplayComponents(title);
+            container.addTextDisplayComponents(doneText);
+            container.addTextDisplayComponents(pingText);
+            container.addActionRowComponents(row => row.addComponents(
+                PatchNoteTranslateButton.create(lang),
+                PatchNoteGetPingRoleButton.create(lang)
+            ));
+        } else if(doneLines.length < 1) {
+            container.addTextDisplayComponents(title);
+            container.addTextDisplayComponents(plannedText);
+            container.addTextDisplayComponents(pingText);
+            container.addActionRowComponents(row => row.addComponents(
+                PatchNoteTranslateButton.create(lang),
+                PatchNoteGetPingRoleButton.create(lang)
+            ));
+        } else {
+            container.addTextDisplayComponents(title);
+            container.addTextDisplayComponents(doneText);
+            container.addSeparatorComponents(separator);
+            container.addTextDisplayComponents(plannedText); 
+            container.addTextDisplayComponents(pingText);
+            container.addActionRowComponents(row => row.addComponents(
+                PatchNoteTranslateButton.create(lang),
+                PatchNoteGetPingRoleButton.create(lang)
+            ));
+        }
+        
 
         return container;
     }

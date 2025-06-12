@@ -65,7 +65,7 @@ class PatchNoteCreateVersionFormatModal {
             flags: [MessageFlags.Ephemeral, MessageFlags.IsComponentsV2]
         });
 
-        PatchnoteUtils.updateAllPatchNotePreviews(interaction.guild.id, interaction.client, lang);
+        PatchnoteUtils.updateAllPatchNotePreviews(interaction.guild, interaction.client, lang);
 
     }
 }

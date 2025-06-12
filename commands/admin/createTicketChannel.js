@@ -1,4 +1,4 @@
-const {SlashCommandBuilder, MessageFlags} = require('discord.js');
+const {SlashCommandBuilder, MessageFlags, PermissionsBitField} = require('discord.js');
 const { LocalisationManager } = require("../../managers/LocalisationManager");
 const { CreateTicketComponent } = require('../../components/CreateTicketComponent.js');
 
@@ -9,6 +9,7 @@ module.exports = {
     cooldown: 0,
     data: new SlashCommandBuilder()
         .setName('create_ticket_channel')
+        .setDefaultMemberPermissions(PermissionsBitField.Flags.Administrator)
         .setDescription('Sends a Ticket embed in the current channel.'),
         // .setDescription(LocalisationManager.getString(
         //         'send_ticket_embed_description', 

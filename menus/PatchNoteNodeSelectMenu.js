@@ -40,13 +40,22 @@ class PatchNoteNodeSelectMenu {
 
         if (type === 'delete') {
             menu.setMinValues(1).setMaxValues(Math.min(25, effectiveNodes.length));
-            menu.setPlaceholder(LocalisationManager.getString('patchnote_select_delete_placeholder', lang));
+            menu.setPlaceholder(LocalisationManager.getString(
+                'patchnote_select_delete_placeholder', 
+                lang
+            ));
         } else if (type === 'edit') {
             menu.setMinValues(1).setMaxValues(1);
-            menu.setPlaceholder(LocalisationManager.getString('patchnote_select_edit_placeholder', lang));
+            menu.setPlaceholder(LocalisationManager.getString(
+                'patchnote_select_edit_placeholder', 
+                lang
+            ));
         } else if (type === 'Done' || type === 'Planned') {
             menu.setMinValues(1).setMaxValues(Math.min(25, effectiveNodes.length));
-            menu.setPlaceholder(LocalisationManager.getString('patchnote_select_change_status_placeholder', lang));
+            menu.setPlaceholder(LocalisationManager.getString(
+                'patchnote_select_change_status_placeholder', 
+                lang
+            ));
         }
 
         return menu;
@@ -101,7 +110,7 @@ class PatchNoteNodeSelectMenu {
                 { where: { id: selectedIds } }
             );
 
-            PatchnoteUtils.updateAllPatchNotePreviews(interaction.guild.id, interaction.client, lang);
+            PatchnoteUtils.updateAllPatchNotePreviews(interaction.guild, interaction.client, lang);
 
             const container = VariableResponseComponent.create(
                 'patchnote_node_deleted', 
@@ -122,7 +131,7 @@ class PatchNoteNodeSelectMenu {
             );
 
             PatchnoteUtils.updateAllPatchNotePreviews(
-                interaction.guild.id, 
+                interaction.guild, 
                 interaction.client, 
                 lang
             );

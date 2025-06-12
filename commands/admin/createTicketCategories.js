@@ -1,4 +1,4 @@
-const {SlashCommandBuilder, ChannelType, MessageFlags} = require('discord.js');
+const {SlashCommandBuilder, ChannelType, MessageFlags, PermissionsBitField} = require('discord.js');
 const { LocalisationManager } = require("../../managers/LocalisationManager");
 const Setups = require('../../database/models/Setups');
 
@@ -9,6 +9,7 @@ module.exports = {
     cooldown: 0,
     data: new SlashCommandBuilder()
         .setName('create_ticket_categories')
+        .setDefaultMemberPermissions(PermissionsBitField.Flags.Administrator)
         .setDescription('Creates all needed categories for ticket management.'),
         // .setDescription(LocalisationManager.getString(
         //         'create_categories_description', 
@@ -48,6 +49,7 @@ module.exports = {
                 announcementChannelId: null,
                 logChannelId: null,
                 defaultLang: 'en-US',
+                patchnoteRoleId: null
             });
             await interaction.reply({
                 content: LocalisationManager.getString(

@@ -59,7 +59,7 @@ class PatchNoteAddNodeModal {
 
         await PatchNoteNodes.bulkCreate(nodes);
 
-        PatchnoteUtils.updateAllPatchNotePreviews(interaction.guild.id, interaction.client, lang);
+        PatchnoteUtils.updateAllPatchNotePreviews(interaction.guild, interaction.client, lang);
 
         await interaction.editReply({
             content: LocalisationManager

@@ -65,7 +65,7 @@ class PatchNoteEditNodeModal {
         node.content = newContent;
         await node.save();
 
-        PatchnoteUtils.updateAllPatchNotePreviews(interaction.guild.id, interaction.client, lang);
+        PatchnoteUtils.updateAllPatchNotePreviews(interaction.guild, interaction.client, lang);
 
         const container = VariableResponseComponent.create(
             'patchnote_node_updated', 

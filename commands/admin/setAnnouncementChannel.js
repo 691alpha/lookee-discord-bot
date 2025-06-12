@@ -35,6 +35,7 @@ module.exports = {
                 announcementChannelId: interaction.channel.id,
                 logChannelId: null,
                 defaultLang: 'en-US',
+                patchnoteRoleId: null
             });
         }
 
