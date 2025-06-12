@@ -1,4 +1,4 @@
-const {SlashCommandBuilder, MessageFlags} = require('discord.js');
+const {SlashCommandBuilder, MessageFlags, PermissionsBitField} = require('discord.js');
 const { LocalisationManager } = require("../../managers/LocalisationManager");
 const Setups = require('../../database/models/Setups');
 
@@ -8,6 +8,7 @@ module.exports = {
     cooldown: 0,
     data: new SlashCommandBuilder()
         .setName('set_announcement_channel')
+        .setDefaultMemberPermissions(PermissionsBitField.Flags.Administrator)
         .setDescription('Sets the current channel as announcement channel.'),
         // .setDescription(LocalisationManager.getString(
         //         'set_announcement_channel_description', 

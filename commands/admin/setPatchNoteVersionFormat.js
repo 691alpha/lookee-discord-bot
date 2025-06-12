@@ -1,4 +1,4 @@
-const {SlashCommandBuilder, MessageFlags} = require('discord.js');
+const {SlashCommandBuilder, MessageFlags, PermissionsBitField} = require('discord.js');
 const { LocalisationManager } = require("../../managers/LocalisationManager");
 const Formats = require('../../database/models/Formats');
 
@@ -8,6 +8,7 @@ module.exports = {
     data: new SlashCommandBuilder()
         .setName('set_patchnote_version_format')
         .setDescription('Sets the format for the patchnote version.')
+        .setDefaultMemberPermissions(PermissionsBitField.Flags.Administrator)
         // .setDescription(LocalisationManager.getString(
         //         'set_patchnote_version_format_description_command', 
         //         lang

@@ -1,4 +1,4 @@
-const {SlashCommandBuilder, AttachmentBuilder } = require('discord.js');
+const {SlashCommandBuilder, AttachmentBuilder, PermissionsBitField } = require('discord.js');
 const {EmbedManager} = require('../../managers/EmbedManager.js');
 const path = require('node:path');
 
@@ -7,7 +7,8 @@ module.exports = {
     cooldown: 0,
     data: new SlashCommandBuilder()
         .setName('error_embed')
-        .setDescription('Tests Error Embed.'),
+        .setDescription('Tests Error Embed.')
+        .setDefaultMemberPermissions(PermissionsBitField.Flags.Administrator),
     async execute(interaction) {
         let outputEmbed = EmbedManager.getEmbed('reload.error'); 
 

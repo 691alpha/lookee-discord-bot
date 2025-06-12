@@ -1,4 +1,4 @@
-const {SlashCommandBuilder, MessageFlags} = require('discord.js');
+const {SlashCommandBuilder, MessageFlags, PermissionsBitField} = require('discord.js');
 const { LocalisationManager } = require("../../managers/LocalisationManager");
 const Setups = require('../../database/models/Setups');
 
@@ -7,7 +7,8 @@ module.exports = {
     cooldown: 0,
     data: new SlashCommandBuilder()
         .setName('set_log_channel')
-        .setDescription('Sets the current channel as the log channel for the server.'),
+        .setDescription('Sets the current channel as the log channel for the server.')
+        .setDefaultMemberPermissions(PermissionsBitField.Flags.Administrator),
     async execute(interaction) {
         const { db } = interaction.client;
         const guildId = interaction.guild.id;

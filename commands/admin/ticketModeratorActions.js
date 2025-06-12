@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, MessageFlags } = require('discord.js');
+const { SlashCommandBuilder, MessageFlags, PermissionsBitField } = require('discord.js');
 const { LocalisationManager } = require("../../managers/LocalisationManager");
 const { TicketModeratorActionsComponent } = require('../../components/TicketModeratorActionsComponent')
 
@@ -9,11 +9,12 @@ module.exports = {
     cooldown: 0,
     data: new SlashCommandBuilder()
         .setName('ticket_mod')
-        .setDescription('Sends buttons for all Moderator Ticket options.'),
+        .setDescription('Sends buttons for all Moderator Ticket options.')
         // .setDescription(LocalisationManager.getString(
         //         'ticket_mod_description_command', 
         //         lang
         //     )),
+        .setDefaultMemberPermissions(PermissionsBitField.Flags.Administrator),
     async execute(interaction) {
         const lang = interaction.locale;
 

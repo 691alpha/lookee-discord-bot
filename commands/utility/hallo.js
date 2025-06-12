@@ -1,4 +1,4 @@
-const {SlashCommandBuilder} = require('discord.js');
+const {SlashCommandBuilder, PermissionsBitField} = require('discord.js');
 const {LocalisationManager} = require('../../managers/LocalisationManager.js');
 
 module.exports = {
@@ -6,7 +6,8 @@ module.exports = {
     cooldown: 0,
     data: new SlashCommandBuilder()
         .setName('hallo')
-        .setDescription('Hallos the user.'),
+        .setDescription('Hallos the user.')
+        .setDefaultMemberPermissions(PermissionsBitField.Flags.Administrator),
     async execute(interaction) {
         let string = LocalisationManager.getString('error', interaction.locale, {"error": "something went wrong :ccc", "test": "teeest"});
         interaction.reply(string);
