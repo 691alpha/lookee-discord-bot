@@ -2,6 +2,7 @@ const { MessageFlags } = require("discord.js");
 const { PatchNoteComponent } = require("../components/PatchNoteComponent");
 const PatchNoteNodes = require("../database/models/PatchNoteNodes");
 const PatchNotePreviews = require("../database/models/PatchNotesPreviews");
+const { PatchNoteTranslateButtonComponent } = require("../components/PatchNoteTranslateButtonComponent");
 
 class PatchnoteUtils {
     
@@ -29,13 +30,16 @@ class PatchnoteUtils {
                 const channel = await client.channels.fetch(preview.channelId);
                 const message = await channel.messages.fetch(preview.messageId);
 
-                const container = await PatchNoteComponent.create(nodes, lang);
-
+                const outputContainer = await PatchNoteComponent.create(nodes, lang);
                 let outputButtonsOne = await PatchNoteButtonComponentOne.create(lang);
                 let outputButtonsTwo = await PatchNoteButtonComponentTwo.create(lang);
 
                 await message.edit({ 
-                    components: [container, outputButtonsOne, outputButtonsTwo],
+                    components: [
+                        outputContainer, 
+                        outputButtonsOne, 
+                        outputButtonsTwo
+                    ],
                     flags: MessageFlags.IsComponentsV2
                 });
             } catch (e) {

@@ -6,6 +6,7 @@ const { LocalisationManager } = require("../../managers/LocalisationManager");
 const PatchNoteNodes = require('../../database/models/PatchNoteNodes');
 const PatchNotePreviews = require('../../database/models/PatchNotesPreviews');
 const { NoVariableResponseComponent } = require('../../components/responses/NoVariableResponseComponent');
+const { PatchNoteTranslateButtonComponent } = require('../../components/PatchNoteTranslateButtonComponent');
 
 // Send a component in the current channel to manage patchnotes.
 module.exports = {
@@ -33,7 +34,11 @@ module.exports = {
         let outputButtonsTwo = await PatchNoteButtonComponentTwo.create(lang);
 
         const sentMessage = await interaction.channel.send({
-            components: [outputContainer, outputButtonsOne, outputButtonsTwo],
+            components: [
+                outputContainer, 
+                outputButtonsOne, 
+                outputButtonsTwo
+            ],
             flags: MessageFlags.IsComponentsV2
         });
 

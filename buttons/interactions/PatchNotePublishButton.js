@@ -8,6 +8,7 @@ const { NoVariableResponseComponent } = require("../../components/responses/NoVa
 const Setups = require("../../database/models/Setups");
 const Versions = require("../../database/models/Versions");
 const Formats = require("../../database/models/Formats");
+const { PatchNoteTranslateButtonComponent } = require("../../components/PatchNoteTranslateButtonComponent");
 
 class PatchNotePublishButton {
     static customId = "PatchNotePublishButton";
@@ -71,9 +72,10 @@ class PatchNotePublishButton {
         };
 
         const container = await PatchNoteComponent.create(nodes, lang);
+        const translateComponent = await PatchNoteTranslateButtonComponent.create(lang);
 
         const patchnoteMessage = await announcementChannel.send({
-            components: [container],
+            components: [container, translateComponent],
             flags: [MessageFlags.IsComponentsV2, MessageFlags.Ephemeral],
         });
 
@@ -118,20 +120,7 @@ class PatchNotePublishButton {
             components: [containerPublished],
             flags: [MessageFlags.IsComponentsV2, MessageFlags.Ephemeral],
         })
-    
-        if(!announcementChannel) {
-            const containerNoAnnouncement = NoVariableResponseComponent.create(
-                'patchnote_no_announcement_channel_found', 
-                lang
-            );
-    
-            await interaction.editReply({
-                components: [containerNoAnnouncement],
-                flags: [MessageFlags.IsComponentsV2, MessageFlags.Ephemeral]
-            });
-            return;
 
-        }
     }
 }
 
