@@ -1,4 +1,4 @@
-const { StringSelectMenuBuilder, StringSelectMenuOptionBuilder } = require("discord.js");
+const { StringSelectMenuBuilder, StringSelectMenuOptionBuilder, MessageFlags } = require("discord.js");
 const { LocalisationManager } = require("../managers/LocalisationManager");
 
 class PatchNoteTranslatePickLangSelectMenu {
@@ -33,7 +33,10 @@ class PatchNoteTranslatePickLangSelectMenu {
 
     static async onInteraction(interaction) {
         const selectedLang = interaction.values;
-        interaction.reply(`you picked ${selectedLang}`)
+        interaction.reply({
+            content:`You choose the language ${selectedLang}. This feature is not yet implemented.`,
+            flags: MessageFlags.Ephemeral
+        })
     }
 }
 
