@@ -4,7 +4,7 @@
   "database_connection_fail": "Couldn't connect to database.",
   "database_connection_success": "Connected to database.",
   "error_interaction": "There was an error while executing this interaction!",
-  "error_command": "There was an error while executing this comman d!",
+  "error_command": "There was an error while executing this command!",
   "no_matching_command_found": "No command matching {interaction.commandName} was found.",
   "on_cooldown": "Please wait, you are on a cooldown for `{command.data.name}`. You can use it again <t:{expiredTimestamp}:R>.",
   "setup_created": "Setup for server created.",
@@ -14,7 +14,7 @@
   "updated_categories_success": "Updated ticket categories and saved setup to database.",
   "send_ticket_embed_description": "Sends a Ticket embed in the current channel.",
   "set_announcement_channel_description": "Sets the current channel as announcement channel.",
-  "set_announcement_channel_success": "This Channel is now set as *Annoucement Channel*.",
+  "set_announcement_channel_success": "This channel is now set as annoucement channel.",
   
   "ticket_created": "Ticket created",
   "ticket_created_at": "Your Ticket has been created at:",
