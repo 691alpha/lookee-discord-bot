@@ -13,7 +13,7 @@ class PatchNoteComponent {
     static async create(nodes, lang, mode, guild) {
         const container = await PatchNoteComponent.buildFromNodes(nodes, lang, mode, guild);
 
-        container.setAccentColor(0x5e5e5e); 
+        // container.setAccentColor(0x5e5e5e); 
 
         return container;
     }
