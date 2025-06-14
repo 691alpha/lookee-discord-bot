@@ -3,7 +3,7 @@ const { LocalisationManager } = require("../managers/LocalisationManager");
 const { PatchNoteTranslatePickLangSelectMenu } = require("../menus/PatchNoteTranslatePickLangSelectMenu");
 
 class PatchNoteTranslatePickLangComponent {
-    static async create(lang) {
+    static async create(lang, patchnoteId) {
         const container = new ContainerBuilder();
 
         const text1 = new TextDisplayBuilder().setContent(
@@ -15,7 +15,7 @@ class PatchNoteTranslatePickLangComponent {
         container.addTextDisplayComponents(text1);
 
         container.addActionRowComponents(row => row.addComponents(
-            PatchNoteTranslatePickLangSelectMenu.create(lang)
+            PatchNoteTranslatePickLangSelectMenu.create(lang, patchnoteId)
         ));
 
         return container;

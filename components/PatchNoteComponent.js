@@ -10,8 +10,14 @@ const Formats = require('../database/models/Formats');
 const { PatchNoteTranslateButton } = require('../buttons/interactions/PatchNoteTranslateButton');
 
 class PatchNoteComponent {
-    static async create(nodes, lang, mode, guild) {
-        const container = await PatchNoteComponent.buildFromNodes(nodes, lang, mode, guild);
+    static async create(nodes, lang, mode, guild, patchnoteId) {
+        const container = await PatchNoteComponent.buildFromNodes(
+            nodes, 
+            lang,
+            mode, 
+            guild, 
+            patchnoteId
+        );
 
         // container.setAccentColor(0x5e5e5e); 
 
@@ -24,7 +30,7 @@ class PatchNoteComponent {
      * @param {*} lang Language
      * @returns Component with needed information for the patchnote
      */
-    static async buildFromNodes(nodes, lang, mode, guild) {
+    static async buildFromNodes(nodes, lang, mode, guild, patchnoteId) {
         const { PatchnoteUtils } = require('../utils/PatchnoteUtils');
 
         const container = new ContainerBuilder();
@@ -32,7 +38,7 @@ class PatchNoteComponent {
         let plannedNodes;
         let doneNodes;
 
-        if(mode === 'republish') {
+        if(mode === 'republish' || mode === 'translate') {
             plannedNodes = nodes.filter(node => 
                 node.status === 'planned' 
                 && node.published);
@@ -76,11 +82,6 @@ class PatchNoteComponent {
             `### ${LocalisationManager.getString('patchnote_section_done', lang)}\n${doneOutput}`
         );
 
-
-        // const output = lines.length > 0
-        //     ? lines.join('\n')
-        //     : LocalisationManager.getString('patchnote_section_empty', lang);
-
         const version = await Versions.findOne({
                     order: [['createdAt', 'DESC']],
                 });
@@ -108,7 +109,7 @@ class PatchNoteComponent {
         }
 
         const title = new TextDisplayBuilder().setContent(
-            `## Patchnote ${formattedVersion} \n ${new Date().toLocaleString(lang, {
+            `## ${LocalisationManager.getString('patchnote_title', lang)} ${formattedVersion} \n ${new Date().toLocaleString(lang, {
                 weekday: 'short',
                 year: 'numeric',
                 month: 'long',
@@ -119,7 +120,6 @@ class PatchNoteComponent {
                 hour12: false
             })}`);
 
-        // const text = new TextDisplayBuilder().setContent(fullOutput);
         if(mode === 'edit') {
             container.addTextDisplayComponents(title);
             container.addTextDisplayComponents(doneText);
@@ -135,11 +135,11 @@ class PatchNoteComponent {
                 
         const newRole = await PatchnoteUtils.checkPatchnoteRole(guild);
         const pingText = new TextDisplayBuilder().setContent([
-            `-# Patch notes will be released whenever changes are made to the server.`,
-            `-# These updates won’t follow a strict schedule — they're simply here to keep everyone informed.`,
+            `-# ${LocalisationManager.getString('patchnotes_info_1', lang)}`,
+            `-# ${LocalisationManager.getString('patchnotes_info_2', lang)}`,
             ``,
-            `-# To obtain the role <@&${newRole.id}> to be notified about future patch notes,`,
-            `-# click the button below.`
+            `-# ${LocalisationManager.getString('patchnotes_info_3', lang, {'newRoleId': newRole.id})}`,
+            `-# ${LocalisationManager.getString('patchnotes_info_4', lang)}`
             ].join('\n'),
         );
 
@@ -148,7 +148,7 @@ class PatchNoteComponent {
             container.addTextDisplayComponents(doneText);
             container.addTextDisplayComponents(pingText);
             container.addActionRowComponents(row => row.addComponents(
-                PatchNoteTranslateButton.create(lang),
+                PatchNoteTranslateButton.create(lang, patchnoteId),
                 PatchNoteGetPingRoleButton.create(lang)
             ));
         } else if(doneLines.length < 1) {
@@ -156,7 +156,7 @@ class PatchNoteComponent {
             container.addTextDisplayComponents(plannedText);
             container.addTextDisplayComponents(pingText);
             container.addActionRowComponents(row => row.addComponents(
-                PatchNoteTranslateButton.create(lang),
+                PatchNoteTranslateButton.create(lang, patchnoteId),
                 PatchNoteGetPingRoleButton.create(lang)
             ));
         } else {
@@ -166,7 +166,7 @@ class PatchNoteComponent {
             container.addTextDisplayComponents(plannedText); 
             container.addTextDisplayComponents(pingText);
             container.addActionRowComponents(row => row.addComponents(
-                PatchNoteTranslateButton.create(lang),
+                PatchNoteTranslateButton.create(lang, patchnoteId),
                 PatchNoteGetPingRoleButton.create(lang)
             ));
         }

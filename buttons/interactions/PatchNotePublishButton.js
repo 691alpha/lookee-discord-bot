@@ -72,11 +72,14 @@ class PatchNotePublishButton {
             });
         };
 
+        const patchnoteId = await client.db.getNextId('patchnotes');
+        
         const container = await PatchNoteComponent.create(
             nodes, 
             lang, 
             'publish', 
-            interaction.guild
+            interaction.guild, 
+            patchnoteId
         );
 
         const latestVersion = await Versions.findOne({ order: [['createdAt', 'DESC']] });
@@ -85,7 +88,6 @@ class PatchNotePublishButton {
             return interaction.reply("not good no version could be found schlecht");
         } 
 
-        const patchnoteId = await client.db.getNextId('patchnotes');
         
         await PatchNotes.create({
             id: patchnoteId,
