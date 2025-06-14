@@ -50,6 +50,7 @@ class PatchNoteAddNodeModal {
                     id: patchNoteNodeId,
                     patchNoteId: null,
                     status,
+                    published: false,
                     content: value,
                     authorId: interaction.user.id,
                     guildId: interaction.guild.id

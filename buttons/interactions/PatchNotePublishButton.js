@@ -8,6 +8,7 @@ const { NoVariableResponseComponent } = require("../../components/responses/NoVa
 const Setups = require("../../database/models/Setups");
 const Versions = require("../../database/models/Versions");
 const Formats = require("../../database/models/Formats");
+const PatchNotes = require("../../database/models/PatchNotes");
 const { PatchNoteTranslateButtonComponent } = require("../../components/PatchNoteTranslateButtonComponent");
 
 class PatchNotePublishButton {
@@ -78,17 +79,34 @@ class PatchNotePublishButton {
             interaction.guild
         );
 
+        const latestVersion = await Versions.findOne({ order: [['createdAt', 'DESC']] });
+        
+        if(!latestVersion || !latestVersion.id) {
+            return interaction.reply("not good no version could be found schlecht");
+        } 
+
+        const patchnoteId = await client.db.getNextId('patchnotes');
+        
+        await PatchNotes.create({
+            id: patchnoteId,
+            publishedDate: Date.now(),
+            channelId: announcementChannel.id,
+            versionId: latestVersion.id
+        });
+
         const patchnoteMessage = await announcementChannel.send({
             components: [container],
             flags: [MessageFlags.IsComponentsV2, MessageFlags.Ephemeral],
         });
 
         for (const node of nodes) {
-            node.status = 'published';
+            node.published = true;
+            node.patchnoteId = patchnoteId;
             await node.save();
         }
 
         const containerPublished = await PatchnotePublishedComponent.create(
+            'patchnote_published',
             patchnoteMessage,
             interaction.guild.id,
             lang
@@ -98,12 +116,6 @@ class PatchNotePublishButton {
             return interaction.editReply(
                 LocalisationManager.getString('patchnote_send_failed', lang)
             )
-        } 
-
-        const latestVersion = await Versions.findOne({ order: [['createdAt', 'DESC']] });
-        
-        if(!latestVersion || !latestVersion.id) {
-            return interaction.reply("not good no version could be found schlecht");
         } 
         
         const latestFormat = await Formats.findOne({ order: [['createdAt', 'DESC']] });

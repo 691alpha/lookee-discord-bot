@@ -16,7 +16,7 @@ module.exports = class PatchNotes extends Model {
             channelId: {
                 type: Sequelize.STRING,
                 allowNull: true,
-            }
+            },
         }, {
             sequelize,
             tableName: 'patchnotes',

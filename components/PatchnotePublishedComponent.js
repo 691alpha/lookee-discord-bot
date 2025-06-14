@@ -3,12 +3,12 @@ const { LocalisationManager } = require('../managers/LocalisationManager');
 const { ForwardToPatchnoteButton } = require('../buttons/interactions/ForwardToPatchnoteButton');
 
 class PatchnotePublishedComponent {
-    static async create(patchnoteMessage, guildId, lang) {
+    static async create(placeholder, patchnoteMessage, guildId, lang) {
         const container = new ContainerBuilder();
 
         const text1 = new TextDisplayBuilder().setContent(
             [
-                `## ${LocalisationManager.getString('patchnote_published', lang)}`,
+                `## ${LocalisationManager.getString(placeholder, lang)}`,
                 `-# ${new Date().toLocaleString(lang, {
                     weekday: 'short',
                     year: 'numeric',

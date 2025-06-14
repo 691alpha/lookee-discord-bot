@@ -48,6 +48,9 @@ module.exports = class Database {
                 // Foreign keys
                 Formats.hasMany(Versions, { foreignKey: 'formatId' });
                 Versions.belongsTo(Formats, { foreignKey: 'formatId' });
+                
+                Versions.hasOne(PatchNote, { foreignKey: 'versionId' });
+                PatchNote.belongsTo(Versions, { foreignKey: 'versionId' });
 
                 PatchNote.hasMany(PatchNoteNode, { foreignKey: 'patchnoteId' });
                 PatchNoteNode.belongsTo(PatchNote, { foreignKey: 'patchnoteId' });

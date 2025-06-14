@@ -17,8 +17,12 @@ module.exports = class PatchNoteNodes extends Model {
                 type: Sequelize.ENUM('planned', 'done', 'published', 'deleted'),
                 allowNull: false,
             },
+            published: {
+                type: Sequelize.BOOLEAN,
+                allowNull: false,
+            },
             content: {
-                type: Sequelize.STRING,
+                type: Sequelize.TEXT,
                 allowNull: false,
             },
             authorId: {

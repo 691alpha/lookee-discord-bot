@@ -29,9 +29,28 @@ class PatchNoteComponent {
 
         const container = new ContainerBuilder();
 
-        // Gets all nodes with status 'planned' and 'done'
-        const plannedNodes = nodes.filter(node => node.status === 'planned');
-        const doneNodes = nodes.filter(node => node.status === 'done');
+        let plannedNodes;
+        let doneNodes;
+
+        if(mode === 'republish') {
+            plannedNodes = nodes.filter(node => 
+                node.status === 'planned' 
+                && node.published);
+            doneNodes = nodes.filter(node => 
+                node.status === 'done'
+                && node.published
+            );
+        } else {
+            // Gets all nodes with status 'planned' and 'done'
+            plannedNodes = nodes.filter(node => 
+                node.status === 'planned' 
+                && !node.published);
+            doneNodes = nodes.filter(node => 
+                node.status === 'done'
+                && !node.published
+            );
+        }
+
 
         // Makes list of all gotten nodes
         const plannedLines = plannedNodes.map(node => `- ${node.content}`);

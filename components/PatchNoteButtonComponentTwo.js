@@ -4,6 +4,7 @@ const {
 
 const { SetPatchNoteVersionButton } = require('../buttons/interactions/SetPatchNoteVersionButton');
 const { PatchNoteChangeStatusButton } = require('../buttons/interactions/PatchNoteChangeStatusButton');
+const { PatchNoteRepublishButton } = require('../buttons/interactions/PatchNoteRepublishButton');
 
 class PatchNoteButtonComponentTwo {
     static async create(lang) {
@@ -11,7 +12,8 @@ class PatchNoteButtonComponentTwo {
 
         container.addActionRowComponents(row => row.addComponents(
             PatchNoteChangeStatusButton.create(lang),
-            SetPatchNoteVersionButton.create(lang)
+            SetPatchNoteVersionButton.create(lang),
+            // PatchNoteRepublishButton.create(lang)
         ));
 
         return container;

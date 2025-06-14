@@ -23,11 +23,22 @@ class PatchNotePickStatusButton {
         await interaction.deferReply({ flags: MessageFlags.Ephemeral });
         const [prefix, type] = interaction.customId.split(":");
         const lang = interaction.locale;
+        let nodes;
+
+        if(type === 'Planned') {
+            nodes = await PatchnoteUtils.findAllNodes(
+                interaction.guild.id, 
+                ['done']
+            );
+        }
             
-        const nodes = await PatchnoteUtils.findAllNodes(
-            interaction.guild.id, 
-            ['done', 'planned']
-        );
+        if(type === 'Done') {
+            nodes = await PatchnoteUtils.findAllNodes(
+                interaction.guild.id, 
+                ['planned']
+            );
+        }
+            
 
         if(!nodes || nodes.length === 0) {
             const container = await PatchNoteNoNodesComponent.create(lang, 'pick status');
