@@ -100,7 +100,8 @@ class PatchNoteTranslatePickLangSelectMenu {
             cleaned = cleaned.replaceAll("```", "");
             cleaned = cleaned.replaceAll("json", "");
 
-            translatedNodes = JSON.parse(cleaned);
+            const { translations } = JSON.parse(cleaned);
+            translatedNodes = translations;
         } catch (e) {
             interaction.editReply(LocalisationManager.getString('translation_failed', lang))
             return;
