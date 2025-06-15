@@ -4,4 +4,4 @@ class EPatchNoteStatus {
     static DELETED = 'deleted';
 };
 
-module.exports.EPatchNoteStatus = EPatchNoteStatus
+module.exports = EPatchNoteStatus;

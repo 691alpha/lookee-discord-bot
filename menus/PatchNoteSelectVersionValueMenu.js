@@ -4,6 +4,7 @@ const { PatchnoteUtils } = require("../utils/PatchnoteUtils");
 const { PatchNoteVersionCreatedComponent } = require("../components/responses/PatchNoteVersionCreatedComponent");
 const Versions = require("../database/models/Versions");
 const { NoVariableResponseComponent } = require("../components/responses/NoVariableResponseComponent");
+const Setups = require("../database/models/Setups");
 
 class PatchNoteSelectVersionValueMenu {
     static customId = "PatchNoteSelectVersionValueMenu";
@@ -82,8 +83,15 @@ class PatchNoteSelectVersionValueMenu {
             patch_number: latestEntry.patch_number,
             description: latestEntry.description
         });
+        const server = Setups.findOne({
+            where: {guildId: interaction.guild.id}
+        });
 
-        PatchnoteUtils.updateAllPatchNotePreviews(interaction.guild, interaction.client, lang);
+        PatchnoteUtils.updateAllPatchNotePreviews(
+            interaction.guild, 
+            interaction.client, 
+            server.defaultLang
+        );
         
         const container = await PatchNoteVersionCreatedComponent.create(lang, creationResult);
         

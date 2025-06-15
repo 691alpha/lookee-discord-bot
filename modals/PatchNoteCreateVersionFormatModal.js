@@ -4,6 +4,7 @@ const { PatchnoteUtils } = require('../utils/PatchnoteUtils');
 const { PatchNoteVersionFormatCreatedComponent } = require('../components/responses/PatchNoteVersionFormatCreatedComponent');
 const Formats = require('../database/models/Formats');
 const Versions = require('../database/models/Versions');
+const Setups = require('../database/models/Setups');
 
 class PatchNoteCreateVersionFormatModal {
     static customId = "PatchNoteCreateVersionFormatModal";
@@ -65,7 +66,15 @@ class PatchNoteCreateVersionFormatModal {
             flags: [MessageFlags.Ephemeral, MessageFlags.IsComponentsV2]
         });
 
-        PatchnoteUtils.updateAllPatchNotePreviews(interaction.guild, interaction.client, lang);
+        const server = Setups.findOne({
+            where: {guildId: interaction.guild.id}
+        });
+
+        PatchnoteUtils.updateAllPatchNotePreviews(
+            interaction.guild, 
+            interaction.client, 
+            server.defaultLang
+        );
 
     }
 }

@@ -3,11 +3,11 @@ const { PatchNoteEditNodeModal } = require("../modals/PatchNoteEditNodeModal");
 const { ModalManager } = require("../managers/ModalManager");
 const { LocalisationManager } = require("../managers/LocalisationManager");
 const { PatchnoteUtils } = require("../utils/PatchnoteUtils");
-const PatchNoteNodes = require("../database/models/PatchNoteNodes");
 const { NoVariableResponseComponent } = require("../components/responses/NoVariableResponseComponent");
 const { VariableResponseComponent } = require("../components/responses/VariableResponseComponent");
-const { PatchNoteNoNodesComponent } = require("../components/responses/PatchNoteNoNodesComponent");
-const { EPatchNoteStatus } = require("../enums/EPatchNoteStatus");
+const EPatchNoteStatus = require("../enums/EPatchNoteStatus");
+const PatchNoteNodes = require("../database/models/PatchNoteNodes");
+const Setups = require("../database/models/Setups");
 
 class PatchNoteNodeSelectMenu {
     static customId = "PatchNoteNodeSelectMenu";
@@ -77,6 +77,9 @@ class PatchNoteNodeSelectMenu {
         const type = params.type;
         const selectedIds = interaction.values;
         const selectedId = selectedIds[0];
+        const server = Setups.findOne({
+            where: {guildId: interaction.guild.id}
+        })
         
         const lang = interaction.locale;
 
@@ -119,7 +122,11 @@ class PatchNoteNodeSelectMenu {
                 { where: { id: selectedIds } }
             );
 
-            PatchnoteUtils.updateAllPatchNotePreviews(interaction.guild, interaction.client, lang);
+            PatchnoteUtils.updateAllPatchNotePreviews(
+                interaction.guild, 
+                interaction.client, 
+                server.defaultLang
+            );
 
             const container = VariableResponseComponent.create(
                 'patchnote_node_deleted', 
@@ -142,7 +149,7 @@ class PatchNoteNodeSelectMenu {
             PatchnoteUtils.updateAllPatchNotePreviews(
                 interaction.guild, 
                 interaction.client, 
-                lang
+                server.defaultLang
             );
 
             return interaction.reply({

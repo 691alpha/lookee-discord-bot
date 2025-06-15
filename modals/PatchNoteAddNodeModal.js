@@ -1,6 +1,7 @@
 const { ActionRowBuilder, ModalBuilder, TextInputBuilder, TextInputStyle, MessageFlags } = require('discord.js');
 const { LocalisationManager } = require('../managers/LocalisationManager');
 const PatchNoteNodes = require('../database/models/PatchNoteNodes');
+const Setups = require('../database/models/Setups');
 
 class PatchNoteAddNodeModal {
     static customId = "PatchNoteAddNodeModal";
@@ -59,7 +60,15 @@ class PatchNoteAddNodeModal {
 
         await PatchNoteNodes.bulkCreate(nodes);
 
-        PatchnoteUtils.updateAllPatchNotePreviews(interaction.guild, interaction.client, lang);
+        const server = Setups.findOne({
+            where: {guildId: interaction.guild.id}
+        });
+
+        PatchnoteUtils.updateAllPatchNotePreviews(
+            interaction.guild, 
+            interaction.client, 
+            server.defaultLang
+        );
 
         await interaction.editReply({
             content: LocalisationManager

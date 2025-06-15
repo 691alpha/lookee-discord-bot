@@ -10,7 +10,7 @@ const Versions = require("../../database/models/Versions");
 const Formats = require("../../database/models/Formats");
 const PatchNotes = require("../../database/models/PatchNotes");
 const { PatchNoteTranslateButtonComponent } = require("../../components/PatchNoteTranslateButtonComponent");
-const { EPatchNoteStatus } = require("../../enums/EPatchNoteStatus");
+const EPatchNoteStatus = require("../../enums/EPatchNoteStatus");
 
 class PatchNotePublishButton {
     static customId = "PatchNotePublishButton";
@@ -27,7 +27,10 @@ class PatchNotePublishButton {
 
         await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 
-        const lang = interaction.locale;
+        const server = Setups.findOne({
+            where: {guildId: interaction.guild.id}
+        });
+        const lang = server.defaultLang;
         let { client } = interaction;
         let announcementChannel;
 
@@ -78,7 +81,7 @@ class PatchNotePublishButton {
         
         const container = await PatchNoteComponent.create(
             nodes, 
-            lang, 
+            server.defaultLang, 
             'publish', 
             interaction.guild, 
             patchnoteId
@@ -133,7 +136,7 @@ class PatchNotePublishButton {
             description: LocalisationManager.getString("db_default_version_desc", lang)
         });
 
-        PatchnoteUtils.updateAllPatchNotePreviews(interaction.guild, client, lang);
+        PatchnoteUtils.updateAllPatchNotePreviews(interaction.guild, client, server.defaultLang);
         
         await interaction.editReply({
             components: [containerPublished],

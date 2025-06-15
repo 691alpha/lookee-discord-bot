@@ -8,7 +8,7 @@ const { LocalisationManager } = require('../managers/LocalisationManager');
 const Versions = require('../database/models/Versions');
 const Formats = require('../database/models/Formats');
 const { PatchNoteTranslateButton } = require('../buttons/interactions/PatchNoteTranslateButton');
-const { EPatchNoteStatus } = require('../enums/EPatchNoteStatus');
+const EPatchNoteStatus = require('../enums/EPatchNoteStatus');
 
 class PatchNoteComponent {
     static async create(nodes, lang, mode, guild, patchnoteId, version) {

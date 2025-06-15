@@ -5,6 +5,7 @@ const { PatchnoteUtils } = require("../utils/PatchnoteUtils");
 const PatchNoteNodes = require("../database/models/PatchNoteNodes");
 const { NoVariableResponseComponent } = require("../components/responses/NoVariableResponseComponent");
 const { VariableResponseComponent } = require("../components/responses/VariableResponseComponent");
+const Setups = require('../database/models/Setups');
 
 class PatchNoteEditNodeModal {
     static customId = `PatchNoteEditNodeModal`;
@@ -65,7 +66,15 @@ class PatchNoteEditNodeModal {
         node.content = newContent;
         await node.save();
 
-        PatchnoteUtils.updateAllPatchNotePreviews(interaction.guild, interaction.client, lang);
+        const server = Setups.findOne({
+            where: {guildId: interaction.guild.id}
+        });
+
+        PatchnoteUtils.updateAllPatchNotePreviews(
+            interaction.guild, 
+            interaction.client, 
+            server.defaultLang
+        );
 
         const container = VariableResponseComponent.create(
             'patchnote_node_updated', 

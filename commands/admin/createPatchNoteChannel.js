@@ -6,7 +6,8 @@ const { LocalisationManager } = require("../../managers/LocalisationManager");
 const PatchNoteNodes = require('../../database/models/PatchNoteNodes');
 const PatchNotePreviews = require('../../database/models/PatchNotesPreviews');
 const { NoVariableResponseComponent } = require('../../components/responses/NoVariableResponseComponent');
-const { EPatchNoteStatus } = require('../../enums/EPatchNoteStatus');
+const EPatchNoteStatus = require('../../enums/EPatchNoteStatus');
+const Setups = require('../../database/models/Setups');
 
 // Send a component in the current channel to manage patchnotes.
 module.exports = {
@@ -21,7 +22,6 @@ module.exports = {
         // ))
         .setDefaultMemberPermissions(PermissionsBitField.Flags.Administrator),
     async execute(interaction) {
-        const lang = interaction.locale;
 
         const nodes = await PatchNoteNodes.findAll({
             where: {
@@ -30,9 +30,14 @@ module.exports = {
             }
         });
 
+        const server = Setups.findOne({
+            where: {guildId: interaction.guild.id}
+        });
+        const lang = server.defaultLang;
+
         let outputContainer = await PatchNoteComponent.create(
             nodes, 
-            lang, 
+            server.defaultLang, 
             'edit', 
             interaction.guild
         );

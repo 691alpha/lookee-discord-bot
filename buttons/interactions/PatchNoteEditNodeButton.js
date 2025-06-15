@@ -4,7 +4,7 @@ const PatchNoteNodes = require("../../database/models/PatchNoteNodes");
 const { PatchNoteNodeSelectMenu } = require("../../menus/PatchNoteNodeSelectMenu");
 const { PatchnoteUtils } = require("../../utils/PatchnoteUtils");
 const { PatchNoteNoNodesComponent } = require("../../components/responses/PatchNoteNoNodesComponent");
-const { EPatchNoteStatus } = require("../../enums/EPatchNoteStatus");
+const EPatchNoteStatus = require("../../enums/EPatchNoteStatus");
 
 class PatchNoteEditNodeButton {
     static customId = "PatchNoteEditNodeButton";

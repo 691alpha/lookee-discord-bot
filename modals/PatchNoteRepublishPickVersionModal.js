@@ -138,9 +138,13 @@ class PatchNoteRepublishPickVersionModal {
             return interaction.editReply(NoVariableResponseComponent.create("patchnote_no_announcement_channel_found", lang));
         }
 
+        const server = Setups.findOne({
+            where: {guildId: interaction.guild.id}
+        });
+
         const container = await PatchNoteComponent.create(
             nodes, 
-            lang, 
+            server.defaultLang, 
             'republish', 
             interaction.guild,
             patchnote.id,

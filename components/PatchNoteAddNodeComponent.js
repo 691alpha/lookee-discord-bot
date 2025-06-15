@@ -1,7 +1,7 @@
 const { ContainerBuilder, TextDisplayBuilder } = require('discord.js');
 const { LocalisationManager } = require('../managers/LocalisationManager');
 const { PatchNoteAddNodeModalButton } = require('../buttons/interactions/PatchNoteAddNodeModalButton');
-const { EPatchNoteStatus } = require('../enums/EPatchNoteStatus');
+const EPatchNoteStatus = require('../enums/EPatchNoteStatus');
 
 class PatchNoteAddNodeComponent {
     static async create(lang) {
