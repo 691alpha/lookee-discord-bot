@@ -28,7 +28,7 @@ class PatchNoteTranslatePickLangSelectMenu {
                         'patchnote_lang_discord', lang, {'lang': lang}))
                     .setDescription(LocalisationManager.getString(
                         'patchnote_lang_discord_description', lang, {'lang': lang}))
-                    .setValue(lang),
+                    .setValue(`custom_${lang}`),
             )
             .setMinValues(1)
             .setMaxValues(1)
@@ -46,6 +46,7 @@ class PatchNoteTranslatePickLangSelectMenu {
         const { PatchNoteComponent } = require("../components/PatchNoteComponent");
 
         let selectedLang = interaction.values[0]; 
+        if(selectedLang.includes('custom_')) selectedLang = selectedLang.split('custom_')[1]
         const [prefix, patchnoteId] = interaction.customId.split('/');
         const lang = interaction.locale;
 
