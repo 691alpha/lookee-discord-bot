@@ -75,9 +75,10 @@ class PatchNoteTranslatePickLangSelectMenu {
         foundNodes.forEach((node) => {
             mergedNodeStrings += `${node.content}${separator}`;
         });
+        const mergedClean = mergedNodeStrings.replace(/\n/g, "\\n");
+
 
         let translatedNodes;
-
         let mistralResponse;
 
         try {
@@ -85,13 +86,23 @@ class PatchNoteTranslatePickLangSelectMenu {
                 model: "mistral-small-2503",
                 response_format: { type: "json_object" },
                 messages: [{
-                    role: 'system', content: `Translate each line. Return *only* valid json with this exact shape:
+                    role: 'system', content: `You are a translator.
+
+                        • The ONLY boundary between source items is the exact token ${separator}.
+                        • The two-character sequence "\\n" that may appear **inside** a source item is part of the text; do not modify or translate it.
+                        • Output MUST be valid JSON **exactly** in this shape and nothing else:
                         {
-                            "translations": ["<translation-1>", "<translation-2>", …]
-                        }`
+                            "translations": [
+                                "<translation-1>",
+                                "<translation-2>",
+                                …
+                            ]
+                        }
+                            
+                        Do not nest the array inside another string. Do not add headings or commentary.`
                 }, {
                     role: 'user',
-                    content: `(from English to ${selectedLang}) ${mergedNodeStrings}`
+                    content: `(from English to ${selectedLang}) ${mergedClean}`
                 }]
             })
 
