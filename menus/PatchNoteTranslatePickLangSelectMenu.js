@@ -69,7 +69,6 @@ class PatchNoteTranslatePickLangSelectMenu {
 
         if (selectedLang.includes("-")) selectedLang = selectedLang.split("-")[0];
 
-        const options = { from: 'en', to: selectedLang };
 
         const separator = "[THISISASEPARATOR]"
         let mergedNodeStrings = "";
@@ -77,10 +76,8 @@ class PatchNoteTranslatePickLangSelectMenu {
             mergedNodeStrings += `${node.content}${separator}`;
         });
 
-        let translatedMergedNodeString;
         let translatedNodes;
 
-        // let openAIResponse;
         let mistralResponse;
 
         try {
@@ -104,25 +101,11 @@ class PatchNoteTranslatePickLangSelectMenu {
             cleaned = cleaned.replaceAll("json", "");
 
             translatedNodes = JSON.parse(cleaned);
-
-
-            // openAIResponse = await client.openAIClient.responses.create({
-            //     model: "gpt-3.5-turbo",
-            //     instructions: `You are a translator. Translate the following text to the specified language and return the translated text.\
-            //     Do not add any additional text or formatting. Each translation should be separated by the provided separator: ${separator}`,
-            //     input: `(from English to ${selectedLang}) ${mergedNodeStrings}`,
-            // });
-            // translatedNodes = openAIResponse.text.split(separator);
-
-
-            // translatedMergedNodeString = await translate(mergedNodeStrings, options);
-            // translatedNodes = translatedMergedNodeString.text.split(separator);
         } catch (e) {
             interaction.editReply(LocalisationManager.getString('translation_failed', lang))
             return;
         }
 
-        console.log(translatedNodes);
         translatedNodes.forEach((translatedNodeContent, index) => {
             if (translatedNodeContent == "") return;
             foundNodes[index].content = `${translatedNodeContent}`;

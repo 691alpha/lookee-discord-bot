@@ -12,7 +12,6 @@ module.exports = class extends Client {
         });
 
         this.db = new Database();
-        // this.openAIClient = this.loadOpenAIClient();
         this.mistralClient = this.loadMistralClient();
         this.loadDatabase();
     }
@@ -21,14 +20,7 @@ module.exports = class extends Client {
         this.db.authenticate();
     }
 
-    loadOpenAIClient() {
-        return new OpenAI({
-            apiKey: process.env.OPENAI_API_KEY
-        })
-    }
-
     loadMistralClient() {
-        // magistral-small-2506
         return new Mistral({
             apiKey: process.env.MISTRAL_API_KEY,
         })
