@@ -10,6 +10,7 @@ const Versions = require("../../database/models/Versions");
 const Formats = require("../../database/models/Formats");
 const PatchNotes = require("../../database/models/PatchNotes");
 const { PatchNoteTranslateButtonComponent } = require("../../components/PatchNoteTranslateButtonComponent");
+const { EPatchNoteStatus } = require("../../enums/EPatchNoteStatus");
 
 class PatchNotePublishButton {
     static customId = "PatchNotePublishButton";
@@ -60,7 +61,8 @@ class PatchNotePublishButton {
 
         const nodes = await PatchnoteUtils.findAllNodes(
             interaction.guild.id,
-            ['done', 'planned']
+            [EPatchNoteStatus.DONE, EPatchNoteStatus.PLANNED],
+            false
         );
 
         if(!nodes || nodes.length === 0) {
@@ -87,7 +89,6 @@ class PatchNotePublishButton {
         if(!latestVersion || !latestVersion.id) {
             return interaction.reply("not good no version could be found schlecht");
         } 
-
         
         await PatchNotes.create({
             id: patchnoteId,

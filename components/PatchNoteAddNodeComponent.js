@@ -1,6 +1,7 @@
 const { ContainerBuilder, TextDisplayBuilder } = require('discord.js');
 const { LocalisationManager } = require('../managers/LocalisationManager');
 const { PatchNoteAddNodeModalButton } = require('../buttons/interactions/PatchNoteAddNodeModalButton');
+const { EPatchNoteStatus } = require('../enums/EPatchNoteStatus');
 
 class PatchNoteAddNodeComponent {
     static async create(lang) {
@@ -15,9 +16,11 @@ class PatchNoteAddNodeComponent {
         
         container.addTextDisplayComponents(text1);
 
+        
+
         container.addActionRowComponents(row => row.addComponents(
-            PatchNoteAddNodeModalButton.create('planned', lang),
-            PatchNoteAddNodeModalButton.create('done', lang)
+            PatchNoteAddNodeModalButton.create(EPatchNoteStatus.PLANNED, lang),
+            PatchNoteAddNodeModalButton.create(EPatchNoteStatus.DONE, lang)
         ));
 
         return container;

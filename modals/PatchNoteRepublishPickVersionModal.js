@@ -75,25 +75,42 @@ class PatchNoteRepublishPickVersionModal {
 
         await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 
-        const major = interaction.fields.getTextInputValue("patchNoteRepublishVersionMajorInput");
-        const feature = interaction.fields.getTextInputValue("patchNoteRepublishVersionFeatureInput");
-        const patch = interaction.fields.getTextInputValue("patchNoteRepublishVersionPatchInput");
+        let major = interaction.fields.getTextInputValue("patchNoteRepublishVersionMajorInput");
+        let feature = interaction.fields.getTextInputValue("patchNoteRepublishVersionFeatureInput");
+        let patch = interaction.fields.getTextInputValue("patchNoteRepublishVersionPatchInput");
 
         const format = await Formats.findOne({ where: { id: formatId } });
         if (!format) {
             return interaction.editReply(NoVariableResponseComponent.create("format", lang));
         }
 
+        major = parseInt(major);
+        feature = parseInt(feature);
+        patch = parseInt(patch);
+
+        if(!major || !feature || !patch) {
+            const container = NoVariableResponseComponent.create('patchnote_no_valid_number');
+            
+            interaction.editReply({
+                components: [container],
+                flags: MessageFlags.IsComponentsV2
+            })
+        }
+
         const version = await Versions.findOne({
             where: {
                 formatId: formatId,
-                major_number: parseInt(major),
-                feature_number: parseInt(feature),
-                patch_number: parseInt(patch)
+                major_number: major,
+                feature_number: feature,
+                patch_number: patch
             }
         });
         if (!version) {
-            return interaction.editReply(NoVariableResponseComponent.create("version", lang));
+            const container = NoVariableResponseComponent.create("version_not_found", lang)
+            return interaction.editReply({
+                components: [container],
+                flags: [MessageFlags.IsComponentsV2]
+            });
         }
 
         const patchnote = await PatchNotes.findOne({
@@ -125,16 +142,14 @@ class PatchNoteRepublishPickVersionModal {
             nodes, 
             lang, 
             'republish', 
-            interaction.guild
+            interaction.guild,
+            patchnote.id,
+            version
         );
 
-        await channel.send({
+        const patchnoteMessage = await channel.send({
             components: [container],
             flags: [MessageFlags.IsComponentsV2],
-        });
-
-        interaction.editReply({
-            content: LocalisationManager.getString('patchnote_republish_success', lang)
         });
 
         const containerPublished = await PatchnotePublishedComponent.create(
@@ -150,10 +165,12 @@ class PatchNoteRepublishPickVersionModal {
             )
         }
 
-        return await interaction.editReply({
+        await interaction.editReply({
             components: [containerPublished],
-            flags: [MessageFlags.IsComponentsV2, MessageFlags.Ephemeral],
+            flags: [MessageFlags.IsComponentsV2],
         })
+
+        return;
     }
 }
 

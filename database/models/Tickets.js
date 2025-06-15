@@ -1,4 +1,4 @@
-const { Model, DataTypes, Sequelize } = require("sequelize");
+const { Model, Sequelize } = require("sequelize");
 
 module.exports = class Tickets extends Model {
     static init(sequelize) {

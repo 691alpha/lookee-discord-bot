@@ -4,6 +4,7 @@ const PatchNoteNodes = require("../../database/models/PatchNoteNodes");
 const { PatchNoteNodeSelectMenu } = require("../../menus/PatchNoteNodeSelectMenu");
 const { PatchnoteUtils } = require("../../utils/PatchnoteUtils");
 const { PatchNoteNoNodesComponent } = require("../../components/responses/PatchNoteNoNodesComponent");
+const { EPatchNoteStatus } = require("../../enums/EPatchNoteStatus");
 
 class PatchNoteEditNodeButton {
     static customId = "PatchNoteEditNodeButton";
@@ -20,7 +21,11 @@ class PatchNoteEditNodeButton {
         await interaction.deferReply({ flags: MessageFlags.Ephemeral });
         const lang = interaction.locale;
             
-        const nodes = await PatchnoteUtils.findAllNodes(interaction.guild.id, ['done', 'planned']);
+        const nodes = await PatchnoteUtils.findAllNodes(
+            interaction.guild.id, 
+            [EPatchNoteStatus.DONE, EPatchNoteStatus.PLANNED],
+            false
+        );
 
         if(!nodes || nodes.length === 0) {
             const container = await PatchNoteNoNodesComponent.create(lang, 'edit');

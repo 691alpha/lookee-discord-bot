@@ -6,6 +6,7 @@ const { LocalisationManager } = require("../../managers/LocalisationManager");
 const PatchNoteNodes = require('../../database/models/PatchNoteNodes');
 const PatchNotePreviews = require('../../database/models/PatchNotesPreviews');
 const { NoVariableResponseComponent } = require('../../components/responses/NoVariableResponseComponent');
+const { EPatchNoteStatus } = require('../../enums/EPatchNoteStatus');
 
 // Send a component in the current channel to manage patchnotes.
 module.exports = {
@@ -25,7 +26,7 @@ module.exports = {
         const nodes = await PatchNoteNodes.findAll({
             where: {
                 guildId: interaction.guild.id,
-                status: ['done', 'planned']
+                status: [EPatchNoteStatus.DONE, EPatchNoteStatus.PLANNED]
             }
         });
 

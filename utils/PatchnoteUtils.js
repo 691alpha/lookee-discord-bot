@@ -3,6 +3,7 @@ const { PatchNoteComponent } = require("../components/PatchNoteComponent");
 const PatchNoteNodes = require("../database/models/PatchNoteNodes");
 const PatchNotePreviews = require("../database/models/PatchNotesPreviews");
 const Setups = require('../database/models/Setups');
+const { EPatchNoteStatus } = require("../enums/EPatchNoteStatus");
 
 class PatchnoteUtils {
     
@@ -22,7 +23,7 @@ class PatchnoteUtils {
         const nodes = await PatchNoteNodes.findAll({
             where: {
                 guildId,
-                status: ['done', 'planned']
+                status: [EPatchNoteStatus.DONE, EPatchNoteStatus.PLANNED]
             }
         });
 
@@ -60,11 +61,12 @@ class PatchnoteUtils {
      * @param {string} guildId
      * @returns the nodes or null if none found
      */
-    static async findAllNodes(guildId, status) {
+    static async findAllNodes(guildId, status, published) {
         const nodes = await PatchNoteNodes.findAll({
             where: {
                 guildId: guildId,
-                status: status
+                status: status,
+                published: published
             }
         });
 

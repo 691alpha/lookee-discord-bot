@@ -14,12 +14,9 @@ class PatchNoteAddNodeModalButton {
     }
 
     static onInteraction(interaction) {
-
-        const status = interaction.component.label.toLowerCase(); 
+        const status = interaction.customId.split(':')[1];
 
         const lang = interaction.locale;
-
-        PatchNoteAddNodeModal.pendingStatuses.set(interaction.user.id, status);
 
         return interaction.showModal(PatchNoteAddNodeModal.create(lang, status));
     }

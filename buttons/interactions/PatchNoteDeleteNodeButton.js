@@ -1,9 +1,9 @@
 const { ButtonBuilder, ButtonStyle, MessageFlags, ActionRowBuilder } = require("discord.js");
 const { LocalisationManager } = require("../../managers/LocalisationManager");
-const PatchNoteNodes = require("../../database/models/PatchNoteNodes");
 const { PatchNoteNodeSelectMenu } = require("../../menus/PatchNoteNodeSelectMenu");
 const { PatchnoteUtils } = require("../../utils/PatchnoteUtils");
 const { PatchNoteNoNodesComponent } = require("../../components/responses/PatchNoteNoNodesComponent");
+const EPatchNoteStatus = require('../../enums/EPatchNoteStatus');
 
 class PatchNoteDeleteNodeButton {
     static customId = "PatchNoteDeleteNodeButton";
@@ -22,7 +22,11 @@ class PatchNoteDeleteNodeButton {
         
         await interaction.deferReply({ flags: MessageFlags.Ephemeral });
         
-        const nodes = await PatchnoteUtils.findAllNodes(interaction.guild.id, ['done', 'planned']);
+        const nodes = await PatchnoteUtils.findAllNodes(
+            interaction.guild.id, 
+            [EPatchNoteStatus.DONE, EPatchNoteStatus.PLANNED],
+            false
+        );
 
         if(!nodes || nodes.length === 0) {
             const container = await PatchNoteNoNodesComponent.create(lang, 'delete');

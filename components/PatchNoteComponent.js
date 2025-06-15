@@ -8,15 +8,17 @@ const { LocalisationManager } = require('../managers/LocalisationManager');
 const Versions = require('../database/models/Versions');
 const Formats = require('../database/models/Formats');
 const { PatchNoteTranslateButton } = require('../buttons/interactions/PatchNoteTranslateButton');
+const { EPatchNoteStatus } = require('../enums/EPatchNoteStatus');
 
 class PatchNoteComponent {
-    static async create(nodes, lang, mode, guild, patchnoteId) {
+    static async create(nodes, lang, mode, guild, patchnoteId, version) {
         const container = await PatchNoteComponent.buildFromNodes(
             nodes, 
             lang,
             mode, 
             guild, 
-            patchnoteId
+            patchnoteId,
+            version
         );
 
         // container.setAccentColor(0x5e5e5e); 
@@ -30,7 +32,7 @@ class PatchNoteComponent {
      * @param {*} lang Language
      * @returns Component with needed information for the patchnote
      */
-    static async buildFromNodes(nodes, lang, mode, guild, patchnoteId) {
+    static async buildFromNodes(nodes, lang, mode, guild, patchnoteId, version) {
         const { PatchnoteUtils } = require('../utils/PatchnoteUtils');
 
         const container = new ContainerBuilder();
@@ -40,19 +42,19 @@ class PatchNoteComponent {
 
         if(mode === 'republish' || mode === 'translate') {
             plannedNodes = nodes.filter(node => 
-                node.status === 'planned' 
+                node.status === EPatchNoteStatus.PLANNED
                 && node.published);
             doneNodes = nodes.filter(node => 
-                node.status === 'done'
+                node.status === EPatchNoteStatus.DONE
                 && node.published
             );
         } else {
             // Gets all nodes with status 'planned' and 'done'
             plannedNodes = nodes.filter(node => 
-                node.status === 'planned' 
+                node.status === EPatchNoteStatus.PLANNED
                 && !node.published);
             doneNodes = nodes.filter(node => 
-                node.status === 'done'
+                node.status === EPatchNoteStatus.DONE
                 && !node.published
             );
         }
@@ -82,9 +84,15 @@ class PatchNoteComponent {
             `### ${LocalisationManager.getString('patchnote_section_done', lang)}\n${doneOutput}`
         );
 
-        const version = await Versions.findOne({
-                    order: [['createdAt', 'DESC']],
-                });
+        if(mode === 'republish') {
+            version = await Versions.findOne({
+                where: {id: version.id}
+            })
+        } else {
+            version = await Versions.findOne({
+                order: [['createdAt', 'DESC']],
+            });
+        }
 
         let formattedVersion = '';
         

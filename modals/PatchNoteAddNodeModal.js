@@ -3,13 +3,12 @@ const { LocalisationManager } = require('../managers/LocalisationManager');
 const PatchNoteNodes = require('../database/models/PatchNoteNodes');
 
 class PatchNoteAddNodeModal {
-    static pendingStatuses = new Map();
     static customId = "PatchNoteAddNodeModal";
     
-    static create(lang) {
+    static create(lang, status) {
         
         const modal = new ModalBuilder()
-        .setCustomId(PatchNoteAddNodeModal.customId)
+        .setCustomId(`${PatchNoteAddNodeModal.customId}/${status}`)
         .setTitle(LocalisationManager.getString('patchnote_add_node_modal_title', lang));
 		
 		for (let i = 1; i <= 5; i++) {
@@ -35,8 +34,8 @@ class PatchNoteAddNodeModal {
 
         await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 
-        const status = PatchNoteAddNodeModal.pendingStatuses.get(interaction.user.id) ?? 'planned';
-        PatchNoteAddNodeModal.pendingStatuses.delete(interaction.user.id);
+        const customId = interaction.customId;
+        const status = customId.split('/')[1];
 
         const nodes = [];
 

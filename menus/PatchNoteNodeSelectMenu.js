@@ -7,6 +7,7 @@ const PatchNoteNodes = require("../database/models/PatchNoteNodes");
 const { NoVariableResponseComponent } = require("../components/responses/NoVariableResponseComponent");
 const { VariableResponseComponent } = require("../components/responses/VariableResponseComponent");
 const { PatchNoteNoNodesComponent } = require("../components/responses/PatchNoteNoNodesComponent");
+const { EPatchNoteStatus } = require("../enums/EPatchNoteStatus");
 
 class PatchNoteNodeSelectMenu {
     static customId = "PatchNoteNodeSelectMenu";
@@ -19,9 +20,17 @@ class PatchNoteNodeSelectMenu {
         let effectiveNodes = nodes;
 
         if (type === 'Done') {
-            effectiveNodes = await PatchnoteUtils.findAllNodes(guildId, ['planned']);
+            effectiveNodes = await PatchnoteUtils.findAllNodes(
+                guildId, 
+                [EPatchNoteStatus.PLANNED], 
+                false
+            );
         } else if (type === 'Planned') {
-            effectiveNodes = await PatchnoteUtils.findAllNodes(guildId, ['done']);
+            effectiveNodes = await PatchnoteUtils.findAllNodes(
+                guildId, 
+                EPatchNoteStatus.DONE, 
+                false
+            );
         }
 
         if (!effectiveNodes || effectiveNodes.length === 0) {
