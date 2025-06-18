@@ -13,7 +13,7 @@ module.exports = {
                 type: AuditLogEvent.ChannelDelete,
                 limit: 5,
             });
-            if(!auditLogs) return console.log(`Couldn't access audit log.`);
+            if (!auditLogs) return console.log(`Couldn't access audit log.`);
 
             const deletionEntry = auditLogs.entries.find(entry =>
                 entry.target.id === channel.id
@@ -22,16 +22,16 @@ module.exports = {
             if (!deletionEntry) return console.log(`Couldn't read audit log.`);
 
             const executor = creationEntry.executor.tag;
-            if(!executor) executor = 'Unknown';
+            if (!executor) executor = 'Unknown';
 
             await LogUtils.sendLog(
                 'log_channel_deleted',
                 channel.guild,
                 0xeb4034,
                 {
-                    channelName: channel.name,
-                    guildName: channel.guild.name,
-                    executorName: executor
+                    'channelName': channel.name,
+                    'guildName': channel.guild.name,
+                    'executorName': executor
                 }
             );
 

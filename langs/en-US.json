@@ -15,7 +15,6 @@
   "send_ticket_embed_description": "Sends a Ticket embed in the current channel.",
   "set_announcement_channel_description": "Sets the current channel as announcement channel.",
   "set_announcement_channel_success": "This channel is now set as annoucement channel.",
-  
   "ticket_created": "Ticket created",
   "ticket_created_at": "Your Ticket has been created at:",
   "create_ticket": "Create a Ticket",
@@ -62,7 +61,6 @@
   "patchnotes_info_2": "These updates won’t follow a strict schedule — they're simply here to keep everyone informed.",
   "patchnotes_info_3": "To obtain the role <@&{newRoleId}> to be notified about future patch notes,",
   "patchnotes_info_4": "click the button below.",
-  
   "pick_moderator_action": "Click on the Button with the Moderator Action you want to execute.",
   "add_user_ticket": "Add User",
   "add_moderator_ticket": "Assign Moderator",
@@ -71,7 +69,6 @@
   "pick_user_to_add": "Pick the User you want to add to the Ticket.",
   "no_valid_user_selected": "No valid user selected.",
   "user_not_found": "User <@{userId}> could not be found.",
-  
   "create_patchnote_node_button": "Publish Patchnote",
   "create_patchnote_component_description": "Sends a Patchnote component in the current channel.",
   "sent_message_not_found": "Sent message could not be found.",
@@ -146,6 +143,9 @@
   "patchnote_edit_no_change_made": "No changes made.",
   "patchnote_no_valid_number": "No valid characters inputted, please provide only numbers.",
   "version_not_found": "Version not found, please input values for an already existing version.",
+  "patchnote_no_version_found": "No version found.",
+  "patchnote_set_version_failed": "New version could not be created.",
+  "patchnote_set_version_success": "New version with values [major: {major}, feature: {feature}, patch: {patch}] createds.",
   "patchnote_pick_lang_component": "Select the language you want to translate to.",
   "patchnote_title": "Patchnote",
   "patchnote_lang_de": "German",
@@ -164,20 +164,26 @@
   "patchnote_republish_pick_version_modal_major_label": "Major",
   "patchnote_republish_pick_version_modal_feature_label": "Feature",
   "patchnote_republish_pick_version_modal_patch_label": "Patch",
+  "patchnote_set_version_modal_title": "Set Version",
   "patchnote_republish_pick_version_modal_title": "Republish patchnote",
   "patchnote_invalid_version_format": "Invalid format. Please use {major}{feature}{patch}, like {1}{0}{0}.",
   "patchnote_republish_button_label": "Republish",
   "patchnote_select_format_republish_menu_placeholder": "Pick the format",
-
+  "patchnote_set_version_button_label": "Set Version",
   "log_channel_updated": "Current channel set as log channel.",
   "member_ban": "{bannedMemberName} ({bannedMemberId}) was banned from {guildName}.",
   "log_channel_deleted": "{channelName} was deleted from {guildName} by {executorName}.",
   "member_kick": "{kickedMemberName} ({kickedMemberId}) was kicked from {guildName} by {kickerName}.",
+  "log_channel_topic_changed": "Channel topic of {oldChannelName} was changed from `{oldChannelTopic}` to `{newChannelTopic}` by {executorName}.",
   "log_channel_set_and_setup_created": "Current channel set as log channel and server setup created.",
   "log_channel_created": "A new channel named {channelName} has been created by {executorName}.",
   "log_member_join": "New Member {newMemberName} with ID {newMemberId} joined {guildName}.",
+  "log_ban_no_reason": "No reason provided.",
+  "log_user_ban_add": "User {userName} with ID {userId} was banned from {guildName} by {executorName} with reason: {reason}.",
+  "log_user_ban_remove": "User {userName} with ID {userId} was un-banned from {guildName} by {executorName} with reason: {reason}.",
   "log_member_leave": "Member {memberName} with ID {memberId} left {guildName}.",
-
+  "log_channel_renamed": "Channel {oldChannelName} was renamed to {newChannelName} by {executorName}.",
+  "log_channel_moved": "Channel {oldChannelName} was moved from category {oldChannelParent} to {newChannelParent} by {executorName}.",
   "db_default_version_format": "{major}.{feature}.{patch}",
-  "db_default_version_desc": "This is a very good version." 
+  "db_default_version_desc": "This is a very good version."
 }

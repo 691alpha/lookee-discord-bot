@@ -1,6 +1,5 @@
-const { Events } = require('discord.js');
+const { Events, ChannelType, AuditLogEvent } = require('discord.js');
 const { LogUtils } = require('../../utils/LogUtils');
-const Setups = require('../../database/models/Setups');
 
 module.exports = {
     name: Events.ChannelUpdate,
@@ -9,34 +8,63 @@ module.exports = {
         if (!oldChannel.guild || oldChannel.type === ChannelType.DM) return;
 
         try {
-
-           const auditLogs = await oldChannel.guild.fetchAuditLogs({
-                type: AuditLogEvent.ChannelUpdate,
+            const auditLogs = await channel.guild.fetchAuditLogs({
+                type: AuditLogEvent.ChannelDelete,
                 limit: 5,
             });
-            if(!auditLogs) return console.log(`Couldn't access audit log.`);
+            if (!auditLogs) return console.log(`Couldn't access audit log.`);
 
-            const updatedEntry = auditLogs.entries.find(entry =>
+            const channelLog = auditLogs.entries.find(entry =>
                 entry.target.id === oldChannel.id
             );
-            if (!updatedEntry) return console.log(`Couldn't read audit log.`);
+            if (!channelLog) return console.log(`Couldn't read audit log.`);
 
-            const executor = updatedEntry.executor.tag;
-            if(!executor) executor = 'Unknown';
+            const executor = channelLog.executor.tag;
+            if (!executor) executor = 'Unknown';
 
-            await LogUtils.sendLog(
-                'log_channel_updated',
-                oldChannel.guild,
-                0xeb4034,
-                {
-                    channelName: channel.name,
-                    guildName: channel.guild.name,
-                    executorName: executor
-                }
-            );
-           
+            if (oldChannel.name !== newChannel.name) {
+                await LogUtils.sendLog(
+                    'log_channel_renamed',
+                    oldChannel.guild,
+                    0xeb4034,
+                    {
+                        'oldChannelName': oldChannel.name,
+                        'newChannelName': newChannel.name,
+                        'executorName': executor
+                    }
+                );
+            }
+
+            if (oldChannel.topic !== newChannel.topic) {
+                await LogUtils.sendLog(
+                    'log_channel_topic_changed',
+                    oldChannel.guild,
+                    0xeb4034,
+                    {
+                        'oldChannelName': oldChannel.name,
+                        'oldChannelTopic': oldChannel.topic,
+                        'newChannelTopic': newChannel.topic,
+                        'executorName': executor
+                    }
+                );
+            }
+
+            if (oldChannel.parent !== newChannel.parent) {
+                await LogUtils.sendLog(
+                    'log_channel_moved',
+                    oldChannel.guild,
+                    0xeb4034,
+                    {
+                        'oldChannelName': oldChannel.name,
+                        'oldChannelParent': oldChannel.parent,
+                        'newChannelParent': newChannel.parent,
+                        'executorName': executor
+                    }
+                );
+            }
+
         } catch (error) {
-            console.error(`[guildMemberRemove] Failed to send log message:`, error);
+            console.error(`[channelDelete] Failed to send log message:`, error);
         }
     },
 };
