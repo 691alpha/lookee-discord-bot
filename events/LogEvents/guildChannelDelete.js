@@ -21,7 +21,7 @@ module.exports = {
 
             if (!deletionEntry) return console.log(`Couldn't read audit log.`);
 
-            const executor = creationEntry.executor.tag;
+            const executor = deletionEntry.executor.tag;
             if (!executor) executor = 'Unknown';
 
             await LogUtils.sendLog(

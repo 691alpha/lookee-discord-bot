@@ -76,6 +76,7 @@
   "planned": "Planned",
   "done": "Done",
   "published": "Published",
+  
   "add_patchnote_node": "Add a new patchnote node by selecting a status below.",
   "patchnote_add_node_modal_title": "Add Patchnote Node",
   "patchnote_add_node_modal_input_description": "Node Description",
@@ -145,7 +146,7 @@
   "version_not_found": "Version not found, please input values for an already existing version.",
   "patchnote_no_version_found": "No version found.",
   "patchnote_set_version_failed": "New version could not be created.",
-  "patchnote_set_version_success": "New version with values [major: {major}, feature: {feature}, patch: {patch}] createds.",
+  "patchnote_set_version_success": "New version with values [major: {major}, feature: {feature}, patch: {patch}] created.",
   "patchnote_pick_lang_component": "Select the language you want to translate to.",
   "patchnote_title": "Patchnote",
   "patchnote_lang_de": "German",
@@ -167,9 +168,11 @@
   "patchnote_set_version_modal_title": "Set Version",
   "patchnote_republish_pick_version_modal_title": "Republish patchnote",
   "patchnote_invalid_version_format": "Invalid format. Please use {major}{feature}{patch}, like {1}{0}{0}.",
+  "version_already_exists": "A version with those values already exists.",
   "patchnote_republish_button_label": "Republish",
   "patchnote_select_format_republish_menu_placeholder": "Pick the format",
   "patchnote_set_version_button_label": "Set Version",
+
   "log_channel_updated": "Current channel set as log channel.",
   "member_ban": "{bannedMemberName} ({bannedMemberId}) was banned from {guildName}.",
   "log_channel_deleted": "{channelName} was deleted from {guildName} by {executorName}.",

@@ -1,7 +1,10 @@
 const { ActionRowBuilder, ModalBuilder, TextInputBuilder, TextInputStyle, MessageFlags } = require('discord.js');
 const { LocalisationManager } = require('../managers/LocalisationManager');
 const { NoVariableResponseComponent } = require('../components/responses/NoVariableResponseComponent');
+const { PatchnoteUtils } = require('../utils/PatchnoteUtils');
 const Versions = require('../database/models/Versions');
+const Setups = require('../database/models/Setups');
+const { VariableResponseComponent } = require('../components/responses/VariableResponseComponent');
 
 class PatchNoteSetVersionModal {
     static customId = "PatchNoteSetVersionModal";
@@ -68,7 +71,10 @@ class PatchNoteSetVersionModal {
         const patch = parseInt(interaction.fields.getTextInputValue("patchnoteSetVersionPatchInput"));
 
         if (!major || !feature || !patch) {
-            const container = NoVariableResponseComponent.create('patchnote_no_valid_number');
+            const container = NoVariableResponseComponent.create(
+                'patchnote_no_valid_number',
+                lang
+            );
 
             interaction.editReply({
                 components: [container],
@@ -76,10 +82,33 @@ class PatchNoteSetVersionModal {
             })
         }
 
+        const sameVersion = await Versions.findOne({
+            where: {
+                major_number: major,
+                feature_number: feature,
+                patch_number: patch
+            }
+        })
+
+        if(sameVersion) {
+            const container = NoVariableResponseComponent.create(
+                'version_already_exists',
+                lang
+            );
+
+            return interaction.editReply({
+                components: [container],
+                flags: MessageFlags.IsComponentsV2
+            });
+        }
+
         const latestVersion = await Versions.findOne({ order: [['createdAt', 'DESC']] });
 
         if (!latestVersion || !latestVersion.id) {
-            return interaction.editReply(LocalisationManager.getString('patchnote_no_version_found', lang));
+            return interaction.editReply(
+                LocalisationManager.getString('patchnote_no_version_found', 
+                    lang
+                ));
         }
 
         const newVersion = Versions.create({
@@ -88,23 +117,43 @@ class PatchNoteSetVersionModal {
             major_number: major,
             feature_number: feature,
             patch_number: patch,
-            description: latestVersion.description ?? LocalisationManager.getString("db_default_version_desc", lang)
+            description: latestVersion.description ?? LocalisationManager.getString(
+                "db_default_version_desc", 
+                lang
+            )
         });
 
         if (!newVersion) {
-            return interaction.editReply(LocalisationManager.getString('patchnote_set_version_failed', lang));
+            return interaction.editReply(LocalisationManager.getString(
+                'patchnote_set_version_failed', 
+                lang
+            ));
         }
 
-        const container = NoVariableResponseComponent.create('patchnote_set_version_success', {
-            major: major,
-            feature: feature,
-            patch: patch
-        });
+        const container = VariableResponseComponent.create(
+            'patchnote_set_version_success',
+            lang,
+            {
+            'major': major,
+            'feature': feature,
+            'patch': patch
+            }
+        );
 
         interaction.editReply({
             components: [container],
             flags: MessageFlags.IsComponentsV2
         });
+
+        const server = Setups.findOne({
+            where: {guildId: interaction.guild.id}
+        });
+
+        PatchnoteUtils.updateAllPatchNotePreviews(
+            interaction.guild, 
+            interaction.client, 
+            server.defaultLang
+        );
     }
 }
 
