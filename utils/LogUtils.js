@@ -6,11 +6,11 @@ class LogUtils {
     static async sendLog(placeholder, guild, color, variable) {
         try {
             const setup = await Setups.findOne({ where: { guildId: guild.id } });
-            if (!setup) return console.log(`Couldn't access database to get setup.`);
+            if (!setup) return;
 
             const logChannel = guild.channels.cache.get(setup.logChannelId);
             if (!logChannel || !logChannel.isTextBased()) {
-                return console.log(`Couldn't get logChannel, set logChannel.`);
+                return console.log(`Couldn't get logChannel, please set a logChannel.`);
             } 
 
             const container = LogResponseComponent.create(

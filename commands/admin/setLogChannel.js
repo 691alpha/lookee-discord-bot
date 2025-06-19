@@ -26,6 +26,7 @@ module.exports = {
                 closedTicketsCategoryId: null,
                 announcementChannelId: null,
                 logChannelId: channelId,
+                suggestionChannelId: null,
                 defaultLang: lang,
                 patchnoteRoleId: null
             });

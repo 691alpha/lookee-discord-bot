@@ -2,6 +2,7 @@ const {
     ContainerBuilder,
     TextDisplayBuilder,
     SeparatorBuilder,
+    MediaGalleryBuilder,
 } = require('discord.js');
 
 const { LocalisationManager } = require('../managers/LocalisationManager');
@@ -9,6 +10,7 @@ const Versions = require('../database/models/Versions');
 const Formats = require('../database/models/Formats');
 const { PatchNoteTranslateButton } = require('../buttons/interactions/PatchNoteTranslateButton');
 const EPatchNoteStatus = require('../enums/EPatchNoteStatus');
+const { SuggestionButton } = require('../buttons/interactions/SuggestionButton');
 
 class PatchNoteComponent {
     static async create(nodes, lang, mode, guild, patchnoteId, version) {
@@ -126,13 +128,37 @@ class PatchNoteComponent {
                 minute: '2-digit',
                 second: '2-digit',
                 hour12: false
-            })}`);
+            })}`
+        );
+
+        const noNodeAddedText = new TextDisplayBuilder().setContent(
+            `${LocalisationManager.getString('patchnote_section_empty', lang)}`
+        );
+
+        const mediaGallery = new MediaGalleryBuilder().addItems(
+            
+        );
 
         if(mode === 'edit') {
-            container.addTextDisplayComponents(title);
-            container.addTextDisplayComponents(doneText);
-            container.addSeparatorComponents(separator);
-            container.addTextDisplayComponents(plannedText); 
+            if(doneLines.length < 1 && plannedLines.length < 1) {
+                container.addTextDisplayComponents(title);
+                container.addTextDisplayComponents(noNodeAddedText);
+                container.addMediaGalleryComponents(mediaGallery);
+            } else if(plannedLines.length < 1) {
+                container.addTextDisplayComponents(title);
+                container.addTextDisplayComponents(doneText);
+                container.addMediaGalleryComponents(mediaGallery);
+            } else if(doneLines.length < 1) {
+                container.addTextDisplayComponents(title);
+                container.addTextDisplayComponents(plannedText);
+                container.addMediaGalleryComponents(mediaGallery);
+            } else {
+                container.addTextDisplayComponents(title);
+                container.addTextDisplayComponents(doneText);
+                container.addSeparatorComponents(separator);
+                container.addTextDisplayComponents(plannedText); 
+                container.addMediaGalleryComponents(mediaGallery);
+            }
             
             return container;
         }
@@ -154,28 +180,34 @@ class PatchNoteComponent {
         if(plannedLines.length < 1) {
             container.addTextDisplayComponents(title);
             container.addTextDisplayComponents(doneText);
+            container.addMediaGalleryComponents(mediaGallery);
             container.addTextDisplayComponents(pingText);
             container.addActionRowComponents(row => row.addComponents(
                 PatchNoteTranslateButton.create(lang, patchnoteId),
-                PatchNoteGetPingRoleButton.create(lang)
+                PatchNoteGetPingRoleButton.create(lang),
+                SuggestionButton.create(lang)
             ));
         } else if(doneLines.length < 1) {
             container.addTextDisplayComponents(title);
             container.addTextDisplayComponents(plannedText);
+            container.addMediaGalleryComponents(mediaGallery);
             container.addTextDisplayComponents(pingText);
             container.addActionRowComponents(row => row.addComponents(
                 PatchNoteTranslateButton.create(lang, patchnoteId),
-                PatchNoteGetPingRoleButton.create(lang)
+                PatchNoteGetPingRoleButton.create(lang),
+                SuggestionButton.create(lang)
             ));
         } else {
             container.addTextDisplayComponents(title);
             container.addTextDisplayComponents(doneText);
             container.addSeparatorComponents(separator);
-            container.addTextDisplayComponents(plannedText); 
+            container.addTextDisplayComponents(plannedText);
+            container.addMediaGalleryComponents(mediaGallery);
             container.addTextDisplayComponents(pingText);
             container.addActionRowComponents(row => row.addComponents(
                 PatchNoteTranslateButton.create(lang, patchnoteId),
-                PatchNoteGetPingRoleButton.create(lang)
+                PatchNoteGetPingRoleButton.create(lang),
+                SuggestionButton.create(lang)
             ));
         }
         

@@ -1,6 +1,7 @@
 const {SlashCommandBuilder, MessageFlags, PermissionsBitField} = require('discord.js');
 const { LocalisationManager } = require("../../managers/LocalisationManager");
 const Setups = require('../../database/models/Setups');
+const { NoVariableResponseComponent } = require('../../components/responses/NoVariableResponseComponent');
 
 // Sets the current channel as 'announcement' channel which is used to send patchnotes
 module.exports = {
@@ -33,6 +34,7 @@ module.exports = {
                 assignedTicketsCategoryId: null,
                 unassignedTicketsCategoryId: null,
                 closedTicketsCategoryId: null,
+                suggestionChannelId: null,
                 announcementChannelId: interaction.channel.id,
                 logChannelId: null,
                 defaultLang: 'en-US',
@@ -45,12 +47,14 @@ module.exports = {
                     { where: { guildId: interaction.guild.id } }
                 );
 
+        const container = NoVariableResponseComponent.create(
+            'set_announcement_channel_success', 
+            lang
+        )
+
         await interaction.reply({
-            content: LocalisationManager.getString(
-                'set_announcement_channel_success', 
-                lang
-            ),
-            flags: MessageFlags.Ephemeral,
+            components: [container],
+            flags: [MessageFlags.Ephemeral, MessageFlags.IsComponentsV2],
         })
     },
 };

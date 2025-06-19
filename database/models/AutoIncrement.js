@@ -29,6 +29,9 @@ module.exports = class AutoIncrement extends Model {
       formats: {
         type: Sequelize.BIGINT,
       },
+      suggestions: {
+        type: Sequelize.BIGINT,
+      },
     }, {
       sequelize,
       tableName: 'auto_increments',

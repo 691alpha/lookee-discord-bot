@@ -4,6 +4,7 @@ const PatchNoteNodes = require("../database/models/PatchNoteNodes");
 const PatchNotePreviews = require("../database/models/PatchNotesPreviews");
 const Setups = require('../database/models/Setups');
 const EPatchNoteStatus = require("../enums/EPatchNoteStatus");
+const { Op } = require("sequelize");
 
 class PatchnoteUtils {
     
@@ -23,7 +24,7 @@ class PatchnoteUtils {
         const nodes = await PatchNoteNodes.findAll({
             where: {
                 guildId,
-                status: [EPatchNoteStatus.DONE || EPatchNoteStatus.PLANNED]
+                [Op.or]: [{status: EPatchNoteStatus.PLANNED}, {status: EPatchNoteStatus.DONE}]
             }
         });
 
@@ -104,6 +105,7 @@ class PatchnoteUtils {
                     closedTicketsCategoryId: null,
                     announcementChannelId: null,
                     logChannelId: null,
+                    suggestionChannelId: null,
                     defaultLang: 'en-US',
                     patchnoteRoleId: role.id
                 });

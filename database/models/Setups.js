@@ -18,6 +18,10 @@ module.exports = class Setups extends Model {
                 type: Sequelize.STRING,
                 allowNull: true,
             },
+            suggestionChannelId: {
+                type: Sequelize.STRING,
+                allowNull: true,
+            },
             assignedTicketsCategoryId: {
                 type: Sequelize.STRING,
                 allowNull: true,

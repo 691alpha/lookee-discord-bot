@@ -38,7 +38,7 @@ class LocalisationManager {
         const lm = LocalisationManager.getInstance();
         let currentLangFile = lm._lang[langKey];
         if (!currentLangFile) {
-            console.log(`Lang File ${langKey} not implemented yet.`);
+            // console.log(`Lang File ${langKey} not implemented yet.`);
             langKey = "en-US";
             currentLangFile = lm._lang[langKey];
         }

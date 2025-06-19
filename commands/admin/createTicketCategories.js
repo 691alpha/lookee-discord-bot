@@ -46,6 +46,7 @@ module.exports = {
                 assignedTicketsCategoryId: assignedCategory.id,
                 unassignedTicketsCategoryId: unassignedCategory.id,
                 closedTicketsCategoryId: closedCategory.id,
+                suggestionChannelId: null,
                 announcementChannelId: null,
                 logChannelId: null,
                 defaultLang: 'en-US',

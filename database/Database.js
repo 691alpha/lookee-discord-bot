@@ -10,6 +10,7 @@ const PatchNoteNode = require('./models/PatchNoteNodes.js');
 const PatchNotePreview = require('./models/PatchNotesPreviews.js');
 const Formats = require('./models/Formats.js');
 const Versions = require('./models/Versions.js');
+const Suggestions = require('./models/Suggestions.js');
 // const Message = require('./models/Messages.js');
 
 dotenv.config();
@@ -39,6 +40,7 @@ module.exports = class Database {
                 this.initConnection(AutoIncrementModel);
                 this.initConnection(TicketModel);
                 this.initConnection(PatchNote);
+                this.initConnection(Suggestions);
                 this.initConnection(PatchNoteNode);
                 this.initConnection(PatchNotePreview);
                 this.initConnection(Formats);
