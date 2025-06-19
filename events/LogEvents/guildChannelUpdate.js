@@ -8,8 +8,8 @@ module.exports = {
         if (!oldChannel.guild || oldChannel.type === ChannelType.DM) return;
 
         try {
-            const auditLogs = await channel.guild.fetchAuditLogs({
-                type: AuditLogEvent.ChannelDelete,
+            const auditLogs = await oldChannel.guild.fetchAuditLogs({
+                type: AuditLogEvent.ChannelUpdate,
                 limit: 5,
             });
             if (!auditLogs) return console.log(`Couldn't access audit log.`);
@@ -29,6 +29,7 @@ module.exports = {
                     0xeb4034,
                     {
                         'oldChannelName': oldChannel.name,
+                        'oldChannelId': oldChannel.id,
                         'newChannelName': newChannel.name,
                         'executorName': executor
                     }
@@ -42,6 +43,7 @@ module.exports = {
                     0xeb4034,
                     {
                         'oldChannelName': oldChannel.name,
+                        'oldChannelId': oldChannel.id,
                         'oldChannelTopic': oldChannel.topic,
                         'newChannelTopic': newChannel.topic,
                         'executorName': executor
@@ -56,6 +58,7 @@ module.exports = {
                     0xeb4034,
                     {
                         'oldChannelName': oldChannel.name,
+                        'oldChannelId': oldChannel.id,
                         'oldChannelParent': oldChannel.parent,
                         'newChannelParent': newChannel.parent,
                         'executorName': executor
@@ -64,7 +67,7 @@ module.exports = {
             }
 
         } catch (error) {
-            console.error(`[channelDelete] Failed to send log message:`, error);
+            console.error(`[channelUpdate] Failed to send log message:`, error);
         }
     },
 };

@@ -1,4 +1,4 @@
-const { Events } = require('discord.js');
+const { Events, AuditLogEvent } = require('discord.js');
 const { LogUtils } = require('../../utils/LogUtils');
 const Setups = require('../../database/models/Setups');
 const { LocalisationManager } = require('../../managers/LocalisationManager');
@@ -11,8 +11,8 @@ module.exports = {
 
         try {
 
-            const auditLogs = await channel.guild.fetchAuditLogs({
-                type: AuditLogEvent.ChannelDelete,
+            const auditLogs = await ban.guild.fetchAuditLogs({
+                type: AuditLogEvent.MemberBanAdd,
                 limit: 5,
             });
             if (!auditLogs) return console.log(`Couldn't access audit log.`);
@@ -22,7 +22,7 @@ module.exports = {
             );
             if (!banLog) return console.log(`Couldn't read audit log.`);
 
-            const executor = channelLog.executor.tag;
+            const executor = banLog.executor.tag;
             if (!executor) executor = 'Unknown';
 
             const guild = Setups.findOne({
@@ -36,18 +36,18 @@ module.exports = {
                 ban.guild,
                 0xff9933,
                 {
-                    'userName': member.user.tag,
-                    'userId': member.user.id,
+                    'userName': ban.user.tag,
+                    'userId': ban.user.id,
                     'guildName': ban.guild.name,
                     'reason': ban.reason || LocalisationManager.getString(
                         'log_ban_no_reason',
                         guild.defaultLang || 'en-US'
                     ),
-                    'executorName': member.guild.name || 'Unknown'
+                    'executorName': executor || 'Unknown'
                 }
             );
         } catch (error) {
-            console.error(`[guildMemberRemove] Failed to send log message:`, error);
+            console.error(`[guildBanAdd] Failed to send log message:`, error);
         }
     },
 };

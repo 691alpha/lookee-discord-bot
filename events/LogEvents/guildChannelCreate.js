@@ -29,6 +29,7 @@ module.exports = {
                 0x00FF00,
                 {
                     'channelName': channel.name,
+                    'channelId': channel.id,
                     'executorName': executor
                 },
                 

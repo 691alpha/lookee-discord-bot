@@ -30,6 +30,7 @@ module.exports = {
                 0xeb4034,
                 {
                     'channelName': channel.name,
+                    'channelId': channel.id,
                     'guildName': channel.guild.name,
                     'executorName': executor
                 }
