@@ -32,6 +32,12 @@ module.exports = class AutoIncrement extends Model {
       suggestions: {
         type: Sequelize.BIGINT,
       },
+      patchnote_categories: {
+        type: Sequelize.BIGINT,
+      },
+      patchnote_attachments: {
+        type: Sequelize.BIGINT,
+      },
     }, {
       sequelize,
       tableName: 'auto_increments',

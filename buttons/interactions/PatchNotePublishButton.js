@@ -11,6 +11,7 @@ const Formats = require("../../database/models/Formats");
 const PatchNotes = require("../../database/models/PatchNotes");
 const { PatchNoteTranslateButtonComponent } = require("../../components/PatchNoteTranslateButtonComponent");
 const EPatchNoteStatus = require("../../enums/EPatchNoteStatus");
+const PatchNoteAttachments = require("../../database/models/PatchNoteAttachments");
 
 class PatchNotePublishButton {
     static customId = "PatchNotePublishButton";
@@ -78,14 +79,30 @@ class PatchNotePublishButton {
         };
 
         const patchnoteId = await client.db.getNextId('patchnotes');
+
+        const attachments = await PatchNoteAttachments.findAll({
+            where: {
+                guildId: interaction.guild.id,
+                published: false,
+                cleared: false
+            }
+        });
         
         const container = await PatchNoteComponent.create(
             nodes, 
             server.defaultLang, 
             'publish', 
             interaction.guild, 
-            patchnoteId
+            patchnoteId,
+            attachments
         );
+
+        for(const attachment of attachments) {
+            PatchNoteAttachments.update(
+                {published: true},
+                {where: {id: attachment.id}}
+            )
+        }
 
         const latestVersion = await Versions.findOne({ order: [['createdAt', 'DESC']] });
         

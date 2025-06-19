@@ -11,6 +11,8 @@ const PatchNotePreview = require('./models/PatchNotesPreviews.js');
 const Formats = require('./models/Formats.js');
 const Versions = require('./models/Versions.js');
 const Suggestions = require('./models/Suggestions.js');
+const PatchNoteCategories = require('./models/PatchNoteCategories.js');
+const PatchNoteAttachments = require('./models/PatchNoteAttachments.js');
 // const Message = require('./models/Messages.js');
 
 dotenv.config();
@@ -45,6 +47,8 @@ module.exports = class Database {
                 this.initConnection(PatchNotePreview);
                 this.initConnection(Formats);
                 this.initConnection(Versions);
+                this.initConnection(PatchNoteCategories);
+                this.initConnection(PatchNoteAttachments);
                 // this.initConnection(Message);
 
                 // Foreign keys
@@ -56,7 +60,13 @@ module.exports = class Database {
 
                 PatchNote.hasMany(PatchNoteNode, { foreignKey: 'patchnoteId' });
                 PatchNoteNode.belongsTo(PatchNote, { foreignKey: 'patchnoteId' });
+                
+                PatchNote.hasMany(PatchNoteAttachments, { foreignKey: 'patchnoteId' });
+                PatchNoteAttachments.belongsTo(PatchNote, { foreignKey: 'patchnoteId' });
 
+                PatchNoteNode.hasOne(PatchNoteCategories, { foreignKey: 'categoryId' });
+                PatchNoteCategories.belongsTo(PatchNoteNode, { foreignKey: 'categoryId' });
+                
                 // TicketModel.hasMany(Message, {foreignKey: 'ticketMessage'});
                 // Message.belongsTo(TicketModel, {foreignKey: 'ticketId'});
 

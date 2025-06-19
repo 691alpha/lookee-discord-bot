@@ -3,6 +3,7 @@ const {
     TextDisplayBuilder,
     SeparatorBuilder,
     MediaGalleryBuilder,
+    MediaGalleryItemBuilder,
 } = require('discord.js');
 
 const { LocalisationManager } = require('../managers/LocalisationManager');
@@ -11,16 +12,19 @@ const Formats = require('../database/models/Formats');
 const { PatchNoteTranslateButton } = require('../buttons/interactions/PatchNoteTranslateButton');
 const EPatchNoteStatus = require('../enums/EPatchNoteStatus');
 const { SuggestionButton } = require('../buttons/interactions/SuggestionButton');
+const PatchNoteAttachments = require('../database/models/PatchNoteAttachments');
+const { NoVariableResponseComponent } = require('./responses/NoVariableResponseComponent');
 
 class PatchNoteComponent {
-    static async create(nodes, lang, mode, guild, patchnoteId, version) {
+    static async create(nodes, lang, mode, guild, patchnoteId, version, attachments) {
         const container = await PatchNoteComponent.buildFromNodes(
             nodes, 
             lang,
             mode, 
             guild, 
             patchnoteId,
-            version
+            version,
+            attachments
         );
 
         // container.setAccentColor(0x5e5e5e); 
@@ -34,7 +38,7 @@ class PatchNoteComponent {
      * @param {*} lang Language
      * @returns Component with needed information for the patchnote
      */
-    static async buildFromNodes(nodes, lang, mode, guild, patchnoteId, version) {
+    static async buildFromNodes(nodes, lang, mode, guild, patchnoteId, version, attachments) {
         const { PatchnoteUtils } = require('../utils/PatchnoteUtils');
 
         const container = new ContainerBuilder();
@@ -131,35 +135,54 @@ class PatchNoteComponent {
             })}`
         );
 
+        const mediaGallery = new MediaGalleryBuilder();
+
+        if(!attachments || attachments.length === 0) {
+            attachments = await PatchNoteAttachments.findAll({
+                where: {
+                    guildId: guild.id,
+                    published: false,
+                    cleared: false
+                }
+            });
+        }
+
+        if(attachments.length != 0) {
+
+            let mediaGalleryItems = [];
+    
+            for(const attachment of attachments) {
+                mediaGalleryItems.push(new MediaGalleryItemBuilder().setURL(
+                    attachment.attachmentUrl
+                ));    
+            }
+
+            mediaGallery.addItems(mediaGalleryItems);
+        }
+
+
         const noNodeAddedText = new TextDisplayBuilder().setContent(
             `${LocalisationManager.getString('patchnote_section_empty', lang)}`
         );
 
-        const mediaGallery = new MediaGalleryBuilder().addItems(
-            
-        );
-
         if(mode === 'edit') {
+            container.addTextDisplayComponents(title);
             if(doneLines.length < 1 && plannedLines.length < 1) {
-                container.addTextDisplayComponents(title);
                 container.addTextDisplayComponents(noNodeAddedText);
-                container.addMediaGalleryComponents(mediaGallery);
             } else if(plannedLines.length < 1) {
-                container.addTextDisplayComponents(title);
                 container.addTextDisplayComponents(doneText);
-                container.addMediaGalleryComponents(mediaGallery);
             } else if(doneLines.length < 1) {
-                container.addTextDisplayComponents(title);
                 container.addTextDisplayComponents(plannedText);
-                container.addMediaGalleryComponents(mediaGallery);
             } else {
-                container.addTextDisplayComponents(title);
                 container.addTextDisplayComponents(doneText);
                 container.addSeparatorComponents(separator);
-                container.addTextDisplayComponents(plannedText); 
-                container.addMediaGalleryComponents(mediaGallery);
+                container.addTextDisplayComponents(plannedText);
             }
-            
+            if(attachments.length != 0) {
+                container.addSeparatorComponents(separator);
+                container.addMediaGalleryComponents(mediaGallery);
+            } 
+
             return container;
         }
 
@@ -180,7 +203,10 @@ class PatchNoteComponent {
         if(plannedLines.length < 1) {
             container.addTextDisplayComponents(title);
             container.addTextDisplayComponents(doneText);
-            container.addMediaGalleryComponents(mediaGallery);
+            if(attachments.length != 0) {
+                container.addSeparatorComponents(separator);
+                container.addMediaGalleryComponents(mediaGallery);
+            } 
             container.addTextDisplayComponents(pingText);
             container.addActionRowComponents(row => row.addComponents(
                 PatchNoteTranslateButton.create(lang, patchnoteId),
@@ -190,7 +216,10 @@ class PatchNoteComponent {
         } else if(doneLines.length < 1) {
             container.addTextDisplayComponents(title);
             container.addTextDisplayComponents(plannedText);
-            container.addMediaGalleryComponents(mediaGallery);
+            if(attachments.length != 0) {
+                container.addSeparatorComponents(separator);
+                container.addMediaGalleryComponents(mediaGallery);
+            } 
             container.addTextDisplayComponents(pingText);
             container.addActionRowComponents(row => row.addComponents(
                 PatchNoteTranslateButton.create(lang, patchnoteId),
@@ -202,7 +231,10 @@ class PatchNoteComponent {
             container.addTextDisplayComponents(doneText);
             container.addSeparatorComponents(separator);
             container.addTextDisplayComponents(plannedText);
-            container.addMediaGalleryComponents(mediaGallery);
+            if(attachments.length != 0) {
+                container.addSeparatorComponents(separator);
+                container.addMediaGalleryComponents(mediaGallery);
+            } 
             container.addTextDisplayComponents(pingText);
             container.addActionRowComponents(row => row.addComponents(
                 PatchNoteTranslateButton.create(lang, patchnoteId),
