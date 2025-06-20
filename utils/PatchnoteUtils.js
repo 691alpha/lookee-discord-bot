@@ -36,7 +36,8 @@ class PatchnoteUtils {
 
                 const outputContainer = await PatchNoteComponent.create(
                     nodes, 
-                    lang, 
+                    lang,
+                    client.db,
                     'edit', 
                     guild
                 );

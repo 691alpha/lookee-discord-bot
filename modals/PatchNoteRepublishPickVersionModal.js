@@ -144,7 +144,8 @@ class PatchNoteRepublishPickVersionModal {
 
         const container = await PatchNoteComponent.create(
             nodes, 
-            server.defaultLang, 
+            server.defaultLang,
+            interaction.client.db,
             'republish', 
             interaction.guild,
             patchnote.id,

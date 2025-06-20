@@ -126,6 +126,7 @@ class PatchNoteTranslatePickLangSelectMenu {
         const container = await PatchNoteComponent.create(
             foundNodes,
             selectedLang,
+            interaction.client.db,
             'translate',
             interaction.guild,
             patchnoteId

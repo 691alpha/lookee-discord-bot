@@ -57,6 +57,7 @@ module.exports = {
         let outputContainer = await PatchNoteComponent.create(
             nodes, 
             server.defaultLang, 
+            interaction.client.db,
             'edit', 
             interaction.guild
         );

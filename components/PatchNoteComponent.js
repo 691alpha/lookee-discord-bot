@@ -17,10 +17,11 @@ const PatchNoteCategories = require('../database/models/PatchNoteCategories');
 class PatchNoteComponent {
     curr_categories = null;
 
-    static async create(nodes, lang, mode, guild, patchnoteId, version, attachments) {
+    static async create(nodes, lang, db, mode, guild, patchnoteId, version, attachments) {
         const container = await PatchNoteComponent.buildFromNodes(
             nodes, 
             lang,
+            db,
             mode, 
             guild, 
             patchnoteId,
@@ -37,7 +38,7 @@ class PatchNoteComponent {
      * @param {*} lang Language
      * @returns Component with needed information for the patchnote
      */
-    static async buildFromNodes(nodes, lang, mode, guild, patchnoteId, version, attachments) {
+    static async buildFromNodes(nodes, lang, db, mode, guild, patchnoteId, version, attachments) {
         const { PatchnoteUtils } = require('../utils/PatchnoteUtils');
 
         const container = new ContainerBuilder();
@@ -71,7 +72,14 @@ class PatchNoteComponent {
 
         // Build (nodes) final string
         for (const [categoryId, nodes] of Object.entries(sortedNodes)) {
-            const category = PatchNoteComponent.findCategory(categoryId)
+            const category = PatchNoteComponent.findCategory(categoryId);
+            if(!category) {
+                category = await PatchNoteCategories.create({
+                    id: db.getNextId('patchnote_categories'),
+                    name: 'Done',
+                    guildId: guild.id
+                });
+            }
             if(!sortedOutputs[categoryId]) sortedOutputs[categoryId] = `### ${category.name}\n`;
 
             nodes.forEach((node) => {
