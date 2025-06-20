@@ -148,7 +148,10 @@ class PatchNoteComponent {
     }
 
     static findCategory(categoryId) {
-        let foundCategory = null;
+        let foundCategory = PatchNoteComponent.curr_categories.length > 0 
+                            ? PatchNoteComponent.curr_categories[0] 
+                            : null;
+        
         PatchNoteComponent.curr_categories.forEach((category)=> {
             if(category.id == categoryId) return foundCategory = category;
         })
