@@ -19,17 +19,11 @@ class PatchNoteNodeSelectMenu {
 
         let effectiveNodes = nodes;
 
-        if (type === 'Done') {
+        if (type != 'delete' && type != 'edit') {
             effectiveNodes = await PatchnoteUtils.findAllNodes(
                 guildId, 
-                [EPatchNoteStatus.PLANNED], 
-                false
-            );
-        } else if (type === 'Planned') {
-            effectiveNodes = await PatchnoteUtils.findAllNodes(
-                guildId, 
-                EPatchNoteStatus.DONE, 
-                false
+                false, 
+                {[Op.ne]: type}
             );
         }
 
@@ -41,9 +35,9 @@ class PatchNoteNodeSelectMenu {
             effectiveNodes.slice(0, 25).map(node => ({
                 label: node.content.slice(0, 80),
                 value: node.id.toString(),
-                description: `${LocalisationManager.getString(
-                    'patchnote_node_status_description',
-                    lang)}${node.status}`
+                // description: `${LocalisationManager.getString(
+                //     'patchnote_node_status_description',
+                //     lang)}${node.status}`
             }))
         );
 
@@ -59,7 +53,7 @@ class PatchNoteNodeSelectMenu {
                 'patchnote_select_edit_placeholder', 
                 lang
             ));
-        } else if (type === 'Done' || type === 'Planned') {
+        } else {
             menu.setMinValues(1).setMaxValues(Math.min(25, effectiveNodes.length));
             menu.setPlaceholder(LocalisationManager.getString(
                 'patchnote_select_change_status_placeholder', 
@@ -139,10 +133,10 @@ class PatchNoteNodeSelectMenu {
                 flags: [MessageFlags.Ephemeral, MessageFlags.IsComponentsV2]
             })
         }
-        if (type === 'Done' || type === 'Planned') {
+        else {
 
             await PatchNoteNodes.update(
-                { status: type },
+                { category: type },
                 { where: { id: selectedIds } }
             );
 

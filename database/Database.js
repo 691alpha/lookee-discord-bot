@@ -66,7 +66,7 @@ module.exports = class Database {
 
                 PatchNoteNode.hasOne(PatchNoteCategories, { foreignKey: 'categoryId' });
                 PatchNoteCategories.belongsTo(PatchNoteNode, { foreignKey: 'categoryId' });
-                
+
                 // TicketModel.hasMany(Message, {foreignKey: 'ticketMessage'});
                 // Message.belongsTo(TicketModel, {foreignKey: 'ticketId'});
 

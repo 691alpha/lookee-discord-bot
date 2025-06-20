@@ -23,7 +23,6 @@ class PatchNoteEditNodeButton {
             
         const nodes = await PatchnoteUtils.findAllNodes(
             interaction.guild.id, 
-            [EPatchNoteStatus.DONE, EPatchNoteStatus.PLANNED],
             false
         );
 

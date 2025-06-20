@@ -24,7 +24,7 @@ class PatchnoteUtils {
         const nodes = await PatchNoteNodes.findAll({
             where: {
                 guildId,
-                [Op.or]: [{status: EPatchNoteStatus.PLANNED}, {status: EPatchNoteStatus.DONE}]
+                published: false
             }
         });
 
@@ -62,11 +62,11 @@ class PatchnoteUtils {
      * @param {string} guildId
      * @returns the nodes or null if none found
      */
-    static async findAllNodes(guildId, status, published) {
+    static async findAllNodes(guildId, published, category) {
         const nodes = await PatchNoteNodes.findAll({
             where: {
                 guildId: guildId,
-                status: status,
+                categoryId: category,
                 published: published
             }
         });
@@ -99,7 +99,7 @@ class PatchnoteUtils {
             } else {
                 await Setups.create({
                     id: await db.getNextId('setups'),
-                    guildId: guildId,
+                    guildId: guild.id,
                     assignedTicketsCategoryId: null,
                     unassignedTicketsCategoryId: null,
                     closedTicketsCategoryId: null,
@@ -111,7 +111,6 @@ class PatchnoteUtils {
                 });
             }
         }
-
         return role;
     }
 }

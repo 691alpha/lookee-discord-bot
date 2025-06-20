@@ -2,8 +2,8 @@ const { ButtonBuilder, ButtonStyle, MessageFlags, StringSelectMenuBuilder, Actio
 const { LocalisationManager } = require("../../managers/LocalisationManager");
 const { VariableResponseComponent } = require("../../components/responses/VariableResponseComponent");
 const { NoVariableResponseComponent } = require("../../components/responses/NoVariableResponseComponent");
-const PatchNoteAttachments = require('../../database/models/PatchNoteAttachments');
 const { PatchnoteUtils } = require("../../utils/PatchnoteUtils");
+const PatchNoteAttachments = require('../../database/models/PatchNoteAttachments');
 
 class PatchNoteAddImageButton {
     static customId = "PatchNoteAddImageButton";

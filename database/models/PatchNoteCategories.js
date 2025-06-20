@@ -9,7 +9,7 @@ module.exports = class PatchNoteCategories extends Model {
                 allowNull: false,
                 primaryKey: true,
             },
-            category: {
+            name: {
                 type: Sequelize.TEXT,
                 allowNull: false,
             },

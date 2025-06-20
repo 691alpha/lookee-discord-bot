@@ -24,8 +24,7 @@ class PatchNoteDeleteNodeButton {
         
         const nodes = await PatchnoteUtils.findAllNodes(
             interaction.guild.id, 
-            [EPatchNoteStatus.DONE, EPatchNoteStatus.PLANNED],
-            0
+            false,
         );
 
         if(!nodes || nodes.length === 0) {
