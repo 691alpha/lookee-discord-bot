@@ -72,7 +72,7 @@ class PatchNoteComponent {
 
         // Build (nodes) final string
         for (const [categoryId, nodes] of Object.entries(sortedNodes)) {
-            const category = PatchNoteComponent.findCategory(categoryId);
+            let category = PatchNoteComponent.findCategory(categoryId);
             if(!category) {
                 category = await PatchNoteCategories.create({
                     id: await db.getNextId('patchnote_categories'),
