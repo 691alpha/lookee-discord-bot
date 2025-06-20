@@ -110,7 +110,14 @@ module.exports = class Database {
             if (data.length == 0) AutoIncrementModel.create({
                 setups: 0,
                 tickets: 0,
-                messages: 0
+                messages: 0,
+                patchnote_nodes: 0,
+                patchnotes: 0,
+                versions: 0,
+                formats: 0,
+                suggestions: 0,
+                patchnote_categories: 0,
+                patchnote_attachments: 0
             });
         });
     }
