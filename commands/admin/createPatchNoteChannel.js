@@ -31,14 +31,14 @@ module.exports = {
             }
         });
 
-        const server = await Setups.findOne({
+        const serverSetup = await Setups.findOne({
             where: {guildId: interaction.guild.id}
         });
 
         const {db} = interaction.client;
 
-        if(!server) {
-            await Setups.create({
+        if(!serverSetup) {
+            serverSetup = await Setups.create({
                 id: await db.getNextId('setups'),
                 guildId: interaction.guild.id,
                 assignedTicketsCategoryId: null,
@@ -52,11 +52,11 @@ module.exports = {
             });
         }
 
-        const lang = server.defaultLang;
+        const lang = serverSetup.defaultLang;
 
         let outputContainer = await PatchNoteComponent.create(
             nodes, 
-            server.defaultLang, 
+            serverSetup.defaultLang, 
             interaction.client.db,
             'edit', 
             interaction.guild

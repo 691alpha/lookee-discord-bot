@@ -75,7 +75,7 @@ class PatchNoteComponent {
             const category = PatchNoteComponent.findCategory(categoryId);
             if(!category) {
                 category = await PatchNoteCategories.create({
-                    id: db.getNextId('patchnote_categories'),
+                    id: await db.getNextId('patchnote_categories'),
                     name: 'Done',
                     guildId: guild.id
                 });
