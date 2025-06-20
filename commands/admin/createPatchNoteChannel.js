@@ -31,7 +31,7 @@ module.exports = {
             }
         });
 
-        const serverSetup = await Setups.findOne({
+        let serverSetup = await Setups.findOne({
             where: {guildId: interaction.guild.id}
         });
 
