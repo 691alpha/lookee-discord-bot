@@ -3,7 +3,6 @@ const {
 } = require('discord.js');
 
 const { SetPatchNoteVersionButton } = require('../buttons/interactions/SetPatchNoteVersionButton');
-const { PatchNoteChangeStatusButton } = require('../buttons/interactions/PatchNoteChangeStatusButton');
 const { PatchNoteRepublishButton } = require('../buttons/interactions/PatchNoteRepublishButton');
 const { PatchNoteEditAttachmentsButton } = require('../buttons/interactions/PatchNoteEditAttachmentsButton');
 const { PatchNoteEditCategoriesButton } = require('../buttons/interactions/PatchNoteEditCategoriesButton');
@@ -13,7 +12,6 @@ class PatchNoteButtonComponentTwo {
         const container = new ContainerBuilder();
 
         container.addActionRowComponents(row => row.addComponents(
-            PatchNoteChangeStatusButton.create(lang),
             SetPatchNoteVersionButton.create(lang),
             PatchNoteRepublishButton.create(lang),
             PatchNoteEditAttachmentsButton.create(lang),

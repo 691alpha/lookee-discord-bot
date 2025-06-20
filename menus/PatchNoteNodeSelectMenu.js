@@ -5,14 +5,16 @@ const { LocalisationManager } = require("../managers/LocalisationManager");
 const { PatchnoteUtils } = require("../utils/PatchnoteUtils");
 const { NoVariableResponseComponent } = require("../components/responses/NoVariableResponseComponent");
 const { VariableResponseComponent } = require("../components/responses/VariableResponseComponent");
-const EPatchNoteStatus = require("../enums/EPatchNoteStatus");
+const { PatchNoteComponent } = require("../components/PatchNoteComponent");
 const PatchNoteNodes = require("../database/models/PatchNoteNodes");
 const Setups = require("../database/models/Setups");
+const PatchNoteCategories = require("../database/models/PatchNoteCategories");
 
 class PatchNoteNodeSelectMenu {
     static customId = "PatchNoteNodeSelectMenu";
 
     static async create(lang, nodes, type, guildId) {
+        PatchNoteComponent.curr_categories = await PatchNoteCategories.findAll({});
         
         const menu = new StringSelectMenuBuilder()
             .setCustomId(`${PatchNoteNodeSelectMenu.customId}/type=${type}`)
@@ -35,9 +37,9 @@ class PatchNoteNodeSelectMenu {
             effectiveNodes.slice(0, 25).map(node => ({
                 label: node.content.slice(0, 80),
                 value: node.id.toString(),
-                // description: `${LocalisationManager.getString(
-                //     'patchnote_node_status_description',
-                //     lang)}${node.status}`
+                description: `${LocalisationManager.getString(
+                    'patchnote_node_category_description',
+                    lang)}${PatchNoteComponent.findCategory(node.categoryId).name}`
             }))
         );
 
@@ -112,7 +114,7 @@ class PatchNoteNodeSelectMenu {
             }
 
             await PatchNoteNodes.update(
-                { status: 'deleted' },
+                { deleted: true},
                 { where: { id: selectedIds } }
             );
 
@@ -156,6 +158,11 @@ class PatchNoteNodeSelectMenu {
             });
         }
 
+    }
+
+    static async getNodeCategoryName(node) {
+        const category = await PatchNoteCategories.findOne({where: {id: node.categoryId}});
+        return category.name;
     }
 }
 

@@ -154,6 +154,8 @@ class PatchNoteSetVersionModal {
             interaction.client, 
             server.defaultLang
         );
+        
+        return;
     }
 }
 

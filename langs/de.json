@@ -172,7 +172,7 @@
   "translation_failed": "Übersetzung fehlgeschlagen",
   "patchnotes_info_1": "Patchnotes werden veröffentlicht, sobald Änderungen am Server vorgenommen werden.",
   "patchnotes_info_2": "Diese Updates folgen keinem festen Zeitplan – sie dienen lediglich der Information aller Mitglieder.",
-  "patchnotes_info_3": "Um die Rolle <@&{newRoleId}> zu erhalten und bei neuen Patchnotes benachrichtigt zu werden,",
+  "patchnotes_info_3": "Um die Rolle <@&{notificationRoleId}> zu erhalten und bei neuen Patchnotes benachrichtigt zu werden,",
   "patchnotes_info_4": "klicke auf den Button unten.",
   "patchnote_title": "Patchnote",
   "patchnote_lang_discord": "Meine Discord-Sprache: {lang}",

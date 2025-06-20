@@ -9,7 +9,7 @@ class SuggestionButton {
         return new ButtonBuilder()
         .setCustomId(SuggestionButton.customId)
         .setLabel(LocalisationManager.getString('suggestion_button', lang))
-        .setStyle(ButtonStyle.Secondary);
+        .setStyle(ButtonStyle.Success);
     }
 
     static onInteraction(interaction) {

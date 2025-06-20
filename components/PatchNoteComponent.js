@@ -10,12 +10,13 @@ const { LocalisationManager } = require('../managers/LocalisationManager');
 const Versions = require('../database/models/Versions');
 const Formats = require('../database/models/Formats');
 const { PatchNoteTranslateButton } = require('../buttons/interactions/PatchNoteTranslateButton');
-const EPatchNoteStatus = require('../enums/EPatchNoteStatus');
 const { SuggestionButton } = require('../buttons/interactions/SuggestionButton');
 const PatchNoteAttachments = require('../database/models/PatchNoteAttachments');
-const { NoVariableResponseComponent } = require('./responses/NoVariableResponseComponent');
+const PatchNoteCategories = require('../database/models/PatchNoteCategories');
 
 class PatchNoteComponent {
+    curr_categories = null;
+
     static async create(nodes, lang, mode, guild, patchnoteId, version, attachments) {
         const container = await PatchNoteComponent.buildFromNodes(
             nodes, 
@@ -26,8 +27,6 @@ class PatchNoteComponent {
             version,
             attachments
         );
-
-        // container.setAccentColor(0x5e5e5e); 
 
         return container;
     }
@@ -42,100 +41,57 @@ class PatchNoteComponent {
         const { PatchnoteUtils } = require('../utils/PatchnoteUtils');
 
         const container = new ContainerBuilder();
+        const separator = new SeparatorBuilder().setDivider(true).setSpacing(2);
+        const title = await PatchNoteComponent.createTitle(lang, mode, version);
+        container.addTextDisplayComponents(title);
 
-        let plannedNodes;
-        let doneNodes;
+        PatchNoteComponent.curr_categories = await PatchNoteCategories.findAll({});
+        
+        const sortedNodes = {};
+        const sortedOutputs = {};
 
-        if(mode === 'republish' || mode === 'translate') {
-            plannedNodes = nodes.filter(node => 
-                node.status === EPatchNoteStatus.PLANNED
-                && node.published);
-            doneNodes = nodes.filter(node => 
-                node.status === EPatchNoteStatus.DONE
-                && node.published
-            );
-        } else {
-            // Gets all nodes with status 'planned' and 'done'
-            plannedNodes = nodes.filter(node => 
-                node.status === EPatchNoteStatus.PLANNED
-                && !node.published);
-            doneNodes = nodes.filter(node => 
-                node.status === EPatchNoteStatus.DONE
-                && !node.published
-            );
+        if(nodes.length == 0) {
+            container.addTextDisplayComponents(
+                new TextDisplayBuilder().setContent(
+                    `${LocalisationManager.getString(
+                        'patchnote_section_empty', 
+                        lang
+                    )}`
+                )
+            )
         }
 
+        nodes.forEach(node => {
+            // We assume a node always has a categoryId
+            if( !sortedNodes[node.categoryId] ) 
+                sortedNodes[node.categoryId] = []
+            
+            sortedNodes[node.categoryId].push(node)
+        });
 
-        // Makes list of all gotten nodes
-        const plannedLines = plannedNodes.map(node => `- ${node.content}`);
-        const doneLines = doneNodes.map(node => `- ${node.content}`);
+        // Build (nodes) final string
+        for (const [categoryId, nodes] of Object.entries(sortedNodes)) {
+            const category = PatchNoteComponent.findCategory(categoryId)
+            if(!sortedOutputs[categoryId]) sortedOutputs[categoryId] = `### ${category.name}\n`;
 
-        // Constructs output out of all lines
-        const plannedOutput = plannedLines.length > 0 
-            ? plannedLines.join('\n') 
-            : LocalisationManager.getString('patchnote_section_empty', lang);
-
-        const doneOutput = doneLines.length > 0 
-            ? doneLines.join('\n') 
-            : LocalisationManager.getString('patchnote_section_empty', lang);
-
-        const separator = new SeparatorBuilder().setDivider(true).setSpacing(2);
-
-        // Titles with full output nodes of each category
-        const plannedText = new TextDisplayBuilder().setContent(
-            `### ${LocalisationManager.getString('patchnote_section_planned', lang)}\n${plannedOutput}`
-        );
-
-        const doneText = new TextDisplayBuilder().setContent(
-            `### ${LocalisationManager.getString('patchnote_section_done', lang)}\n${doneOutput}`
-        );
-
-        if(mode === 'republish') {
-            version = await Versions.findOne({
-                where: {id: version.id}
-            })
-        } else {
-            version = await Versions.findOne({
-                order: [['createdAt', 'DESC']],
+            nodes.forEach((node) => {
+                sortedOutputs[categoryId] += `- ${node.content}\n`;
             });
         }
 
-        let formattedVersion = '';
-        
-        if (version?.formatId) {
-            
-            let format = await Formats.findOne({ where: { id: version.formatId } });
-            let tmpformat;
-
-            if(!format) {
-                tmpformat = '{major}.{feature}.{patch}'
-                formattedVersion = tmpformat
-                    .replace('{major}', version.major_number)
-                    .replace('{feature}', version.feature_number)
-                    .replace('{patch}', version.patch_number);
-
-            } else if (format.value) {
-                formattedVersion = format.value
-                    .replace('{major}', version.major_number)
-                    .replace('{feature}', version.feature_number)
-                    .replace('{patch}', version.patch_number);
-            }
+        for (const [key, value] of Object.entries(sortedOutputs)) {
+            container.addTextDisplayComponents([new TextDisplayBuilder().setContent(value)]);
+            container.addSeparatorComponents(separator);
         }
 
-        const title = new TextDisplayBuilder().setContent(
-            `## ${LocalisationManager.getString('patchnote_title', lang)} ${formattedVersion} \n ${new Date().toLocaleString(lang, {
-                weekday: 'short',
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit',
-                second: '2-digit',
-                hour12: false
-            })}`
-        );
-
-        const mediaGallery = new MediaGalleryBuilder();
+        // If no nodes are found.
+        // if(!sortedOutputs || sortedOutputs.length == 0) {
+        //     container.addTextDisplayComponents(
+        //         new TextDisplayBuilder().setContent(
+        //             `${LocalisationManager.getString('patchnote_section_empty', lang)}`
+        //         )
+        //     )
+        // }
 
         if(!attachments || attachments.length === 0) {
             attachments = await PatchNoteAttachments.findAll({
@@ -148,7 +104,83 @@ class PatchNoteComponent {
         }
 
         if(attachments.length != 0) {
+            const mediaGallery = await PatchNoteComponent.createMediaGallery(attachments, guild);
+            container.addMediaGalleryComponents(mediaGallery);
+        }
 
+        const notificationRole = await PatchnoteUtils.checkPatchnoteRole(guild)
+        const notificationText = new TextDisplayBuilder().setContent([
+            `-# ${LocalisationManager.getString('patchnotes_info_1', lang)}`,
+            `-# ${LocalisationManager.getString('patchnotes_info_2', lang)}`,
+            ``,
+            `-# ${LocalisationManager.getString('patchnotes_info_3', lang,
+                {'notificationRoleId': notificationRole.id})}`,
+            `-# ${LocalisationManager.getString('patchnotes_info_4', lang)}`
+            ].join('\n'),
+        );
+
+        if (mode != "edit") {
+
+            const { PatchNoteGetPingRoleButton } = require(
+                '../buttons/interactions/PatchNoteGetPingRoleButton'
+            );
+
+            container.addTextDisplayComponents(notificationText);
+            container.addActionRowComponents(row => row.addComponents(
+                SuggestionButton.create(lang),
+                PatchNoteTranslateButton.create(lang, patchnoteId),
+                PatchNoteGetPingRoleButton.create(lang),
+            ));
+
+            return container;
+        } 
+
+        return container;
+        
+    }
+
+    static findCategory(categoryId) {
+        let foundCategory = null;
+        PatchNoteComponent.curr_categories.forEach((category)=> {
+            if(category.id == categoryId) return foundCategory = category;
+        })
+
+        return foundCategory;
+    }
+
+    static async createTitle(lang, mode, version) {
+        // We assume we always have a version (since the version is
+        // auto created on first launch).
+        if (mode === 'republish') version = await Versions.findOne({
+                where: {id: version.id} })
+        else version = await Versions.findOne({
+                order: [['createdAt', 'DESC']] });
+
+        let formattedVersion = '';
+        
+        let format = await Formats.findOne({ where: { id: version.formatId } });
+        let defaultFormat = '{major}.{feature}.{patch}';
+
+        if (!format) format = defaultFormat;
+        else format = format.value
+        
+        formattedVersion = format
+            .replace('{major}', version.major_number)
+            .replace('{feature}', version.feature_number)
+            .replace('{patch}', version.patch_number);
+    
+        // Build title from version
+        const title = new TextDisplayBuilder().setContent(
+            `## ${LocalisationManager.getString('patchnote_title', lang)} \
+${formattedVersion} \n<t:${Date.now()}:F>`);
+
+        return title;
+    }
+
+    static async createMediaGallery(attachments) {
+        const mediaGallery = new MediaGalleryBuilder();
+
+        if(attachments.length != 0) {
             let mediaGalleryItems = [];
     
             for(const attachment of attachments) {
@@ -160,70 +192,7 @@ class PatchNoteComponent {
             mediaGallery.addItems(mediaGalleryItems);
         }
 
-
-        const noNodeAddedText = new TextDisplayBuilder().setContent(
-            `${LocalisationManager.getString('patchnote_section_empty', lang)}`
-        );
-
-        if(mode === 'edit') {
-            container.addTextDisplayComponents(title);
-            if(doneLines.length < 1 && plannedLines.length < 1) {
-                container.addTextDisplayComponents(noNodeAddedText);
-            } else if(plannedLines.length < 1) {
-                container.addTextDisplayComponents(doneText);
-            } else if(doneLines.length < 1) {
-                container.addTextDisplayComponents(plannedText);
-            } else {
-                container.addTextDisplayComponents(doneText);
-                container.addSeparatorComponents(separator);
-                container.addTextDisplayComponents(plannedText);
-            }
-            if(attachments.length != 0) {
-                container.addSeparatorComponents(separator);
-                container.addMediaGalleryComponents(mediaGallery);
-            } 
-
-            return container;
-        }
-
-        const { PatchNoteGetPingRoleButton } = require(
-            '../buttons/interactions/PatchNoteGetPingRoleButton'
-        );
-                
-        const newRole = await PatchnoteUtils.checkPatchnoteRole(guild);
-        const pingText = new TextDisplayBuilder().setContent([
-            `-# ${LocalisationManager.getString('patchnotes_info_1', lang)}`,
-            `-# ${LocalisationManager.getString('patchnotes_info_2', lang)}`,
-            ``,
-            `-# ${LocalisationManager.getString('patchnotes_info_3', lang, {'newRoleId': newRole.id})}`,
-            `-# ${LocalisationManager.getString('patchnotes_info_4', lang)}`
-            ].join('\n'),
-        );
-
-        container.addTextDisplayComponents(title);
-
-        if(plannedLines.length < 1) {
-            container.addTextDisplayComponents(doneText);
-        } else if(doneLines.length < 1) {
-            container.addTextDisplayComponents(plannedText);
-        } else {
-            container.addTextDisplayComponents(doneText);
-            container.addSeparatorComponents(separator);
-            container.addTextDisplayComponents(plannedText);
-        }
-        
-        if(attachments.length != 0) {
-            container.addSeparatorComponents(separator);
-            container.addMediaGalleryComponents(mediaGallery);
-        } 
-        container.addTextDisplayComponents(pingText);
-        container.addActionRowComponents(row => row.addComponents(
-            PatchNoteTranslateButton.create(lang, patchnoteId),
-            PatchNoteGetPingRoleButton.create(lang),
-            SuggestionButton.create(lang)
-        ));
-
-        return container;
+        return mediaGallery;
     }
 }
 

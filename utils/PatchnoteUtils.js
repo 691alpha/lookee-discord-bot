@@ -23,8 +23,9 @@ class PatchnoteUtils {
 
         const nodes = await PatchNoteNodes.findAll({
             where: {
-                guildId,
-                published: false
+                guildId: guildId,
+                published: false,
+                deleted: false
             }
         });
 
@@ -62,14 +63,27 @@ class PatchnoteUtils {
      * @param {string} guildId
      * @returns the nodes or null if none found
      */
-    static async findAllNodes(guildId, published, category) {
-        const nodes = await PatchNoteNodes.findAll({
-            where: {
-                guildId: guildId,
-                categoryId: category,
-                published: published
-            }
-        });
+    static async findAllNodes(guildId, published, categoryId) {
+        let nodes;
+
+        if(categoryId) {
+            nodes = await PatchNoteNodes.findAll({
+                where: {
+                    guildId: guildId,
+                    categoryId: categoryId,
+                    published: published,
+                    deleted: false,
+                }
+            });
+        } else {
+            nodes = await PatchNoteNodes.findAll({
+                where: {
+                    guildId: guildId,
+                    published: published,
+                    deleted: false
+                }
+            });
+        }
 
         if (!nodes || nodes.length === 0) return null;
 
@@ -78,7 +92,7 @@ class PatchnoteUtils {
 
     static async checkPatchnoteRole(guild) {
         const setup = await Setups.findOne({ where: { guildId: guild.id } });
-        if(!setup) console.log ('No setup found, create setup');
+        if(!setup) return console.log ('No setup found, create setup');
 
         let role = setup.patchnoteRoleId
             ? guild.roles.cache.get(setup.patchnoteRoleId)

@@ -1,7 +1,7 @@
 const { ContainerBuilder, TextDisplayBuilder } = require('discord.js');
 const { LocalisationManager } = require('../managers/LocalisationManager');
-const PatchNoteAddImageButton = require('../buttons/interactions/PatchNoteAddImageButton');
-const PatchNoteClearAttachmentsButton = require('../buttons/interactions/PatchNoteClearAttachmentsButton');
+const { PatchNoteClearAttachmentsButton } = require('../buttons/interactions/PatchNoteClearAttachmentsButton');
+const { PatchNoteAddImageButton } = require('../buttons/interactions/PatchNoteAddImageButton');
 
 class PatchNoteEditAttachmentsComponent {
     static async create(lang) {

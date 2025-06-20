@@ -16,7 +16,7 @@ class PatchNoteClearAttachmentsButton {
                 'patchnote_clear_image_button_label', 
                 lang
             ))
-            .setStyle(ButtonStyle.Secondary);
+            .setStyle(ButtonStyle.Danger);
     }
 
     static async onInteraction(interaction) {
@@ -36,6 +36,9 @@ class PatchNoteClearAttachmentsButton {
                 cleared: true
             });
         }
+
+        // Sleep 2 seconds.
+            await new Promise(r => setTimeout(r, 2000));
 
         PatchnoteUtils.updateAllPatchNotePreviews(interaction.guild, interaction.client, lang);
 

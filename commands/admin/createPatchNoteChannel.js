@@ -26,13 +26,32 @@ module.exports = {
         const nodes = await PatchNoteNodes.findAll({
             where: {
                 guildId: interaction.guild.id,
-                status: [EPatchNoteStatus.DONE, EPatchNoteStatus.PLANNED]
+                published: false,
+                deleted: false
             }
         });
 
-        const server = Setups.findOne({
+        const server = await Setups.findOne({
             where: {guildId: interaction.guild.id}
         });
+
+        const {db} = interaction.client;
+
+        if(!server) {
+            await Setups.create({
+                id: await db.getNextId('setups'),
+                guildId: interaction.guild.id,
+                assignedTicketsCategoryId: null,
+                unassignedTicketsCategoryId: null,
+                closedTicketsCategoryId: null,
+                suggestionChannelId: null,
+                announcementChannelId: null,
+                logChannelId: null,
+                defaultLang: 'en-US',
+                patchnoteRoleId: null
+            });
+        }
+
         const lang = server.defaultLang;
 
         let outputContainer = await PatchNoteComponent.create(

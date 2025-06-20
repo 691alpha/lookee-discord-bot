@@ -21,7 +21,7 @@ class PatchNotePublishButton {
         return new ButtonBuilder()
         .setCustomId(PatchNotePublishButton.customId)
         .setLabel(LocalisationManager.getString('create_patchnote_node_button', lang))
-        .setStyle(ButtonStyle.Secondary);
+        .setStyle(ButtonStyle.Success);
     }
 
     static async onInteraction(interaction) {

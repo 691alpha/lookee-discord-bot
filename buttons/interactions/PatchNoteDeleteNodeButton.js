@@ -13,7 +13,7 @@ class PatchNoteDeleteNodeButton {
         return new ButtonBuilder()
             .setCustomId(PatchNoteDeleteNodeButton.customId)
             .setLabel(LocalisationManager.getString('delete_node_patchnote_node_button', lang))
-            .setStyle(ButtonStyle.Secondary);
+            .setStyle(ButtonStyle.Danger);
     }
 
     static async onInteraction(interaction) {
@@ -21,10 +21,11 @@ class PatchNoteDeleteNodeButton {
         const lang = interaction.locale;
         
         await interaction.deferReply({ flags: MessageFlags.Ephemeral });
+
         
         const nodes = await PatchnoteUtils.findAllNodes(
             interaction.guild.id, 
-            false,
+            false
         );
 
         if(!nodes || nodes.length === 0) {

@@ -10,7 +10,7 @@ class PatchNoteAddNodeCategoryButton {
         return new ButtonBuilder()
         .setCustomId(PatchNoteAddNodeCategoryButton.customId)
         .setLabel(LocalisationManager.getString('patchnote_add_node_category_label', lang))
-        .setStyle(ButtonStyle.Danger);
+        .setStyle(ButtonStyle.Success);
     }
 
     static async onInteraction(interaction) {

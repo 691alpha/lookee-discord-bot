@@ -17,6 +17,10 @@ module.exports = class PatchNoteNodes extends Model {
                 type: Sequelize.BOOLEAN,
                 allowNull: false,
             },
+            deleted: {
+                type: Sequelize.BOOLEAN,
+                allowNull: false,
+            },
             content: {
                 type: Sequelize.TEXT,
                 allowNull: false,

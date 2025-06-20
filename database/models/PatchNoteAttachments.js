@@ -10,9 +10,11 @@ module.exports = class PatchNoteAttachments extends Model {
             },
             guildId: {
                 type: Sequelize.STRING,
+                allowNull: false,
             },
             attachmentUrl: {
                 type: Sequelize.STRING,
+                allowNull: false,
             },
             patchnoteId: {
                 type: Sequelize.STRING,
@@ -20,9 +22,11 @@ module.exports = class PatchNoteAttachments extends Model {
             },
             published: {
                 type: Sequelize.BOOLEAN,
+                allowNull: false,
             },
             cleared: {
                 type: Sequelize.BOOLEAN,
+                allowNull: false,
             },
         }, {
             sequelize,

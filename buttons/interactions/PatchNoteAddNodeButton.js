@@ -1,6 +1,9 @@
-const { ButtonBuilder, ButtonStyle } = require("discord.js");
+const { ButtonBuilder, ButtonStyle, MessageFlags } = require("discord.js");
 const { LocalisationManager } = require("../../managers/LocalisationManager");
-const { PatchNoteAddNodeComponent } = require("../../components/PatchNoteAddNodeComponent");
+const { SelectMenuComponent } = require("../../components/SelectMenuComponent");
+const { SelectNodeCategorySelectMenu } = require("../../menus/SelectNodeCategorySelectMenu");
+const PatchNoteCategories = require("../../database/models/PatchNoteCategories");
+const { NoVariableResponseComponent } = require("../../components/responses/NoVariableResponseComponent");
 
 class PatchNoteAddNodeButton {
     static customId = "PatchNoteAddNodeButton";
@@ -8,14 +11,41 @@ class PatchNoteAddNodeButton {
     static create(lang) {
 
         return new ButtonBuilder()
-        .setCustomId(PatchNoteAddNodeButton.customId)
-        .setLabel(LocalisationManager.getString('create_patchnote_node_button', lang))
-        .setStyle(ButtonStyle.Danger);
+        .setCustomId(`${PatchNoteAddNodeButton.customId}`)
+        .setLabel(LocalisationManager.getString('patchnote_node_pick_status', lang))
+        .setStyle(ButtonStyle.Primary);
     }
 
     static async onInteraction(interaction) {
+        const lang =  interaction.locale;
 
-        return interaction.showModal(PatchNoteAddNodeComponent.create(lang));
+        const categories = await PatchNoteCategories.findAll({
+            where: {guildId: interaction.guild.id}
+        });
+
+        if(!categories || categories.length == 0) {
+            const container = NoVariableResponseComponent.create(
+                'patchnote_add_node_no_categories',
+                lang
+            );
+
+            return interaction.reply({
+                components: [container],
+                flags: [MessageFlags.Ephemeral, MessageFlags.IsComponentsV2]
+            });
+        }
+
+        const container = await SelectMenuComponent.create(
+            'patchnote_select_new_node_category',
+            SelectNodeCategorySelectMenu,
+            lang,
+            categories
+        );
+
+        return interaction.reply({
+            components: [container],
+            flags: [MessageFlags.Ephemeral, MessageFlags.IsComponentsV2]
+        })
     }
 }
 

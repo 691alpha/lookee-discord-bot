@@ -2,14 +2,15 @@ const { ActionRowBuilder, ModalBuilder, TextInputBuilder, TextInputStyle, Messag
 const { LocalisationManager } = require('../managers/LocalisationManager');
 const PatchNoteNodes = require('../database/models/PatchNoteNodes');
 const Setups = require('../database/models/Setups');
+const PatchNoteCategories = require('../database/models/PatchNoteCategories');
 
 class PatchNoteAddNodeModal {
     static customId = "PatchNoteAddNodeModal";
     
-    static create(lang, status) {
+    static create(lang, categoryId) {
         
         const modal = new ModalBuilder()
-        .setCustomId(`${PatchNoteAddNodeModal.customId}/${status}`)
+        .setCustomId(`${PatchNoteAddNodeModal.customId}/${categoryId}`)
         .setTitle(LocalisationManager.getString('patchnote_add_node_modal_title', lang));
 		
 		for (let i = 1; i <= 5; i++) {
@@ -36,7 +37,7 @@ class PatchNoteAddNodeModal {
         await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 
         const customId = interaction.customId;
-        const status = customId.split('/')[1];
+        const categoryId = customId.split('/')[1];
 
         const nodes = [];
 
@@ -49,8 +50,9 @@ class PatchNoteAddNodeModal {
                 nodes.push({
                     id: patchNoteNodeId,
                     patchNoteId: null,
-                    status,
+                    categoryId: categoryId,
                     published: false,
+                    deleted: false,
                     content: value,
                     authorId: interaction.user.id,
                     guildId: interaction.guild.id
@@ -70,11 +72,13 @@ class PatchNoteAddNodeModal {
             server.defaultLang
         );
 
+        const category = await PatchNoteCategories.findOne({where: {id: categoryId}});
+
         await interaction.editReply({
             content: LocalisationManager
             .getString('patchnote_create_success', lang)
-            .replace('{count}', nodes.length) // TODO: make enum
-            .replace('{status}', LocalisationManager.getString(status, lang))
+            .replace('{count}', nodes.length)
+            .replace('{category}', category.name)
         });
 
     }

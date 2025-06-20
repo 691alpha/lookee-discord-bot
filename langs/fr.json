@@ -172,7 +172,7 @@
   "translation_failed": "La traduction a échoué",
   "patchnotes_info_1": "Des notes de mise à jour seront publiées à chaque modification du serveur.",
   "patchnotes_info_2": "Ces mises à jour ne suivront pas un calendrier strict — elles sont simplement là pour tenir tout le monde informé.",
-  "patchnotes_info_3": "Pour obtenir le rôle <@&{newRoleId}> et être notifié lors de futures notes de mise à jour,",
+  "patchnotes_info_3": "Pour obtenir le rôle <@&{notificationRoleId}> et être notifié lors de futures notes de mise à jour,",
   "patchnotes_info_4": "cliquez sur le bouton ci-dessous.",
   "patchnote_title": "Note de mise à jour",
   "patchnote_lang_discord": "Ma langue Discord : {lang}",

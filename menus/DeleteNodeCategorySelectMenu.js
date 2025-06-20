@@ -3,6 +3,8 @@ const { LocalisationManager } = require("../managers/LocalisationManager");
 const { NoVariableResponseComponent } = require("../components/responses/NoVariableResponseComponent");
 const { VariableResponseComponent } = require("../components/responses/VariableResponseComponent");
 const PatchNoteCategories = require("../database/models/PatchNoteCategories");
+const PatchNoteNodes = require("../database/models/PatchNoteNodes");
+const { PatchnoteUtils } = require("../utils/PatchnoteUtils");
 
 class DeleteNodeCategorySelectMenu {
     static customId = "DeleteNodeCategorySelectMenu";
@@ -28,10 +30,10 @@ class DeleteNodeCategorySelectMenu {
     }
 
     static async onInteraction(interaction) {
-        const selectedCategories = interaction.values;
+        const selectedCategoriesIds = interaction.values;
         const lang = interaction.locale;
 
-        if(!selectedCategories || selectedCategories.length === 0) {
+        if(!selectedCategoriesIds || selectedCategoriesIds.length === 0) {
             const container = NoVariableResponseComponent.create(
                 'patchnote_selected_category_invalid',
                 lang
@@ -43,29 +45,23 @@ class DeleteNodeCategorySelectMenu {
             });
         }
 
-        const deletedCategories = await PatchNoteCategories.destroy({
-            where: {id: selectedCategories}
-        });
-
-        if(!deletedCategories) {
-            const container = NoVariableResponseComponent.create(
-                'patchnote_delete_category_deletion_failed',
-                lang
+        for(const selectedCategoryId of selectedCategoriesIds) {
+            await PatchNoteNodes.update(
+                {deleted: true},
+                {where: {categoryId: selectedCategoryId}}
             );
-
-            return interaction.reply({
-                components: [container],
-                flags: [MessageFlags.Ephemeral, MessageFlags.IsComponentsV2]
-            });
+            await PatchNoteCategories.destroy({where:{id: selectedCategoryId}})
         }
 
         const container = VariableResponseComponent.create(
             'patchnote_category_deletion_success',
             lang,
             {
-                'categoriesLength': selectedCategories.length
+                'categoriesLength': selectedCategoriesIds.length
             }
         );
+
+        PatchnoteUtils.updateAllPatchNotePreviews(interaction.guild, interaction.client, lang);
 
         return interaction.reply({
             components: [container],

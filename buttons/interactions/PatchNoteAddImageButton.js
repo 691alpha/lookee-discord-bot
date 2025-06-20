@@ -16,7 +16,7 @@ class PatchNoteAddImageButton {
                 'patchnote_add_image_button_label', 
                 lang
             ))
-            .setStyle(ButtonStyle.Secondary);
+            .setStyle(ButtonStyle.Success);
     }
 
     static async onInteraction(interaction) {
@@ -48,6 +48,27 @@ class PatchNoteAddImageButton {
 
             const msg = collected.first();
             const attachments = msg.attachments.values();
+
+            const existingAttachments = await PatchNoteAttachments.findAll({
+                where: {
+                    published: false,
+                    cleared: false
+                }
+            });
+
+            if(existingAttachments.length > 10) {
+                const container = NoVariableResponseComponent.create(
+                    'patchnote_too_many_attachments',
+                    lang
+                );
+
+                await msg.delete();
+
+                return interaction.editReply({
+                    components: [container],
+                    flags: [MessageFlags.IsComponentsV2]
+                })
+            }
             
             for(const attachment of attachments) {
                 const attachmentUrl = attachment?.url;
@@ -60,6 +81,22 @@ class PatchNoteAddImageButton {
                     published: false,
                     cleared: false
                 });
+            }
+
+            const allAttachmentsLength = existingAttachments.length + attachmentList.length;
+
+            if(allAttachmentsLength > 10) {
+                const container = NoVariableResponseComponent.create(
+                    'patchnote_too_many_attachments',
+                    lang
+                );
+
+                await msg.delete();
+
+                return interaction.editReply({
+                    components: [container],
+                    flags: [MessageFlags.IsComponentsV2]
+                })
             }
 
             await PatchNoteAttachments.bulkCreate(attachmentList);

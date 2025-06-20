@@ -2,6 +2,7 @@ const { ContainerBuilder, TextDisplayBuilder } = require('discord.js');
 const { LocalisationManager } = require('../managers/LocalisationManager');
 const { PatchNoteAddNodeCategoryButton } = require('../buttons/interactions/PatchNoteAddNodeCategoryButton');
 const { PatchNoteDeleteCategoryButton } = require('../buttons/interactions/PatchNoteDeleteCategoryButton');
+const { PatchNoteChangeCategoryButton } = require('../buttons/interactions/PatchNoteChangeCategoryButton');
 
 class PatchNoteEditCategoriesComponent {
     static async create(lang) {
@@ -17,7 +18,8 @@ class PatchNoteEditCategoriesComponent {
 
         container.addActionRowComponents(row => row.addComponents(
             PatchNoteAddNodeCategoryButton.create(lang),
-            PatchNoteDeleteCategoryButton.create(lang)
+            PatchNoteDeleteCategoryButton.create(lang),
+            PatchNoteChangeCategoryButton.create(lang)
         ));
 
         return container;

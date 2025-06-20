@@ -14,7 +14,7 @@ class PatchNoteEditNodeButton {
         return new ButtonBuilder()
             .setCustomId(PatchNoteEditNodeButton.customId)
             .setLabel(LocalisationManager.getString('edit_node_patchnote_node_button', lang))
-            .setStyle(ButtonStyle.Secondary);
+            .setStyle(ButtonStyle.Primary);
     }
 
     static async onInteraction(interaction) {
