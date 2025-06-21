@@ -90,7 +90,8 @@ class PatchNotePublishButton {
         
         const container = await PatchNoteComponent.create(
             nodes, 
-            server.defaultLang, 
+            server.defaultLang,
+            interaction.client.db,
             'publish', 
             interaction.guild, 
             patchnoteId,

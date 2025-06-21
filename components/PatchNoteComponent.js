@@ -87,8 +87,13 @@ class PatchNoteComponent {
             });
         }
 
+        let index = 0;
         for (const [key, value] of Object.entries(sortedOutputs)) {
+            index++;
+
             container.addTextDisplayComponents([new TextDisplayBuilder().setContent(value)]);
+
+            // if(Object.keys(sortedOutputs).length == index) break;
             container.addSeparatorComponents(separator);
         }
 
@@ -113,6 +118,7 @@ class PatchNoteComponent {
 
         if(attachments.length != 0) {
             const mediaGallery = await PatchNoteComponent.createMediaGallery(attachments, guild);
+            // container.addSeparatorComponents(separator);
             container.addMediaGalleryComponents(mediaGallery);
         }
 
