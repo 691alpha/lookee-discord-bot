@@ -205,6 +205,7 @@
   "patchnote_republish_button_label": "Republish",
   "patchnote_select_format_republish_menu_placeholder": "Pick the format",
   "patchnote_set_version_button_label": "Set Version",
+  "no_attachmentchannel": "No attachmentchannel set. Set with /set_attachment_channel",
 
   "suggestion_modal_title": "Make a suggestion",
   "suggestion_channel_set_setup_created": "Current channel set as suggestion channel and setup created.",

@@ -1,4 +1,4 @@
-const { ButtonBuilder, ButtonStyle, MessageFlags, StringSelectMenuBuilder, ActionRowBuilder } = require("discord.js");
+const { ButtonBuilder, ButtonStyle, MessageFlags, StringSelectMenuBuilder, ActionRowBuilder, flatten } = require("discord.js");
 const { LocalisationManager } = require("../../managers/LocalisationManager");
 const { VariableResponseComponent } = require("../../components/responses/VariableResponseComponent");
 const { NoVariableResponseComponent } = require("../../components/responses/NoVariableResponseComponent");
@@ -33,6 +33,13 @@ class PatchNoteAddImageButton {
 
         const setup = await Setups.findOne({where:{guildId: interaction.guild.id}});
         const attachmentChannel = interaction.client.channels.cache.get(setup.attachmentChannelId);
+        if(!attachmentChannel) {
+            const container = NoVariableResponseComponent.create('no_attachmentchannel', lang);
+            interaction.editReply({
+                components: [container],
+                flags: MessageFlags.IsComponentsV2
+            })
+        }
 
         const row = new ActionRowBuilder()
                     .addComponents(ForwardToAttachmentsChannel.create(
