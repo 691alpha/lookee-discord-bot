@@ -53,9 +53,10 @@ class PatchNoteAddImageButton {
             flags: MessageFlags.IsComponentsV2
         });
         
-        const sendContainer = NoVariableResponseComponent.create(
+        const sendContainer = VariableResponseComponent.create(
             'patchnote_add_image_container_text',
-            lang
+            lang,
+            {'userId': interaction.user.id}
         );
 
         const sendAttachmentMessage = await attachmentChannel.send({

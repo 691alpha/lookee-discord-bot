@@ -92,7 +92,7 @@
   "patchnote_add_image_button_label": "Add Image",
   "image_upload_success": "{attachmentListLength} image(s) successfully uploaded.",
   "patchnote_image_upload_failed": "Image upload failed, please inform the staff.",
-  "patchnote_add_image_container_text": "Send the image(s) you want to attatch into following channel.",
+  "patchnote_add_image_container_text": "<@{userId}> - Send the image(s) you want to attatch into following channel.",
   "patchnote_add_node_modal_input_label": "Patch Note Content",
   "patchnote_node_category_description": "Category: ",
   "patchnote_change_category_no_nodes": "There are no nodes to change the category for.",
