@@ -3,60 +3,54 @@ const { LocalisationManager } = require("../../managers/LocalisationManager");
 const Setups = require('../../database/models/Setups');
 const { NoVariableResponseComponent } = require('../../components/responses/NoVariableResponseComponent');
 
-// Sets the current channel as 'suggestion' channel which is used to send suggestions
 module.exports = {
     category: 'admin',
     cooldown: 0,
     data: new SlashCommandBuilder()
-        .setName('set_suggestion_channel')
+        .setName('set_attachment_channel')
         .setDefaultMemberPermissions(PermissionsBitField.Flags.Administrator)
-        .setDescription('Sets the current channel as suggestion channel.'),
+        .setDescription('Sets the current channel as attachment channel.'),
     async execute(interaction) {
         const lang = interaction.locale;
-        const { db } = interaction.client;
-        const guildId = interaction.guild.id;
-        const setup = await Setups.findOne({ where: { guildId } });
 
-        if(!(setup)) {
+        const setups = await Setups.findAll({
+            where: {
+                guildId: interaction.guild.id
+            }
+        });
+
+        if(!setups || setups.length === 0) {
+
+            const { db } = interaction.client;
+
             await Setups.create({
                 id: await db.getNextId('setups'),
-                guildId: guildId,
+                guildId: interaction.guild.id,
                 assignedTicketsCategoryId: null,
                 unassignedTicketsCategoryId: null,
                 closedTicketsCategoryId: null,
+                suggestionChannelId: null,
                 announcementChannelId: null,
-                attachmentChannelId: null,
+                attachmentChannelId: interaction.channel.id,
                 logChannelId: null,
-                suggestionChannelId: interaction.channel.id,
                 defaultLang: 'en-US',
                 patchnoteRoleId: null
             });
-
-            const container = NoVariableResponseComponent.create(
-                'suggestion_channel_set_setup_created',
-                lang
-            );
-
-            return interaction.reply({
-                components: [container],
-                flags: [MessageFlags.Ephemeral, MessageFlags.IsComponentsV2]
-            });
-
         }
 
         await Setups.update(
-            { suggestionChannelId: interaction.channel.id },
-            { where: { guildId: guildId } }
-        );
+                    { attachmentChannelId: interaction.channel.id },
+                    { where: { guildId: interaction.guild.id } }
+                );
 
         const container = NoVariableResponseComponent.create(
-            'suggestion_channel_set',
+            'set_attachment_channel_success', 
             lang
-        );
+        )
 
-        return interaction.reply({
+        await interaction.reply({
             components: [container],
-            flags: [MessageFlags.Ephemeral, MessageFlags.IsComponentsV2]
-        });
+            flags: [MessageFlags.Ephemeral, MessageFlags.IsComponentsV2],
+        })
     },
 };

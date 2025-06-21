@@ -45,6 +45,7 @@ module.exports = {
                 unassignedTicketsCategoryId: null,
                 closedTicketsCategoryId: null,
                 suggestionChannelId: null,
+                attachmentChannelId: null,
                 announcementChannelId: null,
                 logChannelId: null,
                 defaultLang: 'en-US',

@@ -27,6 +27,7 @@ module.exports = {
                 announcementChannelId: null,
                 logChannelId: channelId,
                 suggestionChannelId: null,
+                attachmentChannelId: null,
                 defaultLang: lang,
                 patchnoteRoleId: null
             });

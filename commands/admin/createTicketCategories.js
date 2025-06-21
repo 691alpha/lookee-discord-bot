@@ -48,6 +48,7 @@ module.exports = {
                 closedTicketsCategoryId: closedCategory.id,
                 suggestionChannelId: null,
                 announcementChannelId: null,
+                attachmentChannelId: null,
                 logChannelId: null,
                 defaultLang: 'en-US',
                 patchnoteRoleId: null

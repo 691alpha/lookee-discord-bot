@@ -121,6 +121,7 @@ class PatchnoteUtils {
                     announcementChannelId: null,
                     logChannelId: null,
                     suggestionChannelId: null,
+                    attachmentChannelId: null,
                     defaultLang: 'en-US',
                     patchnoteRoleId: role.id
                 });
