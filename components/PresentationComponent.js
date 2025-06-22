@@ -26,7 +26,7 @@ class PresentationComponent {
             ].join('\n'),
         );
         
-        container.setAccentColor(0xac182b)
+        container.setAccentColor(0xf72630)
         container.addMediaGalleryComponents(BannerMedia);
         container.addSeparatorComponents(separator);
         container.addTextDisplayComponents(PresentationTitle);
