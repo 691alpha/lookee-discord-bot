@@ -193,7 +193,7 @@
   "patchnote_ping_role_added": "Ping-role added: You will now get pinged whenever a new patchnote releases.",
   "patchnote_ping_role_arl_added": "You already have the ping-role.",
   "patchnote_ping_role_removed": "Ping-role removed: You will not longer get pinged whenever a new patchnote releases.",
-  "patchnote_toggle_ping_role_button_label": "Toggle role",
+  "patchnote_toggle_ping_role_button_label": "Toggle notifications",
   "patchnote_no_role_found_contact_staff": "Role could not be found, please inform the staff.",
   "patchnote_republish_pick_version_modal_major_label": "Major",
   "patchnote_republish_pick_version_modal_feature_label": "Feature",
