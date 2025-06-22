@@ -244,9 +244,10 @@
   "rule_text_8": "Although you have to respect those rules, keep in mind that they are enforced according to their spirit and not their words. Although we may still take action if something you do is not explicitly wrote in the rules, this also means that in some situations, we may not strictly apply the rules.",
   "rule_title_9": "**` Rule 9 `** **Recruitment Process**",
   "rule_text_9": "Do not fill empty or inapropriate application forms in our recruitment process. Doing so will result in a ban.",
+  "welcome_message_send": "The welcome message was sent successfully.",
   
   "presentation_title": "**Sypher Project × Esylda**",
-  "presentation_text_1": "",
+  "presentation_text_1": "> Step into Esylda, a unique Minecraft server where your journey truly begins. We've crafted a world that blends the familiar charm of vanilla Minecraft with exciting new challenges and discoveries. \n \n**A World of Endless Possibilities** \n> Explore vast, diverse landscapes filled with never-before-seen creatures and hidden wonders. Whether you're a seasoned explorer, a master builder, or a daring adventurer, Esylda offers something for everyone. Gather unique resources, master new recipes, and forge your legend in a world constantly evolving. \n \n**Dive into a Vibrant Community** \n> Join fellow players in epic quests, collaborate on grand builds, or simply relax and share your experiences. Our world is designed to foster connection and provide endless opportunities for shared adventures. \n \n**Ready to write your own chapter in Esylda?**",
   
   "log_channel_updated": "Current channel set as log channel.",
   "member_ban": "{bannedMemberName} ({bannedMemberId}) was banned from {guildName}.",
