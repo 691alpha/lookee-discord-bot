@@ -8,7 +8,7 @@ module.exports = {
         if (!message.guild) return;
 
         try {
-            if(!(message.author.username)) {
+            if(!message || !message.author || !message.author.username) {
                 return await LogUtils.sendLog(
                     'log_message_deleted_no_data_found',
                     message.guild,
