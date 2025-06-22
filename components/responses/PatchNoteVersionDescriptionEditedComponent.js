@@ -14,7 +14,7 @@ class PatchNoteVersionDescriptionEditedComponent {
                 `${LocalisationManager.getString(
                     'description_label', 
                     lang
-                )}: ${result}`,
+                )} ${result}`,
             ].join('\n'),
         );
         
