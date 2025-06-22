@@ -25,7 +25,7 @@ class PatchNoteEditVersionDescriptionModal {
         ))
         .setStyle(TextInputStyle.Paragraph)
         .setMinLength(0)
-        .setMaxLength(50)
+        .setMaxLength(100)
         .setRequired(true);
             
         modal.addComponents(new ActionRowBuilder().addComponents(input));

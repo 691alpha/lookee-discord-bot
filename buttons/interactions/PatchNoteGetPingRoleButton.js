@@ -10,6 +10,7 @@ class PatchNoteGetPingRoleButton {
 
         return new ButtonBuilder()
         .setCustomId(`${PatchNoteGetPingRoleButton.customId}`)
+        .setEmoji('1386432775300714546')
         .setLabel(LocalisationManager.getString(
             'patchnote_toggle_ping_role_button_label', 
             lang

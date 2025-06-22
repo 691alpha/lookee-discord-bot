@@ -9,6 +9,7 @@ class PatchNoteTranslateButton {
 
         return new ButtonBuilder()
         .setCustomId(`${PatchNoteTranslateButton.customId}:${patchnoteId}`)
+        .setEmoji('1386422601618030622')
         .setLabel(LocalisationManager.getString('patchnote_translate_button_label', lang))
         .setStyle(ButtonStyle.Primary);
     }

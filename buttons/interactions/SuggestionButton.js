@@ -8,6 +8,7 @@ class SuggestionButton {
     static create(lang) {
         return new ButtonBuilder()
         .setCustomId(SuggestionButton.customId)
+        .setEmoji('1386432557947682887')
         .setLabel(LocalisationManager.getString('suggestion_button', lang))
         .setStyle(ButtonStyle.Success);
     }
