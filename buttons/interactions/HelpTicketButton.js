@@ -1,5 +1,5 @@
 const { ButtonBuilder, ButtonStyle } = require("discord.js");
-const { HelpTicketModal } = require("../../modals/HelpTicketModal");
+const { HelpTicketModal } = require("../../modals/CategoryTicketModal");
 const { LocalisationManager } = require("../../managers/LocalisationManager");
 
 class HelpTicketButton {

@@ -1,8 +1,8 @@
-const { ButtonBuilder, ButtonStyle, MessageFlags, PermissionsBitField, ActionRowBuilder } = require("discord.js");
+const { ButtonBuilder, ButtonStyle, MessageFlags } = require("discord.js");
 const { TicketUtils } = require("../../utils/TicketUtils");
 const { ReopenTicketButton } = require("../interactions/ReopenTicketButton");
-const { EmbedManager } = require("../../managers/EmbedManager");
 const { LocalisationManager } = require("../../managers/LocalisationManager");
+const { NoVariableResponseComponent } = require("../../components/responses/NoVariableResponseComponent");
 
 class CloseTicketButton {
     static customId = "CloseTicketButton";
@@ -10,8 +10,9 @@ class CloseTicketButton {
     static create(lang) {
         return new ButtonBuilder()
             .setCustomId(CloseTicketButton.customId)
+            .setEmoji('1386725670796923031')
             .setLabel(LocalisationManager.getString('ticket_close', lang))
-            .setStyle(ButtonStyle.Secondary);
+            .setStyle(ButtonStyle.Danger);
     }
 
     static async onInteraction(interaction) {
@@ -25,15 +26,17 @@ class CloseTicketButton {
             'closed'
         );
 
-        const row = new ActionRowBuilder()
-                    .addComponents(ReopenTicketButton.create(lang));
+        const outputContainer = NoVariableResponseComponent.create('ticket_has_been_closed', lang)
 
-        let outputEmbed = EmbedManager.getEmbed('ticketChannel.movedToClosed');
+        outputContainer.addActionRowComponents(row => row.addComponents(
+            ReopenTicketButton.create(lang)
+        ));
 
-        interaction.reply({ embeds: [outputEmbed], components: [row]});
-
+        interaction.reply({ 
+            components: [outputContainer],
+            flags: [MessageFlags.IsComponentsV2]
+        });
     }
-
 }
 
 module.exports.CloseTicketButton = CloseTicketButton;

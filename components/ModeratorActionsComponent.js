@@ -1,24 +1,25 @@
 const { ContainerBuilder, TextDisplayBuilder } = require('discord.js');
-const { CreateTicketButton } = require('../buttons/interactions/CreateTicketButton');
 const { LocalisationManager } = require('../managers/LocalisationManager');
+const { TicketCategoryButton } = require('../buttons/interactions/TicketCategoryButton');
 
-class CreateTicketComponent {
+class ModeratorActionsComponent {
     static async create(lang) {
         const container = new ContainerBuilder();
 
         const text1 = new TextDisplayBuilder().setContent(
             [
-                `## ${LocalisationManager.getString('create_ticket', lang)}`,
-                `### ${LocalisationManager.getString('create_ticket_1', lang)}`,
+                `# ${LocalisationManager.getString('moderator_actions_component_text', lang)}`,
             ].join('\n'),
         );
         
         container.addTextDisplayComponents(text1);
 
-        container.addActionRowComponents(row => row.addComponents(CreateTicketButton.create(lang)));
+        container.addActionRowComponents(row => row.addComponents(
+            TicketCategoryButton.create(lang),
+        ));
 
         return container;
     }
 }
 
-module.exports.CreateTicketComponent = CreateTicketComponent;
+module.exports.ModeratorActionsComponent = ModeratorActionsComponent;

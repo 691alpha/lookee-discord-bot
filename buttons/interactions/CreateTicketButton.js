@@ -1,6 +1,6 @@
 const { ButtonBuilder, ButtonStyle, MessageFlags } = require("discord.js");
-const { PickCategoryComponent } = require("../../components/PickCategoryComponent");
 const { LocalisationManager } = require("../../managers/LocalisationManager");
+const { CreateTicketPickCategoryComponent } = require("../../components/CreateTicketPickCategoryComponent");
 
 class CreateTicketButton {
     static customId = "CreateTicketButton";
@@ -14,14 +14,18 @@ class CreateTicketButton {
 
     static async onInteraction(interaction) {
 
-        const lang = interaction.locale;
-        
-        let outputContainer = await PickCategoryComponent.create(lang);
-
         await interaction.deferReply({flags: MessageFlags.Ephemeral});
+        const lang = interaction.locale;
 
-        await interaction.followUp({
-            components: [outputContainer],
+        const container = await CreateTicketPickCategoryComponent.create(
+            lang, 
+            interaction.client.db,
+            interaction.guild.id
+        );
+
+
+        await interaction.editReply({
+            components: container,
             flags: MessageFlags.IsComponentsV2,
         })
 

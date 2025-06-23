@@ -1,7 +1,8 @@
 const { MessageFlags, MentionableSelectMenuBuilder } = require("discord.js");
 const { LocalisationManager } = require("../managers/LocalisationManager");
 const { TicketUtils } = require("../utils/TicketUtils");
-
+const { NoVariableResponseComponent } = require("../components/responses/NoVariableResponseComponent"); // Make sure this is imported if used
+const { VariableResponseComponent } = require("../components/responses/VariableResponseComponent"); // Make sure this is imported if used
 
 class PickUserSelectionMenu {
     static customId = "PickUserSelectionMenu";
@@ -14,24 +15,26 @@ class PickUserSelectionMenu {
     }
 
     static async onInteraction(interaction) {
-
         const ticket = await TicketUtils.findTicketByChannel(interaction.channel.id);
+        const lang = interaction.locale;
 
         if (!ticket) return TicketUtils.searchTicketFail(interaction);
 
-        const selectedMember = interaction.values.filter(id => interaction.guild.members.cache.has(id));
+        let selectedMemberIds = interaction.values.filter(id => interaction.guild.members.cache.has(id)); // Renamed for clarity
 
-        if (!selectedMember || selectedMember.length === 0) {
+        if (!selectedMemberIds || selectedMemberIds.length === 0) {
             const container = NoVariableResponseComponent.create('no_valid_user_selected', lang);
 
-            interaction.reply({
+            return interaction.reply({
                 components: [container],
-                flags: [MessageFlags.IsComponentsV2, MessageFlags.Ephemeral]
-            })
+                flags: [MessageFlags.Ephemeral, MessageFlags.IsComponentsV2]
+            });
         }
 
-        for (const userId of selectedMember) {
+        // Before iterating, create the string for the reply
+        const selectedMembersMentions = selectedMemberIds.map(id => `<@${id}>`).join(', ');
 
+        for (const userId of selectedMemberIds) { // Iterate over the array of IDs
             const member = await interaction.guild.members.fetch(userId).catch(() => null);
 
             if (!member) continue;
@@ -43,16 +46,15 @@ class PickUserSelectionMenu {
             });
         }
 
-        selectedMember = selectedMember[0];
-        const selectedMembers = selectedMember.map(id => `<@${id}>`).join(', ');
+        const container = VariableResponseComponent.create(
+            'ticket_added_user',
+            lang,
+            {"selectedMembers": selectedMembersMentions}
+        )
 
         await interaction.reply({
-            content: `${LocalisationManager.getString(
-                        'ticket_added_user', 
-                        lang,
-                        {"{selectedMembers}": selectedMembers}
-                    )}`,
-            flags: MessageFlags.Ephemeral,
+            components: [container],
+            flags: [MessageFlags.Ephemeral, MessageFlags.IsComponentsV2],
         });
     }
 }

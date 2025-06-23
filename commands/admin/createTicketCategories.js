@@ -20,7 +20,7 @@ module.exports = {
         const { db } = interaction.client;
         const guildId = interaction.guild.id;
 
-        const setup = await Setups.findOne({
+        let setup = await Setups.findOne({
             where: {guildId: guildId}
         })
 
@@ -40,7 +40,7 @@ module.exports = {
         });
         if(!setup) {
             
-            await Setups.create({
+            setup = await Setups.create({
                 id: await db.getNextId('setups'),
                 guildId: guildId,
                 assignedTicketsCategoryId: assignedCategory.id,
@@ -56,7 +56,7 @@ module.exports = {
             await interaction.reply({
                 content: LocalisationManager.getString(
                     'create_categories_success',
-                    lang
+                    setup.defaultLang
                 ),
                 flags: MessageFlags.Ephemeral
             }); 
@@ -69,7 +69,7 @@ module.exports = {
             await interaction.reply({
                 content: LocalisationManager.getString(
                     'updated_categories_success',
-                    lang
+                    setup.defaultLang
                 ),
                 flags: MessageFlags.Ephemeral
             }); 

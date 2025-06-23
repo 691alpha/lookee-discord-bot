@@ -2,6 +2,8 @@ const { MessageFlags, MentionableSelectMenuBuilder } = require("discord.js");
 const { TicketUtils } = require("../utils/TicketUtils");
 const { NoVariableResponseComponent } = require("../components/responses/NoVariableResponseComponent");
 const Tickets = require("../database/models/Tickets");
+const { LocalisationManager } = require("../managers/LocalisationManager");
+const { VariableResponseComponent } = require("../components/responses/VariableResponseComponent");
 
 class PickModeratorSelectionMenu {
     static customId = "PickModeratorSelectionMenu";
@@ -79,35 +81,36 @@ class PickModeratorSelectionMenu {
             interaction.channel
         );
 
-        const selectedMembers = selectedMember.map(id => `<@${id}>`).join(', ');
-
         // Checks which confirmation message should be sent depending on the previous channel status
         if(!hasModerator) {
+            const container = VariableResponseComponent.create(
+                'ticket_added_moderator', 
+                lang,
+                {"selectedMember": member.id}
+            );
             await interaction.reply({
-                content: `${LocalisationManager.getString(
-                        'ticket_added_moderator', 
-                        lang,
-                        {"{selectedMembers}": selectedMembers}
-                    )}`,
-                flags: MessageFlags.Ephemeral,
+                components: [container],
+                flags: [MessageFlags.Ephemeral, MessageFlags.IsComponentsV2],
             });
         } else if(member.user.id === moderator){
+            const container = VariableResponseComponent.create(
+                'ticket_added_user_is_already_moderator', 
+                lang,
+                {"selectedMember": member.id}
+            );
             await interaction.reply({
-                content: `${LocalisationManager.getString(
-                        'ticket_added_user_is_already_moderator', 
-                        lang,
-                        {"{selectedMembers}": selectedMembers}
-                    )}`,
-                flags: MessageFlags.Ephemeral,
+                components: [container],
+                flags: [MessageFlags.Ephemeral, MessageFlags.IsComponentsV2],
             });
         } else {
+            const container = VariableResponseComponent.create(
+                'ticket_added_new_moderator', 
+                lang,
+                {"selectedMember": member.id}
+            );
             await interaction.reply({
-                content: `${LocalisationManager.getString(
-                        'ticket_added_new_moderator', 
-                        lang,
-                        {"{selectedMembers}": selectedMembers}
-                    )}`,
-                flags: MessageFlags.Ephemeral,
+                components: [container],
+                flags: [MessageFlags.Ephemeral, MessageFlags.IsComponentsV2],
             });
         }
     }

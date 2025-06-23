@@ -2,6 +2,7 @@ const { ButtonBuilder, ButtonStyle, MessageFlags, PermissionsBitField } = requir
 const { TicketUtils } = require("../../utils/TicketUtils");
 const { LocalisationManager } = require("../../managers/LocalisationManager");
 const Tickets = require("../../database/models/Tickets");
+const { NoVariableResponseComponent } = require("../../components/responses/NoVariableResponseComponent");
 
 class AssignSelfModeratorButton {
     static customId = "AssignSelfModeratorButton";
@@ -14,6 +15,7 @@ class AssignSelfModeratorButton {
     }
 
     static async onInteraction(interaction) {
+        const lang = interaction.locale;
         const member = interaction.member;
         const ticket = await TicketUtils.findTicketByChannel(interaction.channel.id);
 
@@ -23,9 +25,13 @@ class AssignSelfModeratorButton {
         if (!ticket) return TicketUtils.searchTicketFail(interaction);
 
         if(moderator === interaction.user.id) {
+            const container = NoVariableResponseComponent.create(
+                'arl_moderator', 
+                lang
+            );
             await interaction.reply({
-                content: LocalisationManager.getString('arl_moderator', lang),
-                flags: MessageFlags.Ephemeral
+                components: [container],
+                flags: [MessageFlags.Ephemeral, MessageFlags.IsComponentsV2],
             });
         } else {
             await TicketUtils.addUserToChannel(interaction.channel, member, {
@@ -44,9 +50,13 @@ class AssignSelfModeratorButton {
                 interaction.guild, 
                 interaction.channel);
     
+            const container = NoVariableResponseComponent.create(
+                'assigned_moderator', 
+                lang
+            );
             await interaction.reply({
-                content: LocalisationManager.getString('assigned_moderator', lang),
-                flags: MessageFlags.Ephemeral
+                components: [container],
+                flags: [MessageFlags.Ephemeral, MessageFlags.IsComponentsV2],
             });
         }
     }

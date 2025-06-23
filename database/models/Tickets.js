@@ -29,15 +29,11 @@ module.exports = class Tickets extends Model {
                 allowNull: false,
             },
             description: {
-                type: Sequelize.STRING,
+                type: Sequelize.TEXT,
                 allowNull: false,
             },
             status: {
                 type: Sequelize.ENUM('assigned', 'unassigned', 'closed', 'dropped'),
-                allowNull: false,
-            },
-            category: {
-                type: Sequelize.STRING,
                 allowNull: false,
             },
             moderator: {

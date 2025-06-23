@@ -3,31 +3,38 @@ const { LocalisationManager } = require('../managers/LocalisationManager');
 const ChannelUtils = require('../utils/ChannelUtils');
 const Setups = require('../database/models/Setups');
 const Tickets = require('../database/models/Tickets');
+const TicketCategories = require('../database/models/TicketCategories');
+const fs = require('fs').promises;
+const path = require('path'); 
 
-class HelpTicketModal {
-    static customId = "HelpTicketModal";
+class CategoryTicketModal {
+    static customId = "CategoryTicketModal";
     
-    static create (lang) {
+    static create (lang, category) {
 
         const modal = new ModalBuilder()
-            .setCustomId(HelpTicketModal.customId)
-            .setTitle(LocalisationManager.getString('help_modal_title', lang));
+            .setCustomId(`${CategoryTicketModal.customId}/${category}`)
+            .setTitle(LocalisationManager.getString(
+                `ticket_modal_title`, 
+                lang, 
+                {'category': category}
+            ));
 
 		const title = new TextInputBuilder()
             .setMinLength(5)
             .setMaxLength(40)
-			.setLabel(LocalisationManager.getString('help_modal_input_title', lang))
-			.setCustomId('helpTicketModalTitle')
-            .setPlaceholder(LocalisationManager.getString('help_modal_placeholder_title', lang))
+			.setLabel(LocalisationManager.getString('ticket_modal_input_title', lang))
+			.setCustomId('categoryTicketModalTitle')
+            .setPlaceholder(LocalisationManager.getString('ticket_modal_placeholder_title', lang))
             .setRequired(true)
             .setStyle(TextInputStyle.Short);
 		
 		const description = new TextInputBuilder()
             .setMinLength(10)
             .setMaxLength(1_000)
-			.setLabel(LocalisationManager.getString('help_modal_input_description', lang))
-            .setCustomId('helpTicketModalDescription')
-            .setPlaceholder(LocalisationManager.getString('help_modal_placeholder_description', lang))
+			.setLabel(LocalisationManager.getString('ticket_modal_input_description', lang))
+            .setCustomId('ticketModalDescription')
+            .setPlaceholder(LocalisationManager.getString('ticket_modal_placeholder_description', lang))
             .setRequired(true)
             .setStyle(TextInputStyle.Paragraph);
 
@@ -45,29 +52,43 @@ class HelpTicketModal {
 		const setup = await Setups.findOne({ where: { guildId } });
 		const ticketId = await db.getNextId('tickets');
         const lang = interaction.locale;
+
+        const customId = interaction.customId;
+        const [prefix, categoryName] = customId.split('/');
         
 		const createdTicketChannel = await ChannelUtils.runCreateTicketProcess(
 			interaction,
 			setup.unassignedTicketsCategoryId,
-			'help',
+			categoryName,
 			ticketId,
             lang
 		);
 
-		await Tickets.create({
+        const category = await TicketCategories.findOne({
+            where: {name: categoryName}
+        });
+
+        const ticketsFolderPath = path.join(__dirname, '../files/tickets');
+        
+        
+
+		const newTicket = await Tickets.create({
             id: ticketId,
 			channelId: createdTicketChannel.id,
             userId: interaction.user.id,
             guildId: interaction.guild.id,
             discordUsername: interaction.user.username,
-            title: interaction.fields.getTextInputValue('helpTicketModalTitle'),
-            description: interaction.fields.getTextInputValue('helpTicketModalDescription'),
+            title: interaction.fields.getTextInputValue('categoryTicketModalTitle'),
+            description: interaction.fields.getTextInputValue('ticketModalDescription'),
             status: 'unassigned',
-            category: 'help',
+            categoryId: category.id,
 			moderator: null,
         })
+
+        await ChannelUtils.sendTicketCreationSuccess(interaction, createdTicketChannel, newTicket);
+        return;
 
     }
 }
 
-module.exports.HelpTicketModal = HelpTicketModal;
+module.exports.CategoryTicketModal = CategoryTicketModal;

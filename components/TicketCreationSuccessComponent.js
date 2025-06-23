@@ -8,8 +8,9 @@ class TicketCreationSuccessComponent {
         
         const text1 = new TextDisplayBuilder().setContent(
             [
-                `# ${LocalisationManager.getString('ticket_created', lang)}`,
-                `# ${LocalisationManager.getString('ticket_created_at', lang)}`,
+                `## ${LocalisationManager.getString('ticket_created', lang)}`,
+                `### ${LocalisationManager.getString('ticket_created_info', lang)}`,
+                `-# ${LocalisationManager.getString('ticket_created_at', lang)}`,
                 `-# ${new Date().toLocaleString(lang, {
                     weekday: 'short',
                     year: 'numeric',

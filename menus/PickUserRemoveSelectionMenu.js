@@ -1,11 +1,13 @@
 const { MentionableSelectMenuBuilder, MessageFlags } = require("discord.js");
 const { TicketUtils } = require("../utils/TicketUtils");
-const UserNotFoundComponent = require('../components/responses/UserNotFoundComponent');
+const { LocalisationManager } = require("../managers/LocalisationManager");
+const { VariableResponseComponent } = require("../components/responses/VariableResponseComponent");
+const { NoVariableResponseComponent } = require("../components/responses/NoVariableResponseComponent");
 
 class PickUserRemoveSelectionMenu {
     static customId = "PickUserRemoveSelectionMenu";
 
-    static create() {
+    static create(lang) {
 
         return new MentionableSelectMenuBuilder()
             .setCustomId(PickUserRemoveSelectionMenu.customId)
@@ -19,9 +21,14 @@ class PickUserRemoveSelectionMenu {
 
     static async onInteraction(interaction) {
         const userId = interaction.values[0];
+        const lang = interaction.locale;
 
         if (!userId || userId.length === 0) {
-            const container = UserNotFoundComponent.create(lang, userId);
+            const container = VariableResponseComponent.create(
+                'selected_user_not_found', 
+                lang, 
+                { userId }
+            );
             
             interaction.reply({
                 components: [container],
@@ -46,13 +53,15 @@ class PickUserRemoveSelectionMenu {
 
         await interaction.channel.permissionOverwrites.delete(userId);
 
-        await interaction.reply({
-            content: LocalisationManager.getString(
+        const container = VariableResponseComponent.create(
                 'user_removed_from_ticket', 
-                lang,
-                {"userId": userId}
-            ),
-            flags: MessageFlags.Ephemeral,
+                lang, 
+                { userId }
+            );
+
+        await interaction.reply({
+            components: [container],
+            flags: [MessageFlags.Ephemeral, MessageFlags.IsComponentsV2],
         });
     }
 }

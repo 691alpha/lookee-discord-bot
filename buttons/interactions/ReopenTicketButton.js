@@ -1,6 +1,8 @@
-const { ButtonBuilder, ButtonStyle } = require("discord.js");
+const { ButtonBuilder, ButtonStyle, MessageFlags } = require("discord.js");
 const { TicketUtils } = require("../../utils/TicketUtils");
 const { EmbedManager } = require("../../managers/EmbedManager");
+const { LocalisationManager } = require("../../managers/LocalisationManager");
+const { NoVariableResponseComponent } = require("../../components/responses/NoVariableResponseComponent");
 
 class ReopenTicketButton {
     static customId = "ReopenTicketButton";
@@ -8,11 +10,13 @@ class ReopenTicketButton {
         static create(lang) {
             return new ButtonBuilder()
                 .setCustomId(ReopenTicketButton.customId)
+                .setEmoji('1386724332889313300')
                 .setLabel(LocalisationManager.getString('reopen_ticket_label_button', lang))
-                .setStyle(ButtonStyle.Secondary);
+                .setStyle(ButtonStyle.Primary);
         }
     
         static async onInteraction(interaction) {
+            const lang = interaction.locale;
 
             const ticket = await TicketUtils.findTicketByChannel(interaction.channel.id);
 
@@ -32,9 +36,15 @@ class ReopenTicketButton {
                 );
             }
 
-            let outputEmbed = EmbedManager.getEmbed('ticketChannel.reopened');
+            const outputContainer = NoVariableResponseComponent.create(
+                'ticket_has_been_reopened', 
+                lang
+            )
 
-            interaction.reply({ embeds: [outputEmbed]});
+            interaction.reply({ 
+                components: [outputContainer],
+                flags: [MessageFlags.IsComponentsV2]
+            });
         }
 }
 

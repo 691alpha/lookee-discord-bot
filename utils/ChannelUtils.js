@@ -63,7 +63,7 @@ module.exports = class ChannelUtils {
      * @param {*} interaction 
      * @param {*} tempChannel 
      */
-    static async sendTicketCreationSuccess(interaction, tempChannel) {
+    static async sendTicketCreationSuccess(interaction, tempChannel, newTicket) {
         let { client } = interaction;        
         const lang = interaction.locale;
 
@@ -78,7 +78,10 @@ module.exports = class ChannelUtils {
             flags: [MessageFlags.IsComponentsV2, MessageFlags.Ephemeral],
         })
 
-        let outputContainer2 = await TicketCreationSuccessChannelComponent.create(lang);
+        let outputContainer2 = await TicketCreationSuccessChannelComponent.create(
+            lang,
+            newTicket
+        );
         const test = client.channels.cache.get(tempChannel.id)
         await test.send({
             components: [outputContainer2],
@@ -128,7 +131,6 @@ module.exports = class ChannelUtils {
                 interaction.user.id
             )
             
-            ChannelUtils.sendTicketCreationSuccess(interaction, creationTicketResult);
             return creationTicketResult;
         } catch (e) {
             ChannelUtils.sendTicketCreationFailed(interaction, lang);

@@ -13,7 +13,7 @@ class RemoveUserTicketComponent {
         container.addTextDisplayComponents(text);
         container.addActionRowComponents(row => 
             row.addComponents(
-                PickUserRemoveSelectionMenu.create(channel, lang)
+                PickUserRemoveSelectionMenu.create(lang)
             )
         );
 

@@ -38,6 +38,9 @@ module.exports = class AutoIncrement extends Model {
       patchnote_attachments: {
         type: Sequelize.BIGINT,
       },
+      ticket_categories: {
+        type: Sequelize.BIGINT,
+      },
     }, {
       sequelize,
       tableName: 'auto_increments',

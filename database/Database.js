@@ -13,6 +13,7 @@ const Versions = require('./models/Versions.js');
 const Suggestions = require('./models/Suggestions.js');
 const PatchNoteCategories = require('./models/PatchNoteCategories.js');
 const PatchNoteAttachments = require('./models/PatchNoteAttachments.js');
+const TicketCategories = require('./models/TicketCategories.js');
 // const Message = require('./models/Messages.js');
 
 dotenv.config();
@@ -49,6 +50,7 @@ module.exports = class Database {
                 this.initConnection(Versions);
                 this.initConnection(PatchNoteCategories);
                 this.initConnection(PatchNoteAttachments);
+                this.initConnection(TicketCategories);
                 // this.initConnection(Message);
 
                 // Foreign keys
@@ -66,6 +68,9 @@ module.exports = class Database {
 
                 PatchNoteCategories.hasOne(PatchNoteNode, { foreignKey: 'categoryId' });
                 PatchNoteNode.belongsTo(PatchNoteCategories, { foreignKey: 'categoryId' });
+
+                TicketCategories.hasOne(TicketModel, { foreignKey: 'categoryId' });
+                TicketModel.belongsTo(TicketCategories, { foreignKey: 'categoryId' });
 
                 // TicketModel.hasMany(Message, {foreignKey: 'ticketMessage'});
                 // Message.belongsTo(TicketModel, {foreignKey: 'ticketId'});
@@ -117,7 +122,8 @@ module.exports = class Database {
                 formats: 0,
                 suggestions: 0,
                 patchnote_categories: 0,
-                patchnote_attachments: 0
+                patchnote_attachments: 0,
+                ticket_categories: 0
             });
         });
     }
