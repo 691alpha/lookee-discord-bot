@@ -189,7 +189,7 @@ class PatchNoteComponent {
         // Build title from version
         const title = new TextDisplayBuilder().setContent(
             `## ${LocalisationManager.getString('patchnote_title', lang)} \
-${formattedVersion} \n<t:${Date.now()}:F>`);
+${formattedVersion} \n<t:${Math.floor(Date.now()/1000)}:F>`);
 
         return title;
     }
