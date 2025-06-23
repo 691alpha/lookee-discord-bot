@@ -67,11 +67,7 @@ class CategoryTicketModal {
         const category = await TicketCategories.findOne({
             where: {name: categoryName}
         });
-
-        const ticketsFolderPath = path.join(__dirname, '../files/tickets');
         
-        
-
 		const newTicket = await Tickets.create({
             id: ticketId,
 			channelId: createdTicketChannel.id,
@@ -83,7 +79,29 @@ class CategoryTicketModal {
             status: 'unassigned',
             categoryId: category.id,
 			moderator: null,
-        })
+        });
+
+        const ticketCategory = await TicketCategories.findOne({where: {id: category.id}});
+
+        const fileContent = `Ticket ID: ${newTicket.id}\n` +
+                            `Author ID: ${newTicket.userId}\n` +
+                            `Author Username: ${newTicket.discordUsername}\n` +
+                            `Creation Date: ${newTicket.createdAt}\n` +
+                            `Guild ID: ${newTicket.guildId}\n` +
+                            `Category: ${ticketCategory.name}\n` +
+                            `Category ID: ${newTicket.categoryId}\n` +
+                            `Title: ${newTicket.title}\n` +
+                            `Description: ${newTicket.description}\n` +
+                            `\n` +
+                            "  _____ ____      _    _   _ ____   ____ ____  ___ ____ _____ \n"+
+                            " |_   _|  _ \\    / \\  | \\ | / ___| / ___|  _ \\|_ _|  _ \\_   _|\n"+
+                            "   | | | |_) |  / _ \\ |  \\| \\___ \\| |   | |_) || || |_) || |  \n"+
+                            "   | | |  _ <  / ___ \\| |\\  |___) | |___|  _ < | ||  __/ | |  \n"+
+                            "   |_| |_| \\_\\/_/   \\_\\_| \\_|____/ \\____|_| \\_\\___|_|    |_|  \n";
+                                                              
+
+        const ticketsFolderPath = path.join(__dirname, '../files/tickets');
+        fs.writeFile(ticketsFolderPath+`/${newTicket.id}.txt`,fileContent)
 
         await ChannelUtils.sendTicketCreationSuccess(interaction, createdTicketChannel, newTicket);
         return;
