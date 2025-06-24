@@ -1,6 +1,7 @@
 const Tickets = require("../database/models/Tickets");
 const Setups = require("../database/models/Setups");
 const { MessageFlags, PermissionsBitField } = require("discord.js");
+const { LocalisationManager } = require("../managers/LocalisationManager");
 
 class TicketUtils {
     /**

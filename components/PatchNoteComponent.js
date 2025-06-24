@@ -13,6 +13,7 @@ const { PatchNoteTranslateButton } = require('../buttons/interactions/PatchNoteT
 const { SuggestionButton } = require('../buttons/interactions/SuggestionButton');
 const PatchNoteAttachments = require('../database/models/PatchNoteAttachments');
 const PatchNoteCategories = require('../database/models/PatchNoteCategories');
+const PatchNotes = require('../database/models/PatchNotes');
 
 class PatchNoteComponent {
     curr_categories = null;
@@ -43,10 +44,11 @@ class PatchNoteComponent {
 
         const container = new ContainerBuilder();
         const separator = new SeparatorBuilder().setDivider(true).setSpacing(2);
-        const title = await PatchNoteComponent.createTitle(lang, mode, version);
+        const title = await PatchNoteComponent.createTitle(lang, mode, version, patchnoteId);
         container.addTextDisplayComponents(title);
 
         PatchNoteComponent.curr_categories = await PatchNoteCategories.findAll({});
+        if(mode === 'republish') attachments = await PatchNoteAttachments.findAll({});
         
         const sortedNodes = {};
         const sortedOutputs = {};
@@ -165,7 +167,7 @@ class PatchNoteComponent {
         return foundCategory;
     }
 
-    static async createTitle(lang, mode, version) {
+    static async createTitle(lang, mode, version, patchnoteId) {
         // We assume we always have a version (since the version is
         // auto created on first launch).
         if (mode === 'republish') version = await Versions.findOne({
@@ -186,10 +188,19 @@ class PatchNoteComponent {
             .replace('{feature}', version.feature_number)
             .replace('{patch}', version.patch_number);
     
-        // Build title from version
-        const title = new TextDisplayBuilder().setContent(
-            `## ${LocalisationManager.getString('patchnote_title', lang)} \
-${formattedVersion} \n<t:${Math.floor(Date.now()/1000)}:F>`);
+        let title;
+        if(mode === 'republish') {
+            const patchnote = await PatchNotes.findOne({where:{id: patchnoteId}});
+            const time = patchnote.publishedDate.getTime()
+            title = new TextDisplayBuilder().setContent(
+                `## ${LocalisationManager.getString('patchnote_title', lang)} \
+    ${formattedVersion} \n<t:${Math.floor(time)}:F>`);
+        } else {
+            // Build title from version
+            title = new TextDisplayBuilder().setContent(
+                `## ${LocalisationManager.getString('patchnote_title', lang)} \
+    ${formattedVersion} \n<t:${Math.floor(Date.now()/1000)}:F>`);
+        }
 
         return title;
     }

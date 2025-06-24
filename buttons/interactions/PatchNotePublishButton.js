@@ -113,7 +113,7 @@ class PatchNotePublishButton {
         
         await PatchNotes.create({
             id: patchnoteId,
-            publishedDate: Date.now(),
+            publishedDate: Math.floor(Date.now()/1000),
             channelId: announcementChannel.id,
             versionId: latestVersion.id
         });
