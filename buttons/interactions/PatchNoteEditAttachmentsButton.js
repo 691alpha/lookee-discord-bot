@@ -9,6 +9,7 @@ class PatchNoteEditAttachmentsButton {
 
         return new ButtonBuilder()
         .setCustomId(`${PatchNoteEditAttachmentsButton.customId}`)
+        .setEmoji('1387102782665785365')
         .setLabel(LocalisationManager.getString('patchnote_edit_attachments', lang))
         .setStyle(ButtonStyle.Secondary);
     }

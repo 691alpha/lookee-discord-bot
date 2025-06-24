@@ -12,6 +12,7 @@ class PatchNoteAddNodeButton {
 
         return new ButtonBuilder()
         .setCustomId(`${PatchNoteAddNodeButton.customId}`)
+        .setEmoji('1387102780740862114')
         .setLabel(LocalisationManager.getString('patchnote_node_pick_status', lang))
         .setStyle(ButtonStyle.Primary);
     }

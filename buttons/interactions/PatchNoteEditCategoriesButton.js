@@ -10,6 +10,7 @@ class PatchNoteEditCategoriesButton {
 
         return new ButtonBuilder()
         .setCustomId(`${PatchNoteEditCategoriesButton.customId}`)
+        .setEmoji('1387102783898910770')
         .setLabel(LocalisationManager.getString('patchnote_edit_categories', lang))
         .setStyle(ButtonStyle.Secondary);
     }

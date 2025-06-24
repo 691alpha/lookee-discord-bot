@@ -20,6 +20,7 @@ class PatchNotePublishButton {
         
         return new ButtonBuilder()
         .setCustomId(PatchNotePublishButton.customId)
+        .setEmoji('1387102787204288512')
         .setLabel(LocalisationManager.getString('create_patchnote_node_button', lang))
         .setStyle(ButtonStyle.Success);
     }

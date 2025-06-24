@@ -13,9 +13,9 @@ class PatchNoteButtonComponentTwo {
 
         container.addActionRowComponents(row => row.addComponents(
             SetPatchNoteVersionButton.create(lang),
-            PatchNoteRepublishButton.create(lang),
             PatchNoteEditAttachmentsButton.create(lang),
-            PatchNoteEditCategoriesButton.create(lang)
+            PatchNoteEditCategoriesButton.create(lang),
+            PatchNoteRepublishButton.create(lang),
         ));
 
         return container;

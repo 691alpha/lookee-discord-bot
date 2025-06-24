@@ -12,6 +12,7 @@ class PatchNoteDeleteNodeButton {
         
         return new ButtonBuilder()
             .setCustomId(PatchNoteDeleteNodeButton.customId)
+            .setEmoji('1387102788869296248')
             .setLabel(LocalisationManager.getString('delete_node_patchnote_node_button', lang))
             .setStyle(ButtonStyle.Danger);
     }

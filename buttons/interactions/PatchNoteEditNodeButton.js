@@ -13,6 +13,7 @@ class PatchNoteEditNodeButton {
 
         return new ButtonBuilder()
             .setCustomId(PatchNoteEditNodeButton.customId)
+            .setEmoji('1387102785329299617')
             .setLabel(LocalisationManager.getString('edit_node_patchnote_node_button', lang))
             .setStyle(ButtonStyle.Primary);
     }

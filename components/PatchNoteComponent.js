@@ -193,13 +193,11 @@ class PatchNoteComponent {
             const patchnote = await PatchNotes.findOne({where:{id: patchnoteId}});
             const time = patchnote.publishedDate.getTime()
             title = new TextDisplayBuilder().setContent(
-                `## ${LocalisationManager.getString('patchnote_title', lang)} \
-    ${formattedVersion} \n<t:${Math.floor(time)}:F>`);
+                `## ${LocalisationManager.getString('patchnote_title', lang)} ${formattedVersion} \n<t:${Math.floor(time)}:F>`);
         } else {
             // Build title from version
             title = new TextDisplayBuilder().setContent(
-                `## ${LocalisationManager.getString('patchnote_title', lang)} \
-    ${formattedVersion} \n<t:${Math.floor(Date.now()/1000)}:F>`);
+                `## ${LocalisationManager.getString('patchnote_title', lang)} ${formattedVersion} \n<t:${Math.floor(Date.now()/1000)}:F>`);
         }
 
         return title;

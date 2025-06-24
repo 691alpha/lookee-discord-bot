@@ -10,6 +10,7 @@ class PatchNoteRepublishButton {
     static create(lang) {
         return new ButtonBuilder()
             .setCustomId(PatchNoteRepublishButton.customId)
+            .setEmoji('1386724332889313300')
             .setLabel(`${LocalisationManager.getString(
                 'patchnote_republish_button_label', 
                 lang
