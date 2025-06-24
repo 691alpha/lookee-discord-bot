@@ -36,7 +36,7 @@ module.exports = {
                 ban.guild,
                 0xff9933,
                 {
-                    'userName': ban.user.tag,
+                    'username': ban.user.tag,
                     'userId': ban.user.id,
                     'guildName': ban.guild.name,
                     'reason': ban.reason || LocalisationManager.getString(

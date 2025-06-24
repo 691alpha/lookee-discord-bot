@@ -2,6 +2,7 @@ const { ContainerBuilder, TextDisplayBuilder } = require("discord.js");
 const { LocalisationManager } = require("../managers/LocalisationManager");
 const { CloseTicketButton } = require('../buttons/interactions/CloseTicketButton');
 const Tickets = require("../database/models/Tickets");
+const { TicketSendLogButton } = require("../buttons/interactions/TicketSendLogButton");
 
 class TicketCreationSuccessChannelComponent {
     static async create(lang, newTicket) {
@@ -18,6 +19,10 @@ class TicketCreationSuccessChannelComponent {
                     lang, 
                     {'userId': ticket.userId}
                 )}`,
+                `-# ${LocalisationManager.getString(
+                    'ticket_record_info', 
+                    lang
+                )}`,
                 `### ${LocalisationManager.getString(
                     'ticket_created_channel_details', 
                     lang,
@@ -31,7 +36,8 @@ class TicketCreationSuccessChannelComponent {
 
         container.addActionRowComponents(
             row => row.addComponents(
-                CloseTicketButton.create(lang)
+                CloseTicketButton.create(lang),
+                TicketSendLogButton.create(lang)
             ));
 
         return container;

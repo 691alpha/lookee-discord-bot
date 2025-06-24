@@ -16,9 +16,26 @@ class ReopenTicketButton {
         }
     
         static async onInteraction(interaction) {
+            const { CloseTicketButton } = require("./CloseTicketButton");
             const lang = interaction.locale;
 
             const ticket = await TicketUtils.findTicketByChannel(interaction.channel.id);
+
+            if(ticket.status != 'closed') {
+                const outputContainer = NoVariableResponseComponent.create(
+                    'ticket_already_reopened', 
+                    lang
+                );
+
+                outputContainer.addActionRowComponents(row => row.addComponents(
+                    CloseTicketButton.create(lang)
+                ));
+
+                return interaction.reply({ 
+                    components: [outputContainer],
+                    flags: [MessageFlags.IsComponentsV2, MessageFlags.Ephemeral]
+                });
+            }
 
             if(ticket.moderator) {
                 TicketUtils.moveTicketToCategory(
@@ -39,7 +56,11 @@ class ReopenTicketButton {
             const outputContainer = NoVariableResponseComponent.create(
                 'ticket_has_been_reopened', 
                 lang
-            )
+            );
+
+            outputContainer.addActionRowComponents(row => row.addComponents(
+                CloseTicketButton.create(lang)
+            ));
 
             interaction.reply({ 
                 components: [outputContainer],
