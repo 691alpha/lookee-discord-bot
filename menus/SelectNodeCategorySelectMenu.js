@@ -9,7 +9,7 @@ class SelectNodeCategorySelectMenu {
         const menu = new StringSelectMenuBuilder()
             .setCustomId(`${SelectNodeCategorySelectMenu.customId}`)
             .setMinValues(1)
-            .setMaxValues(categories.length)
+            .setMaxValues(1)
             .setPlaceholder(LocalisationManager.getString(
                 'patchnote_select_node_category_menu_placeholder', 
                 lang
