@@ -6,6 +6,7 @@ const { NoVariableResponseComponent } = require("../../components/responses/NoVa
 const { TicketLogPrivateMessageComponent } = require("../../components/responses/TicketLogPrivateMessageComponent");
 const fs = require('fs').promises;
 const path = require('path'); 
+const { ForwardToTicketButton } = require("./ForwardToTicketButton");
 
 class CloseTicketButton {
     static customId = "CloseTicketButton";
@@ -21,7 +22,7 @@ class CloseTicketButton {
     static async onInteraction(interaction) {
         const lang = interaction.locale;
         
-        const ticket = await TicketUtils.findTicketByChannel(interaction.channel.id);
+        const ticket = await TicketUtils.findTicketByChannelId(interaction.channel.id);
 
         if(ticket.status === 'closed') {
             const outputContainer = NoVariableResponseComponent.create(
@@ -59,20 +60,24 @@ class CloseTicketButton {
         );
 
         const ticketsFolderPath = path.join(__dirname, '../../files/tickets').replaceAll("\\\\", "\\");
-        // const filePath = path.join(ticketsFolderPath, `${ticket.id}.txt`);
 
-        // let fileContent;
-        // try {
-        //     fileContent = await fs.readFile(filePath, 'utf8');
-        // } catch (error) {
-        //     console.error(`Error reading ticket log file: ${error}`);
-        //     return;
-        // }
+        const ticketChannel = await interaction.client.channels.fetch(ticket.channelId);
+
+        const newFileName = `${LocalisationManager.getString(
+            'ticket_log_file_prefix', 
+            lang)}${ticketChannel.name}.txt`
+
         const file = new AttachmentBuilder(`${ticketsFolderPath}/${ticket.id}.txt`)
+            .setName(`${newFileName}`)
 
-        const fileBuilder = new FileBuilder().setURL(`attachment://${ticket.id}.txt`);
-        // const fileBuilder = new FileBuilder().setURL(ticketsFolderPath+`/${ticket.id}.txt`)
+        const fileBuilder = new FileBuilder().
+            setURL(`attachment://${newFileName}`);
+
         logMessageComponent.addFileComponents(fileBuilder);
+
+        logMessageComponent.addActionRowComponents(row => row.addComponents(
+            ForwardToTicketButton.create(ticket.channelId, ticket.guildId, lang)
+        ));
 
         interaction.client.users.send(ticket.userId, 
             {

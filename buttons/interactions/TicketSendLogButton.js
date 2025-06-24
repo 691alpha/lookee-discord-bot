@@ -19,7 +19,7 @@ class TicketSendLogButton {
     static async onInteraction(interaction) {
         const lang = interaction.locale;
         
-        const ticket = await TicketUtils.findTicketByChannel(interaction.channel.id);
+        const ticket = await TicketUtils.findTicketByChannelId(interaction.channel.id);
 
         const logMessageComponent = VariableResponseComponent.create(
             'ticket_current_log_send',
