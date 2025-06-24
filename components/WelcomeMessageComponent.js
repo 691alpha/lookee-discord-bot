@@ -26,7 +26,8 @@ class WelcomeMessageComponent {
 
         container.addActionRowComponents(row => row.addComponents(
             RulesButton.create(lang),
-            ForwardToWebsiteButton.create(lang),
+            ForwardToWebsiteButton.create(lang, 'https://sypher-project.com/', 'Sypher'),
+            ForwardToWebsiteButton.create(lang, 'https://esylda.com/', 'Esylda'),
         ));
 
         return container;

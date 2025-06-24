@@ -4,11 +4,11 @@ const { LocalisationManager } = require("../../managers/LocalisationManager");
 class ForwardToWebsiteButton {
     static customId = "ForwardToWebsiteButton";
 
-    static create(lang) {
+    static create(lang, websiteURL, websiteName) {
         return new ButtonBuilder()
-            .setLabel(LocalisationManager.getString('forward_to_website_button_label', lang))
+            .setLabel(websiteName)
             .setStyle(ButtonStyle.Link)
-            .setURL(`https://esylda.com/`)
+            .setURL(websiteURL)
     }
 
 }
