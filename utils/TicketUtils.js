@@ -85,10 +85,17 @@ class TicketUtils {
      */
     static async moveTicketToCategory(guild, ticketId, channel, newStatus) {
 
-        await Tickets.update(
-            { status: newStatus },
-            { where: { id: ticketId } }
-        );
+        if (newStatus === 'closed') {
+            await Tickets.update(
+                { status: newStatus, closedAt: Date.now()},
+                { where: { id: ticketId } }
+            );
+        } else {
+            await Tickets.update(
+                { status: newStatus },
+                { where: { id: ticketId } }
+            );
+        }
         
         const setup = await Setups.findOne({ where: { guildId: guild.id } });
 

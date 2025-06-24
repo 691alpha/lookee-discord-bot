@@ -2,6 +2,7 @@ const { Client, GatewayIntentBits, Partials } = require("discord.js");
 const Database = require("../database/Database.js");
 // const { default: OpenAI } = require("openai");
 const { Mistral } = require("@mistralai/mistralai");
+const ClosedTicketHandler = require("../handlers/ClosedTicketHandler.js");
 
 
 module.exports = class extends Client {
@@ -14,6 +15,9 @@ module.exports = class extends Client {
         this.db = new Database();
         this.mistralClient = this.loadMistralClient();
         this.loadDatabase();
+
+        this.startTicketTimeoutClock();
+        this.startCachingClock();
     }
 
     loadDatabase() {
@@ -24,6 +28,14 @@ module.exports = class extends Client {
         return new Mistral({
             apiKey: process.env.MISTRAL_API_KEY,
         })
+    }
+
+    startTicketTimeoutClock() {
+        
+    }
+
+    startCachingClock() {
+        ClosedTicketHandler
     }
 
 }
