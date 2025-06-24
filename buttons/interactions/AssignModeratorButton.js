@@ -9,8 +9,9 @@ class AssignModeratorButton {
     static create(lang) {
         return new ButtonBuilder()
             .setCustomId(AssignModeratorButton.customId)
+            .setEmoji('1387098743769399416')
             .setLabel(`${LocalisationManager.getString('add_moderator_ticket', lang)}`)
-            .setStyle(ButtonStyle.Secondary);
+            .setStyle(ButtonStyle.Primary);
     }
 
     static async onInteraction(interaction) {

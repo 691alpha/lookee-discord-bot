@@ -27,10 +27,17 @@ class TicketSendLogButton {
             { 'username': ticket.discordUsername }
         );
 
+        const ticketChannel = await interaction.client.channels.fetch(ticket.channelId);
         const ticketsFolderPath = path.join(__dirname, '../../files/tickets').replaceAll("\\\\", "\\");
-        const file = new AttachmentBuilder(`${ticketsFolderPath}/${ticket.id}.txt`)
-        const fileBuilder = new FileBuilder().setURL(`attachment://${ticket.id}.txt`);
+        const newFileName = `${LocalisationManager.getString(
+            'ticket_log_file_prefix', 
+            lang)}${ticketChannel.name}.txt`
 
+        const file = new AttachmentBuilder(`${ticketsFolderPath}/${ticket.id}.txt`)
+            .setName(`${newFileName}`)
+        
+        const fileBuilder = new FileBuilder().setURL(`attachment://${newFileName}`);
+        
         logMessageComponent.addFileComponents(fileBuilder);
 
         interaction.reply({ 

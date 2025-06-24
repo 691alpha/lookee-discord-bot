@@ -9,6 +9,7 @@ class AddSupporterTicketButton {
     static create(lang) {
         return new ButtonBuilder()
             .setCustomId(AddSupporterTicketButton.customId)
+            .setEmoji('1387098749112942622')
             .setLabel(`${LocalisationManager.getString('add_support', lang)}`)
             .setStyle(ButtonStyle.Secondary);
     }

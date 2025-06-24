@@ -9,8 +9,9 @@ class AddUserTicketButton {
     static create(lang) {
         return new ButtonBuilder()
             .setCustomId(AddUserTicketButton.customId)
+            .setEmoji('1387098742372565083')
             .setLabel(`${LocalisationManager.getString('add_user_ticket', lang)}`)
-            .setStyle(ButtonStyle.Secondary);
+            .setStyle(ButtonStyle.Success);
     }
 
     static async onInteraction(interaction) {

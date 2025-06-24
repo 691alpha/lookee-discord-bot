@@ -70,8 +70,7 @@ class CloseTicketButton {
         const file = new AttachmentBuilder(`${ticketsFolderPath}/${ticket.id}.txt`)
             .setName(`${newFileName}`)
 
-        const fileBuilder = new FileBuilder().
-            setURL(`attachment://${newFileName}`);
+        const fileBuilder = new FileBuilder().setURL(`attachment://${newFileName}`);
 
         logMessageComponent.addFileComponents(fileBuilder);
 

@@ -10,6 +10,7 @@ class AssignSelfModeratorButton {
     static create(lang) {
         return new ButtonBuilder()
             .setCustomId(AssignSelfModeratorButton.customId)
+            .setEmoji('1387098747548205066')
             .setLabel(`${LocalisationManager.getString('add_self_moderator_ticket', lang)}`)
             .setStyle(ButtonStyle.Secondary);
     }

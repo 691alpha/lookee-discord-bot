@@ -9,6 +9,7 @@ class RemoveUserTicketButton {
     static create(lang) {
         return new ButtonBuilder()
             .setCustomId(RemoveUserTicketButton.customId)
+            .setEmoji('1387098745685938256')
             .setLabel(LocalisationManager.getString('remove_user_ticket', lang))
             .setStyle(ButtonStyle.Danger);
     }

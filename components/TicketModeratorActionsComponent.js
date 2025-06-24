@@ -21,11 +21,10 @@ class TicketModeratorActionsComponent {
         container.addActionRowComponents(
             row => row.addComponents(
                 AddUserTicketButton.create(lang),
+                RemoveUserTicketButton.create(lang),
                 AssignModeratorButton.create(lang),
-                AssignSelfModeratorButton.create(lang),
                 AddSupporterTicketButton.create(lang),
-                RemoveUserTicketButton.create(lang)
-
+                AssignSelfModeratorButton.create(lang),
             ));
 
         return container;
