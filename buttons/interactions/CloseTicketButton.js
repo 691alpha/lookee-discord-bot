@@ -32,12 +32,6 @@ class CloseTicketButton {
             ReopenTicketButton.create(lang)
         ));
 
-        const createdDate = ticket.createdAt;
-        const dateNow = Date.now();
-
-        const timeDifference = dateNow - createdDate;
-        const daysDifference = timeDifference / (1000 * 3600 * 24);
-
         interaction.reply({ 
             components: [outputContainer],
             flags: [MessageFlags.IsComponentsV2]
