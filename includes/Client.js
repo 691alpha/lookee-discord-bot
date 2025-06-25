@@ -45,15 +45,15 @@ module.exports = class extends Client {
                 let setup;
 
                 for (const ticket of tickets) {
-                    if (!(Date.now() - ticket.closedAt > (1000 * 10))) continue;
-                    // if (!(Date.now() - closedTicket.closedAt > (1000 * 3600 * 24 * 7))) continue;
+                    // if (!(Date.now() - ticket.closedAt > (1000 * 10))) continue;
+                    if (!(Date.now() - closedTicket.closedAt > (1000 * 3600 * 24 * 7))) continue;
                     
                     if (!ticket.channelId) {
                         console.log(`Ticket ${ticket.id} already has a null channelId. Skipping.`);
                         continue;
                     }
 
-                    if (!(Date.now() - ticket.closedAt > (1000 * 10))) continue;
+                    if (!(Date.now() - ticket.closedAt > (1000 * 3600 * 24 * 7))) continue;
             
                     console.log(`Ticket ${ticket.id} (Channel: ${ticket.channelId}) has timed out. Attempting deletion...`);
 
@@ -90,8 +90,8 @@ module.exports = class extends Client {
     startCachingClock() {
         scheduleJob(
             process.env["SCHEDULE_JOB_NAME_TICKET_CACHE"] ?? "SCHEDULE_JOB_TICKET_CACHE",
-            '*/2 * * * *',
-            // '30 4 * * 3,7',
+            // '*/2 * * * *',
+            '30 4 * * 3,7',
             async () => {
                 ClosedTicketHandler.loadCache();
             }

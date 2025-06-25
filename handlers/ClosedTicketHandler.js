@@ -37,8 +37,8 @@ module.exports = class ClosedTicketHandler {
         if (!closedTickets && closedTickets.length == 0) return [];
 
         for (const closedTicket of closedTickets) {
-            if (!(Date.now() - closedTicket.closedAt > (1000 * 10))) 
-            // if (!(Date.now() - closedTicket.closedAt > (1000 * 3600 * 24 * 7))) 
+            // if (!(Date.now() - closedTicket.closedAt > (1000 * 10))) 
+            if (!(Date.now() - closedTicket.closedAt > (1000 * 3600 * 24 * 7))) 
                 timedoutTickets.push(closedTicket);
         }
 
