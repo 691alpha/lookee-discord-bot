@@ -15,7 +15,7 @@ class RemoveUserTicketButton {
     }
 
     static async onInteraction(interaction) {
-        const ticket = await TicketUtils.findTicketByChannelId(interaction.channel.id);
+        const ticket = await TicketUtils.findTicketByChannelId(interaction.channel.id, lang);
         const lang = interaction.locale;
 
         if (!ticket) return TicketUtils.searchTicketFail(interaction);

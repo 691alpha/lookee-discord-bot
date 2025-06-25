@@ -29,39 +29,24 @@ module.exports = class ClosedTicketHandler {
         });
     }
 
-    static async getTimedoutTickets(client) {
+    static async getTimedoutTickets() {
         const instance = ClosedTicketHandler.getInstance();
         const { closedTickets } = instance;
+        const timedoutTickets = [];
         
         if (!closedTickets && closedTickets.length == 0) return [];
 
-        const setup = null;
-        const logChannel = null;
-
         for (const closedTicket of closedTickets) {
-            if (!(Date.now() - closedTicket.closedAt > (1000 * 3600 * 24 * 6))) continue;
-            
-            const channel = await client.channels.fetch(closedTicket.channelId);
-            
-            if(!channel) {
-                if (!setup) setup = await Setups.findOne({where: {guildId: channel.guild.id}});
-                if (!logChannel) logChannel = client.channels.fetch(setup.logChannelId);
-
-                const container = NoVariableResponseComponent.create(
-                    'autodeletion_failed'
-                );
-
-                logChannel.send({
-                    components: [container],
-                    flags: [MessageFlags.IsComponentsV2]
-                })
-
-                continue;
-            }
-            channel.delete();
-            closedTicket.update({channelId: null});
-            
+            if (!(Date.now() - closedTicket.closedAt > (1000 * 10))) 
+            // if (!(Date.now() - closedTicket.closedAt > (1000 * 3600 * 24 * 7))) 
+                timedoutTickets.push(closedTicket);
         }
+
+        return timedoutTickets;
     }
-    
+
+    static getTickets() {
+        const instance = ClosedTicketHandler.getInstance();
+        return instance.closedTickets;
+    }
 }

@@ -19,7 +19,7 @@ class ReopenTicketButton {
             const { CloseTicketButton } = require("./CloseTicketButton");
             const lang = interaction.locale;
 
-            const ticket = await TicketUtils.findTicketByChannelId(interaction.channel.id);
+            const ticket = await TicketUtils.findTicketByChannelId(interaction.channel.id, lang);
 
             if(ticket.status != 'closed') {
                 const outputContainer = NoVariableResponseComponent.create(

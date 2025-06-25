@@ -48,7 +48,7 @@ class TicketUtils {
      * @param {*} channelId 
      * @returns 
      */
-    static async findTicketByChannelId(channelId) {
+    static async findTicketByChannelId(channelId, lang) {
         const result = await Tickets.findOne({ where: { channelId } });
 
         if (!result) return console.log(`

@@ -36,7 +36,7 @@ class PickUserRemoveSelectionMenu {
             })
         }
 
-        const ticket = await TicketUtils.findTicketByChannelId(interaction.channel.id);
+        const ticket = await TicketUtils.findTicketByChannelId(interaction.channel.id, lang);
 
         if (!ticket) return TicketUtils.searchTicketFail(interaction);
 

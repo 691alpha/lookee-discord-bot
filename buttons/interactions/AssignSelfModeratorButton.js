@@ -18,7 +18,7 @@ class AssignSelfModeratorButton {
     static async onInteraction(interaction) {
         const lang = interaction.locale;
         const member = interaction.member;
-        const ticket = await TicketUtils.findTicketByChannelId(interaction.channel.id);
+        const ticket = await TicketUtils.findTicketByChannelId(interaction.channel.id, lang);
 
         const currentTicket = await Tickets.findOne({ where: { channelId: interaction.channel.id } });
         const moderator = currentTicket.moderator;
