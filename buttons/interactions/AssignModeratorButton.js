@@ -18,7 +18,7 @@ class AssignModeratorButton {
 
         const lang = interaction.locale;
         const ticket = await TicketUtils.findTicketByChannelId(interaction.channel.id, lang);
-        if (!ticket) return TicketUtils.searchTicketFail(interaction);
+        if (!ticket) return TicketUtils.searchTicketFail(interaction, lang);
 
         let outputContainer = await AssignModeratorComponent.create(lang);
 		await interaction.reply({

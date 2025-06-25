@@ -44,7 +44,12 @@ class PatchNoteChangeCategoryNodeSelectMenu {
             )
         }
 
-        const category = await PatchNoteCategories.findOne({where:{id: categoryId}});
+        const category = await PatchNoteCategories.findOne({
+            where:{
+                id: categoryId, 
+                archived: false
+            }
+        });
         const container = VariableResponseComponent.create(
             'patchnote_node_category_updated',
             lang,

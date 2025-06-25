@@ -26,7 +26,7 @@ class PatchNoteDeleteCategoryButton {
         await interaction.deferReply({ flags: MessageFlags.Ephemeral });
         
         const categories = await PatchNoteCategories.findAll({
-            where: {guildId: interaction.guild.id}
+            where: {guildId: interaction.guild.id, archived: false}
         });
 
         if(!categories || categories.length === 0) {

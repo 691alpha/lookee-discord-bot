@@ -23,7 +23,7 @@ class AssignSelfModeratorButton {
         const currentTicket = await Tickets.findOne({ where: { channelId: interaction.channel.id } });
         const moderator = currentTicket.moderator;
 
-        if (!ticket) return TicketUtils.searchTicketFail(interaction);
+        if (!ticket) return TicketUtils.searchTicketFail(interaction, lang);
 
         if(moderator === interaction.user.id) {
             const container = NoVariableResponseComponent.create(

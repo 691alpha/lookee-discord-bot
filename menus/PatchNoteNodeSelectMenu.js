@@ -161,7 +161,12 @@ class PatchNoteNodeSelectMenu {
     }
 
     static async getNodeCategoryName(node) {
-        const category = await PatchNoteCategories.findOne({where: {id: node.categoryId}});
+        const category = await PatchNoteCategories.findOne({
+            where: {
+                id: node.categoryId,
+                archived: false
+            }
+        });
         return category.name;
     }
 }

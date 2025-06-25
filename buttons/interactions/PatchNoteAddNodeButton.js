@@ -21,7 +21,7 @@ class PatchNoteAddNodeButton {
         const lang =  interaction.locale;
 
         const categories = await PatchNoteCategories.findAll({
-            where: {guildId: interaction.guild.id}
+            where: {guildId: interaction.guild.id, archived: false}
         });
 
         if(!categories || categories.length == 0) {

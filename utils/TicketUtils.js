@@ -57,7 +57,7 @@ class TicketUtils {
         return result;
     }
 
-    static searchTicketFail(interaction) {
+    static searchTicketFail(interaction, lang) {
         return interaction.reply({
             content: LocalisationManager.getString('ticket_not_found', lang),
             flags: MessageFlags.Ephemeral
