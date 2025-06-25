@@ -11,7 +11,7 @@ class TicketSendLogButton {
     static create(lang) {
         return new ButtonBuilder()
             .setCustomId(TicketSendLogButton.customId)
-            .setEmoji('1387077790117003405')
+            .setEmoji('1387116103922090174')
             .setLabel(LocalisationManager.getString('send_ticket_log', lang))
             .setStyle(ButtonStyle.Primary);
     }

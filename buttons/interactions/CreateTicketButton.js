@@ -8,8 +8,9 @@ class CreateTicketButton {
     static create(lang) {
         return new ButtonBuilder()
         .setCustomId(CreateTicketButton.customId)
+        .setEmoji('1387102785329299617')
         .setLabel(LocalisationManager.getString('create_ticket_button', lang))
-        .setStyle(ButtonStyle.Danger);
+        .setStyle(ButtonStyle.Success);
     }
 
     static async onInteraction(interaction) {

@@ -15,10 +15,10 @@ class PickUserSelectionMenu {
     }
 
     static async onInteraction(interaction) {
-        const ticket = await TicketUtils.findTicketByChannel(interaction.channel.id);
+        const ticket = await TicketUtils.findTicketByChannelId(interaction.channel.id, lang);
         const lang = interaction.locale;
 
-        if (!ticket) return TicketUtils.searchTicketFail(interaction);
+        if (!ticket) return TicketUtils.searchTicketFail(interaction, lang);
 
         let selectedMemberIds = interaction.values.filter(id => interaction.guild.members.cache.has(id)); // Renamed for clarity
 

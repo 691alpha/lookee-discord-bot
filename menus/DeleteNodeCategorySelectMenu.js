@@ -50,7 +50,10 @@ class DeleteNodeCategorySelectMenu {
                 {deleted: true},
                 {where: {categoryId: selectedCategoryId}}
             );
-            await PatchNoteCategories.destroy({where:{id: selectedCategoryId}})
+            await PatchNoteCategories.update(
+                {archived: true},
+                {where:{id: selectedCategoryId}}
+            )
         }
 
         const container = VariableResponseComponent.create(

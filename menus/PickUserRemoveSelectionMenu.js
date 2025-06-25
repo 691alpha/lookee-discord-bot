@@ -1,4 +1,4 @@
-const { MentionableSelectMenuBuilder, MessageFlags } = require("discord.js");
+const { MentionableSelectMenuBuilder, MessageFlags, PermissionsBitField } = require("discord.js");
 const { TicketUtils } = require("../utils/TicketUtils");
 const { LocalisationManager } = require("../managers/LocalisationManager");
 const { VariableResponseComponent } = require("../components/responses/VariableResponseComponent");
@@ -36,9 +36,39 @@ class PickUserRemoveSelectionMenu {
             })
         }
 
-        const ticket = await TicketUtils.findTicketByChannel(interaction.channel.id);
+        const guild = await interaction.client.guilds.fetch(interaction.guild.id);
+        const guildMember = await guild.members.fetch(userId)
 
-        if (!ticket) return TicketUtils.searchTicketFail(interaction);
+        const memberPermissions = interaction.channel.permissionsFor(guildMember)
+        if(!(memberPermissions.has(PermissionsBitField.Flags.ViewChannel))) {
+            const container = VariableResponseComponent.create(
+                'selected_user_is_not_in_channel', 
+                lang, 
+                { userId }
+            );
+            
+            return interaction.reply({
+                components: [container],
+                flags: [MessageFlags.IsComponentsV2, MessageFlags.Ephemeral]
+            })
+        }
+
+        if(guildMember.permissions.has(PermissionsBitField.Flags.Administrator)) {
+            const container = VariableResponseComponent.create(
+                'selected_user_is_admin_cant_remove', 
+                lang, 
+                { userId }
+            );
+            
+            return interaction.reply({
+                components: [container],
+                flags: [MessageFlags.IsComponentsV2, MessageFlags.Ephemeral]
+            })
+        }
+        
+        const ticket = await TicketUtils.findTicketByChannelId(interaction.channel.id, lang);
+
+        if (!ticket) return TicketUtils.searchTicketFail(interaction, lang);
 
         const member = await interaction.guild.members.fetch(userId).catch(() => null);
 
@@ -59,7 +89,7 @@ class PickUserRemoveSelectionMenu {
                 { userId }
             );
 
-        await interaction.reply({
+        return await interaction.reply({
             components: [container],
             flags: [MessageFlags.Ephemeral, MessageFlags.IsComponentsV2],
         });

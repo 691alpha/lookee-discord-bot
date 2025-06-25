@@ -17,6 +17,10 @@ module.exports = class PatchNoteCategories extends Model {
                 type: Sequelize.STRING,
                 allowNull: false,
             },
+            archived: {
+                type: Sequelize.BOOLEAN,
+                allowNull: false,
+            }
         }, {
             sequelize,
             tableName: 'patchnote_categories',

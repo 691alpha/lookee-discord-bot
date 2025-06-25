@@ -5,6 +5,7 @@ const { AssignModeratorButton } = require("../buttons/interactions/AssignModerat
 const { AssignSelfModeratorButton } = require("../buttons/interactions/AssignSelfModeratorButton");
 const { AddSupporterTicketButton } = require("../buttons/interactions/AddSupporterTicketButton");
 const { RemoveUserTicketButton } = require("../buttons/interactions/RemoveUserTicketButton");
+const { TicketTimeoutInfoButton } = require("../buttons/interactions/TicketTimeoutInfoButton");
 
 class TicketModeratorActionsComponent {
     static async create(lang) {
@@ -25,6 +26,10 @@ class TicketModeratorActionsComponent {
                 AssignModeratorButton.create(lang),
                 AddSupporterTicketButton.create(lang),
                 AssignSelfModeratorButton.create(lang),
+            ));
+        container.addActionRowComponents(
+            row => row.addComponents(
+                TicketTimeoutInfoButton.create(lang)
             ));
 
         return container;

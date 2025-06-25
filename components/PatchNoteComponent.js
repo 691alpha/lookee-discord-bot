@@ -79,7 +79,8 @@ class PatchNoteComponent {
                 category = await PatchNoteCategories.create({
                     id: await db.getNextId('patchnote_categories'),
                     name: 'Done',
-                    guildId: guild.id
+                    guildId: guild.id,
+                    archived: false
                 });
             }
             if(!sortedOutputs[categoryId]) sortedOutputs[categoryId] = `### ${category.name}\n`;

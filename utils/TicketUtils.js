@@ -48,7 +48,7 @@ class TicketUtils {
      * @param {*} channelId 
      * @returns 
      */
-    static async findTicketByChannelId(channelId) {
+    static async findTicketByChannelId(channelId, lang) {
         const result = await Tickets.findOne({ where: { channelId } });
 
         if (!result) return console.log(`
@@ -57,7 +57,7 @@ class TicketUtils {
         return result;
     }
 
-    static searchTicketFail(interaction) {
+    static searchTicketFail(interaction, lang) {
         return interaction.reply({
             content: LocalisationManager.getString('ticket_not_found', lang),
             flags: MessageFlags.Ephemeral
@@ -85,10 +85,17 @@ class TicketUtils {
      */
     static async moveTicketToCategory(guild, ticketId, channel, newStatus) {
 
-        await Tickets.update(
-            { status: newStatus },
-            { where: { id: ticketId } }
-        );
+        if (newStatus === 'closed') {
+            await Tickets.update(
+                { status: newStatus, closedAt: Date.now()},
+                { where: { id: ticketId } }
+            );
+        } else {
+            await Tickets.update(
+                { status: newStatus },
+                { where: { id: ticketId } }
+            );
+        }
         
         const setup = await Setups.findOne({ where: { guildId: guild.id } });
 

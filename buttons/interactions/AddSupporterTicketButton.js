@@ -11,13 +11,13 @@ class AddSupporterTicketButton {
             .setCustomId(AddSupporterTicketButton.customId)
             .setEmoji('1387098749112942622')
             .setLabel(`${LocalisationManager.getString('add_support', lang)}`)
-            .setStyle(ButtonStyle.Secondary);
+            .setStyle(ButtonStyle.Success);
     }
 
     static async onInteraction(interaction) {
         const lang = interaction.locale;
-        const ticket = await TicketUtils.findTicketByChannel(interaction.channel.id);
-        if (!ticket) return TicketUtils.searchTicketFail(interaction);
+        const ticket = await TicketUtils.findTicketByChannelId(interaction.channel.id, lang);
+        if (!ticket) return TicketUtils.searchTicketFail(interaction, lang);
 
         const outputContainer = await AddSupportTicketComponent.create(lang);
         await interaction.reply({

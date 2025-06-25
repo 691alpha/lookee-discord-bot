@@ -3,6 +3,7 @@ const { LocalisationManager } = require("../../managers/LocalisationManager");
 const { ChangeNodeCategorySelectMenu } = require("../../menus/ChangeNodeCategorySelectMenu");
 const PatchNoteCategories = require("../../database/models/PatchNoteCategories");
 const { SelectMenuComponent } = require("../../components/SelectMenuComponent");
+const { NoVariableResponseComponent } = require("../../components/responses/NoVariableResponseComponent");
 
 class PatchNoteChangeCategoryButton {
     static customId = "PatchNoteChangeCategoryButton";
@@ -23,7 +24,7 @@ class PatchNoteChangeCategoryButton {
         const lang = interaction.locale;
 
         const categories = await PatchNoteCategories.findAll({
-            where: {guildId: interaction.guild.id}
+            where: {guildId: interaction.guild.id, archived: false}
         });
 
         if(!categories || categories.length === 0) {

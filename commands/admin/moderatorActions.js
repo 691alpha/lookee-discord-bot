@@ -1,6 +1,5 @@
 const {SlashCommandBuilder, MessageFlags, PermissionsBitField} = require('discord.js');
 const { LocalisationManager } = require("../../managers/LocalisationManager.js");
-const { CreateTicketComponent } = require('../../components/CreateTicketComponent.js');
 const { ModeratorActionsComponent } = require('../../components/ModeratorActionsComponent.js');
 
 // Sends a component to create a new ticket in the current channel

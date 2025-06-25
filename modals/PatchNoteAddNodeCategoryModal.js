@@ -37,7 +37,8 @@ class PatchNoteAddNodeCategoryModal {
 
         const sameCategory = await PatchNoteCategories.findAll({
             where: {
-                name: newCategory
+                name: newCategory,
+                archived: false
             }
         });
 
@@ -56,7 +57,8 @@ class PatchNoteAddNodeCategoryModal {
         const createdCategory = await PatchNoteCategories.create({
             id: await db.getNextId('patchnote_categories'),
             name: newCategory,
-            guildId: interaction.guild.id
+            guildId: interaction.guild.id,
+            archived: false
         });
 
         if(!createdCategory) {

@@ -3,13 +3,18 @@ const { CreateTicketButton } = require('../buttons/interactions/CreateTicketButt
 const { LocalisationManager } = require('../managers/LocalisationManager');
 
 class CreateTicketComponent {
-    static async create(lang) {
+    static async create(lang, announcementChannelId) {
         const container = new ContainerBuilder();
 
         const text1 = new TextDisplayBuilder().setContent(
             [
                 `## ${LocalisationManager.getString('create_ticket', lang)}`,
                 `### ${LocalisationManager.getString('create_ticket_1', lang)}`,
+                `-# ${LocalisationManager.getString(
+                    'create_ticket_2', 
+                    lang,
+                    {'patchnoteChannel': announcementChannelId}
+                )}`,
             ].join('\n'),
         );
         

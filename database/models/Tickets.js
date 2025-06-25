@@ -12,6 +12,10 @@ module.exports = class Tickets extends Model {
                 type: Sequelize.STRING,
                 allowNull: true,
             },
+            closedAt: {
+                type: Sequelize.DATE,
+                allowNull: true,
+            },
             userId: {
                 type: Sequelize.STRING,
                 allowNull: false,

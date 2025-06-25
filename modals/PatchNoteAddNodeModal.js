@@ -72,7 +72,12 @@ class PatchNoteAddNodeModal {
             server.defaultLang
         );
 
-        const category = await PatchNoteCategories.findOne({where: {id: categoryId}});
+        const category = await PatchNoteCategories.findOne({
+            where: {
+                id: categoryId,
+                archived: false
+            }
+        });
 
         await interaction.editReply({
             content: LocalisationManager

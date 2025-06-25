@@ -16,8 +16,8 @@ class PickSupportSelectionMenu {
 
     static async onInteraction(interaction) {
         const lang = interaction.locale;
-        const ticket = await TicketUtils.findTicketByChannel(interaction.channel.id);
-        if (!ticket) return TicketUtils.searchTicketFail(interaction);
+        const ticket = await TicketUtils.findTicketByChannelId(interaction.channel.id, lang);
+        if (!ticket) return TicketUtils.searchTicketFail(interaction, lang);
 
         // We assume Discord ensures the expected minimum value has been provided.
         const selected = interaction.values[0];
