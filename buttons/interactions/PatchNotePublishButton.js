@@ -1,5 +1,6 @@
 const { ButtonBuilder, ButtonStyle, MessageFlags } = require("discord.js");
 const { LocalisationManager } = require("../../managers/LocalisationManager");
+const LanguageManager = require("../../managers/LanguageManager");
 const { PatchNoteComponent } = require("../../components/PatchNoteComponent");
 const { PatchnoteUtils } = require("../../utils/PatchnoteUtils");
 const { PatchnotePublishedComponent } = require("../../components/PatchnotePublishedComponent");
@@ -29,10 +30,7 @@ class PatchNotePublishButton {
 
         await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 
-        const server = Setups.findOne({
-            where: {guildId: interaction.guild.id}
-        });
-        const lang = server.defaultLang;
+        const lang = await LanguageManager.getServerLang(interaction.guild.id);
         let { client } = interaction;
         let announcementChannel;
 
@@ -90,11 +88,11 @@ class PatchNotePublishButton {
         });
         
         const container = await PatchNoteComponent.create(
-            nodes, 
-            server.defaultLang,
+            nodes,
+            lang,
             interaction.client.db,
-            'publish', 
-            interaction.guild, 
+            'publish',
+            interaction.guild,
             patchnoteId,
             attachments
         );
@@ -155,7 +153,7 @@ class PatchNotePublishButton {
             description: LocalisationManager.getString("db_default_version_desc", lang)
         });
 
-        PatchnoteUtils.updateAllPatchNotePreviews(interaction.guild, client, server.defaultLang);
+        PatchnoteUtils.updateAllPatchNotePreviews(interaction.guild, client, lang);
         
         await interaction.editReply({
             components: [containerPublished],

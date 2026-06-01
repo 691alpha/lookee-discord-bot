@@ -1,4 +1,5 @@
-const {SlashCommandBuilder, MessageFlags, PermissionsBitField} = require('discord.js');
+const {SlashCommandBuilder, MessageFlags, PermissionsBitField, AttachmentBuilder} = require('discord.js');
+const path = require('node:path');
 const { WelcomeMessageComponent } = require('../../components/WelcomeMessageComponent.js');
 const Setups = require('../../database/models/Setups.js');
 const { PresentationComponent } = require('../../components/PresentationComponent.js');
@@ -30,11 +31,16 @@ module.exports = {
 
         const lang = setup.defaultLang;
 
-        const presentationContainer = await PresentationComponent.create(lang);
+        const presentationContainer = await PresentationComponent.create(lang, interaction.guild.id);
         let outputContainer = await WelcomeMessageComponent.create(lang);
+
+        const bannerAttachment = new AttachmentBuilder(
+            path.join(__dirname, '../../assets/images/lookee-banner.jpg')
+        );
 
         await interaction.channel.send({
             components: [ presentationContainer, outputContainer],
+            files: [bannerAttachment],
             flags: MessageFlags.IsComponentsV2,
         })
 

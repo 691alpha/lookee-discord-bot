@@ -7,6 +7,7 @@ const {
 } = require('discord.js');
 
 const { LocalisationManager } = require('../managers/LocalisationManager');
+const ColorManager = require('../managers/ColorManager');
 const Versions = require('../database/models/Versions');
 const Formats = require('../database/models/Formats');
 const { PatchNoteTranslateButton } = require('../buttons/interactions/PatchNoteTranslateButton');
@@ -43,6 +44,7 @@ class PatchNoteComponent {
         const { PatchnoteUtils } = require('../utils/PatchnoteUtils');
 
         const container = new ContainerBuilder();
+        container.setAccentColor(await ColorManager.getMainColor(guild.id));
         const separator = new SeparatorBuilder().setDivider(true).setSpacing(2);
         const title = await PatchNoteComponent.createTitle(lang, mode, version, patchnoteId);
         container.addTextDisplayComponents(title);

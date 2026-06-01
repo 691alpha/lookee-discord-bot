@@ -1,11 +1,12 @@
 const { ActionRowBuilder, ModalBuilder, TextInputBuilder, TextInputStyle } = require('discord.js');
 const { LocalisationManager } = require('../managers/LocalisationManager');
+const LanguageManager = require('../managers/LanguageManager');
 const ChannelUtils = require('../utils/ChannelUtils');
 const Setups = require('../database/models/Setups');
 const Tickets = require('../database/models/Tickets');
 const TicketCategories = require('../database/models/TicketCategories');
 const fs = require('fs').promises;
-const path = require('path'); 
+const path = require('path');
 
 class CategoryTicketModal {
     static customId = "CategoryTicketModal";
@@ -51,11 +52,11 @@ class CategoryTicketModal {
 		const guildId = interaction.guildId.toString(); 
 		const setup = await Setups.findOne({ where: { guildId } });
 		const ticketId = await db.getNextId('tickets');
-        const lang = interaction.locale;
+        const lang = await LanguageManager.getServerLang(guildId);
 
         const customId = interaction.customId;
         const [prefix, categoryName] = customId.split('/');
-        
+
 		const createdTicketChannel = await ChannelUtils.runCreateTicketProcess(
 			interaction,
 			setup.unassignedTicketsCategoryId,

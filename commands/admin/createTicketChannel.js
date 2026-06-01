@@ -1,5 +1,7 @@
-const {SlashCommandBuilder, MessageFlags, PermissionsBitField} = require('discord.js');
+const {SlashCommandBuilder, MessageFlags, PermissionsBitField, AttachmentBuilder} = require('discord.js');
+const path = require('node:path');
 const { LocalisationManager } = require("../../managers/LocalisationManager");
+const LanguageManager = require('../../managers/LanguageManager');
 const { CreateTicketComponent } = require('../../components/CreateTicketComponent.js');
 const Setups = require('../../database/models/Setups.js');
 const { NoVariableResponseComponent } = require('../../components/responses/NoVariableResponseComponent.js');
@@ -18,21 +20,28 @@ module.exports = {
         //         lang
         //     )),
     async execute(interaction) {
-        const lang = interaction.locale;
         const setup = await Setups.findOne({where:{guildId: interaction.guild.id}})
+        const serverLang = await LanguageManager.getServerLang(interaction.guild.id);
+
         let outputContainer = await CreateTicketComponent.create(
-            lang, 
-            setup.announcementChannelId
+            serverLang,
+            setup.announcementChannelId,
+            interaction.guild.id,
+        );
+
+        const bannerAttachment = new AttachmentBuilder(
+            path.join(__dirname, '../../assets/images/lookee-banner.jpg'),
         );
 
         await interaction.channel.send({
             components: [outputContainer],
+            files: [bannerAttachment],
             flags: MessageFlags.IsComponentsV2,
         })
 
         const container = NoVariableResponseComponent.create(
             'create_ticket_message_successfully_sent',
-            lang
+            interaction.locale
         );
 
         return interaction.reply({

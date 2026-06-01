@@ -50,6 +50,10 @@ module.exports = class Setups extends Model {
                 type: Sequelize.STRING,
                 allowNull: true,
             },
+            mainColor: {
+                type: Sequelize.STRING,
+                allowNull: true,
+            },
         }, {
             sequelize,
             tableName: 'setups',

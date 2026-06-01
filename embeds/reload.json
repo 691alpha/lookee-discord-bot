@@ -8,13 +8,13 @@
         "color": "#e61531",
         "title": "Click meeeeeeeeeeeeee",
         "description": "Not good, Error not good.",
-        "url":"https://sypher-project.com/",
+        "url":"https://lookee-app.com/",
         "image": {
-            "url":"attachment://server-icon_bot.png"
+            "url":"attachment://lookee-symbol.png"
         },
         "author":{
             "name":"me",
-            "icon_url":"attachment://profil-icon_bot.png"
+            "icon_url":"attachment://lookee-symbol.png"
         },
         "fields": [
             {

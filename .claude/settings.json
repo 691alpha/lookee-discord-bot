@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//d/repositories/lookee-display/**)",
+      "Read(//d/repositories/lookee/**)",
+      "Read(//d/repositories/lookee-nomad-api/**)"
+    ]
+  }
+}

@@ -78,8 +78,10 @@ module.exports = class Database {
                 await this.sequelize.sync({ force: this.force });
                 console.log(this.force ? `Drop and re-sync db.` : "Sync db.")
 
-                this.initAutoIncrement();
-                this.initDefaultPatchNoteVersion();
+                await this.ensureModelColumns();
+
+                await this.initAutoIncrement();
+                await this.initDefaultPatchNoteVersion();
             }).catch((e) => console.log(e));
         } catch (error) {
             console.error(LocalisationManager.getString('database_connection_fail', 'en-US'), error);
@@ -110,9 +112,45 @@ module.exports = class Database {
         // database.sync();
     }
 
-    initAutoIncrement() {
-        AutoIncrementModel.findAll().then(data => {
-            if (data.length == 0) AutoIncrementModel.create({
+    async ensureModelColumns() {
+        const queryInterface = this.sequelize.getQueryInterface();
+        const models = [
+            SetupModel, AutoIncrementModel, TicketModel, PatchNote, Suggestions,
+            PatchNoteNode, PatchNotePreview, Formats, Versions,
+            PatchNoteCategories, PatchNoteAttachments, TicketCategories,
+        ];
+
+        for (const model of models) {
+            const tableName = model.getTableName();
+            let tableDef;
+            try {
+                tableDef = await queryInterface.describeTable(tableName);
+            } catch (_) {
+                continue;
+            }
+
+            for (const [attrName, attr] of Object.entries(model.rawAttributes)) {
+                const columnName = attr.field || attrName;
+                if (tableDef[columnName]) continue;
+
+                try {
+                    await queryInterface.addColumn(tableName, columnName, {
+                        type: attr.type,
+                        allowNull: attr.allowNull !== false,
+                        defaultValue: attr.defaultValue,
+                    });
+                    console.log(`Added missing column \`${columnName}\` to \`${tableName}\`.`);
+                } catch (e) {
+                    console.error(`Failed to add column \`${columnName}\` to \`${tableName}\`:`, e.message);
+                }
+            }
+        }
+    }
+
+    async initAutoIncrement() {
+        const data = await AutoIncrementModel.findAll();
+        if (data.length == 0) {
+            await AutoIncrementModel.create({
                 setups: 0,
                 tickets: 0,
                 messages: 0,
@@ -125,7 +163,7 @@ module.exports = class Database {
                 patchnote_attachments: 0,
                 ticket_categories: 0
             });
-        });
+        }
     }
 
     async initDefaultPatchNoteVersion() {

@@ -1,8 +1,9 @@
 const { ContainerBuilder, TextDisplayBuilder, MediaGalleryBuilder, MediaGalleryItemBuilder, SeparatorSpacingSize, SeparatorBuilder } = require('discord.js');
 const { LocalisationManager } = require('../managers/LocalisationManager');
+const ColorManager = require('../managers/ColorManager');
 
 class PresentationComponent {
-    static async create(lang) {
+    static async create(lang, guildId) {
         const container = new ContainerBuilder();
         const separator = new SeparatorBuilder({
             spacing: SeparatorSpacingSize.Small,
@@ -11,8 +12,8 @@ class PresentationComponent {
 
         const BannerMedia = new MediaGalleryBuilder();
         const banner = new MediaGalleryItemBuilder()
-        .setURL('https://cdn.discordapp.com/attachments/1386458050994503711/1386458102966124544/Sypher-Twitter-Header.png?ex=6859c73a&is=685875ba&hm=42923ed001eadb781ea0c4df2aa64daab6016f6400955149e2c233b1d20a25ef&')
-       BannerMedia.addItems(banner); 
+        .setURL('attachment://lookee-banner.jpg')
+       BannerMedia.addItems(banner);
 
         const PresentationTitle = new TextDisplayBuilder().setContent(
             `### ${
@@ -26,7 +27,7 @@ class PresentationComponent {
             ].join('\n'),
         );
         
-        container.setAccentColor(0xf72630)
+        container.setAccentColor(await ColorManager.getMainColor(guildId))
         container.addMediaGalleryComponents(BannerMedia);
         container.addSeparatorComponents(separator);
         container.addTextDisplayComponents(PresentationTitle);

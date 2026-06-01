@@ -12,13 +12,10 @@ module.exports = {
     async execute(interaction) {
         let outputEmbed = EmbedManager.getEmbed('reload.error'); 
 
-        const file = new AttachmentBuilder (
-            path.join(__dirname, '../../assets/images/server-icon_bot.png')
-        );
-        const file2 = new AttachmentBuilder (
-            path.join(__dirname, '../../assets/images/profil-icon_bot.png')
+        const file = new AttachmentBuilder(
+            path.join(__dirname, '../../assets/images/lookee-symbol.png')
         );
 
-        interaction.reply({ embeds: [outputEmbed], files: [file,file2] });
+        interaction.reply({ embeds: [outputEmbed], files: [file] });
     },
 };

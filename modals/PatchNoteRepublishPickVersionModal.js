@@ -1,5 +1,6 @@
 const { ActionRowBuilder, ModalBuilder, TextInputBuilder, TextInputStyle, MessageFlags } = require('discord.js');
 const { LocalisationManager } = require('../managers/LocalisationManager');
+const LanguageManager = require('../managers/LanguageManager');
 const { PatchnoteUtils } = require('../utils/PatchnoteUtils');
 const { PatchNoteVersionFormatCreatedComponent } = require('../components/responses/PatchNoteVersionFormatCreatedComponent');
 const Formats = require('../database/models/Formats');
@@ -70,7 +71,7 @@ class PatchNoteRepublishPickVersionModal {
         const customId = interaction.customId;
         const {params} = ModalManager.getCustomIdData(customId);
         const formatId = params.formatId.toString();
-        const lang = interaction.locale;
+        const lang = await LanguageManager.getServerLang(interaction.guild.id);
         const { client } = interaction;
 
         await interaction.deferReply({ flags: MessageFlags.Ephemeral });
@@ -138,15 +139,11 @@ class PatchNoteRepublishPickVersionModal {
             return interaction.editReply(NoVariableResponseComponent.create("patchnote_no_announcement_channel_found", lang));
         }
 
-        const server = Setups.findOne({
-            where: {guildId: interaction.guild.id}
-        });
-
         const container = await PatchNoteComponent.create(
-            nodes, 
-            server.defaultLang,
+            nodes,
+            lang,
             interaction.client.db,
-            'republish', 
+            'republish',
             interaction.guild,
             patchnote.id,
             version

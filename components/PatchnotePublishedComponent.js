@@ -1,10 +1,12 @@
 const { ContainerBuilder, TextDisplayBuilder } = require('discord.js');
 const { LocalisationManager } = require('../managers/LocalisationManager');
+const ColorManager = require('../managers/ColorManager');
 const { ForwardToPatchnoteButton } = require('../buttons/interactions/ForwardToPatchnoteButton');
 
 class PatchnotePublishedComponent {
     static async create(placeholder, patchnoteMessage, guildId, lang) {
         const container = new ContainerBuilder();
+        container.setAccentColor(await ColorManager.getMainColor(guildId));
 
         const text1 = new TextDisplayBuilder().setContent(
             [
