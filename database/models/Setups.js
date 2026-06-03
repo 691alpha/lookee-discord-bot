@@ -54,6 +54,16 @@ module.exports = class Setups extends Model {
                 type: Sequelize.STRING,
                 allowNull: true,
             },
+            ticketMode: {
+                type: Sequelize.STRING,
+                allowNull: false,
+                defaultValue: 'native',
+            },
+            ticketCooldownSeconds: {
+                type: Sequelize.INTEGER,
+                allowNull: false,
+                defaultValue: 0,
+            },
         }, {
             sequelize,
             tableName: 'setups',

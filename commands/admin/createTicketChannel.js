@@ -6,7 +6,7 @@ const { CreateTicketComponent } = require('../../components/CreateTicketComponen
 const Setups = require('../../database/models/Setups.js');
 const { NoVariableResponseComponent } = require('../../components/responses/NoVariableResponseComponent.js');
 
-// Sends a component to create a new ticket in the current channel
+const TICKET_MODES = ['native', 'website'];
 
 module.exports = {
     category: 'admin',
@@ -14,19 +14,39 @@ module.exports = {
     data: new SlashCommandBuilder()
         .setName('create_ticket_channel')
         .setDefaultMemberPermissions(PermissionsBitField.Flags.Administrator)
-        .setDescription('Sends a Ticket embed in the current channel.'),
-        // .setDescription(LocalisationManager.getString(
-        //         'send_ticket_embed_description', 
-        //         lang
-        //     )),
+        .setDescription('Sends a Ticket embed in the current channel.')
+        .addStringOption(option =>
+            option
+                .setName('mode')
+                .setDescription('Which ticketing system the button should use.')
+                .setRequired(true)
+                .addChoices(
+                    { name: 'Discord (native channels)', value: 'native' },
+                    { name: 'Website (lookee-app.com)', value: 'website' },
+                )
+        ),
     async execute(interaction) {
+        const mode = interaction.options.getString('mode');
+        if (!TICKET_MODES.includes(mode)) {
+            return interaction.reply({
+                content: 'Invalid mode.',
+                flags: MessageFlags.Ephemeral,
+            });
+        }
+
         const setup = await Setups.findOne({where:{guildId: interaction.guild.id}})
         const serverLang = await LanguageManager.getServerLang(interaction.guild.id);
+
+        await Setups.update(
+            { ticketMode: mode },
+            { where: { guildId: interaction.guild.id } },
+        );
 
         let outputContainer = await CreateTicketComponent.create(
             serverLang,
             setup.announcementChannelId,
             interaction.guild.id,
+            mode,
         );
 
         const bannerAttachment = new AttachmentBuilder(

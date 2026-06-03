@@ -3,7 +3,11 @@
     "allow": [
       "Read(//d/repositories/lookee-display/**)",
       "Read(//d/repositories/lookee/**)",
-      "Read(//d/repositories/lookee-nomad-api/**)"
+      "Read(//d/repositories/lookee-nomad-api/**)",
+      "Read(//d/repositories/lookee-display-api/app/utils/**)",
+      "Read(//d/repositories/lookee-display-api/app/models/mongo/**)",
+      "Read(//d/repositories/lookee-display-api/**)",
+      "Bash(grep -E \"\\\\.\\(js|ts\\)$\")"
     ]
   }
 }

@@ -1,23 +1,22 @@
 const { ButtonBuilder, ButtonStyle, MessageFlags } = require("discord.js");
 const { LocalisationManager } = require("../../managers/LocalisationManager");
-const { CreateTicketPickCategoryComponent } = require("../../components/CreateTicketPickCategoryComponent");
+const { CreateWebsiteTicketPickCategoryComponent } = require("../../components/CreateWebsiteTicketPickCategoryComponent");
 const { VariableResponseComponent } = require("../../components/responses/VariableResponseComponent");
 const TicketCooldownManager = require("../../managers/TicketCooldownManager");
 
-class CreateTicketButton {
-    static customId = "CreateTicketButton";
+class CreateWebsiteTicketButton {
+    static customId = "CreateWebsiteTicketButton";
 
     static create(lang) {
         return new ButtonBuilder()
-        .setCustomId(CreateTicketButton.customId)
-        .setEmoji('1387102785329299617')
-        .setLabel(LocalisationManager.getString('create_ticket_button', lang))
-        .setStyle(ButtonStyle.Success);
+            .setCustomId(CreateWebsiteTicketButton.customId)
+            .setEmoji('1387102785329299617')
+            .setLabel(LocalisationManager.getString('create_ticket_button', lang))
+            .setStyle(ButtonStyle.Success);
     }
 
     static async onInteraction(interaction) {
-
-        await interaction.deferReply({flags: MessageFlags.Ephemeral});
+        await interaction.deferReply({ flags: MessageFlags.Ephemeral });
         const lang = interaction.locale;
 
         const cooldownSeconds = await TicketCooldownManager.getCooldownSeconds(interaction.guild.id);
@@ -38,20 +37,16 @@ class CreateTicketButton {
             });
         }
 
-        const container = await CreateTicketPickCategoryComponent.create(
+        const containers = await CreateWebsiteTicketPickCategoryComponent.create(
             lang,
-            interaction.client.db,
-            interaction.guild.id
+            interaction.guild.id,
         );
 
-
         await interaction.editReply({
-            components: container,
+            components: containers,
             flags: MessageFlags.IsComponentsV2,
-        })
-
-        return;
+        });
     }
 }
 
-module.exports.CreateTicketButton = CreateTicketButton;
+module.exports.CreateWebsiteTicketButton = CreateWebsiteTicketButton;

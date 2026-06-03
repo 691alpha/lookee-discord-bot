@@ -1,10 +1,12 @@
-const { ActionRowBuilder, ModalBuilder, TextInputBuilder, TextInputStyle } = require('discord.js');
+const { ActionRowBuilder, ModalBuilder, TextInputBuilder, TextInputStyle, MessageFlags } = require('discord.js');
 const { LocalisationManager } = require('../managers/LocalisationManager');
 const LanguageManager = require('../managers/LanguageManager');
 const ChannelUtils = require('../utils/ChannelUtils');
 const Setups = require('../database/models/Setups');
 const Tickets = require('../database/models/Tickets');
 const TicketCategories = require('../database/models/TicketCategories');
+const TicketCooldownManager = require('../managers/TicketCooldownManager');
+const { VariableResponseComponent } = require('../components/responses/VariableResponseComponent');
 const fs = require('fs').promises;
 const path = require('path');
 
@@ -49,10 +51,28 @@ class CategoryTicketModal {
 
     static async onSubmit(interaction) {
 		const { db } = interaction.client;
-		const guildId = interaction.guildId.toString(); 
+		const guildId = interaction.guildId.toString();
 		const setup = await Setups.findOne({ where: { guildId } });
 		const ticketId = await db.getNextId('tickets');
         const lang = await LanguageManager.getServerLang(guildId);
+
+        const cooldownSeconds = await TicketCooldownManager.getCooldownSeconds(guildId);
+        const remaining = TicketCooldownManager.getRemainingSeconds(
+            guildId,
+            interaction.user.id,
+            cooldownSeconds,
+        );
+        if (remaining > 0) {
+            const container = VariableResponseComponent.create(
+                'ticket_cooldown_active',
+                lang,
+                { seconds: remaining, discordTimestamp: Math.floor(Date.now() / 1000) + remaining },
+            );
+            return interaction.reply({
+                components: [container],
+                flags: [MessageFlags.Ephemeral, MessageFlags.IsComponentsV2],
+            });
+        }
 
         const customId = interaction.customId;
         const [prefix, categoryName] = customId.split('/');
@@ -105,6 +125,7 @@ class CategoryTicketModal {
         fs.writeFile(ticketsFolderPath+`/${newTicket.id}.txt`,fileContent)
 
         await ChannelUtils.sendTicketCreationSuccess(interaction, createdTicketChannel, newTicket);
+        TicketCooldownManager.touch(guildId, interaction.user.id);
         return;
 
     }
