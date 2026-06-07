@@ -19,7 +19,7 @@ class CreateTicketComponent {
 
         const bannerMedia = new MediaGalleryBuilder();
         bannerMedia.addItems(
-            new MediaGalleryItemBuilder().setURL('attachment://lookee-banner.jpg'),
+            new MediaGalleryItemBuilder().setURL('attachment://cover1.png'),
         );
         container.addMediaGalleryComponents(bannerMedia);
 
