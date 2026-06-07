@@ -12,7 +12,7 @@ class PresentationComponent {
 
         const BannerMedia = new MediaGalleryBuilder();
         const banner = new MediaGalleryItemBuilder()
-        .setURL('attachment://lookee-banner.jpg')
+        .setURL('attachment://cover1.png')
        BannerMedia.addItems(banner);
 
         const PresentationTitle = new TextDisplayBuilder().setContent(

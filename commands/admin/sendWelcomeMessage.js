@@ -35,7 +35,7 @@ module.exports = {
         let outputContainer = await WelcomeMessageComponent.create(lang);
 
         const bannerAttachment = new AttachmentBuilder(
-            path.join(__dirname, '../../assets/images/lookee-banner.jpg')
+            path.join(__dirname, '../../assets/images/cover1.png')
         );
 
         await interaction.channel.send({
