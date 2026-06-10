@@ -1,4 +1,5 @@
-const { Client, GatewayIntentBits, Partials, MessageFlags } = require("discord.js");
+const { Client, GatewayIntentBits, Partials, MessageFlags, AttachmentBuilder } = require("discord.js");
+const path = require("node:path");
 const Database = require("../database/Database.js");
 // const { default: OpenAI } = require("openai");
 const { Mistral } = require("@mistralai/mistralai");
@@ -112,46 +113,77 @@ module.exports = class extends Client {
             process.env["SCHEDULE_JOB_NAME_TESTFLIGHT_POLL"] ?? "SCHEDULE_JOB_TESTFLIGHT_POLL",
             '*/5 * * * *',
             async () => {
-                const setups = await Setups.findAll({
-                    where: { testflightChannelId: { [Op.ne]: null } },
-                });
-                if (setups.length === 0) return;
-
-                let latest;
                 try {
-                    latest = await AppStoreConnectManager.getLatestBuild();
+                    await this.runTestflightCheck();
                 } catch (error) {
                     console.error('TestFlight poll failed:', error.message);
-                    return;
-                }
-                if (!latest) return;
-
-                for (const setup of setups) {
-                    if (setup.lastTestflightBuildId === latest.id) continue;
-
-                    try {
-                        const channel = await this.channels.fetch(setup.testflightChannelId);
-                        if (!channel || !channel.isTextBased()) {
-                            await setup.update({ lastTestflightBuildId: latest.id });
-                            continue;
-                        }
-
-                        const container = await TestflightNewBuildComponent.create(
-                            setup.defaultLang,
-                            setup.guildId,
-                            latest,
-                        );
-                        await channel.send({
-                            components: [container],
-                            flags: MessageFlags.IsComponentsV2,
-                        });
-                        await setup.update({ lastTestflightBuildId: latest.id });
-                    } catch (error) {
-                        console.error(`TestFlight notify failed for guild ${setup.guildId}:`, error.message);
-                    }
                 }
             }
         )
+    }
+
+    /**
+     * Fetches the latest TestFlight build and announces it in every guild
+     * whose stored build id differs. Returns the latest build and the number
+     * of guilds an announcement was sent to.
+     */
+    async runTestflightCheck() {
+        const setups = await Setups.findAll({
+            where: { testflightChannelId: { [Op.ne]: null } },
+        });
+        if (setups.length === 0) return { latest: null, announcedCount: 0 };
+
+        const latest = await AppStoreConnectManager.getLatestBuild();
+        if (!latest) return { latest: null, announcedCount: 0 };
+
+        let announcedCount = 0;
+
+        for (const setup of setups) {
+            if (setup.lastTestflightBuildId === latest.id) continue;
+
+            try {
+                await this.announceTestflightBuild(setup, latest);
+                await setup.update({ lastTestflightBuildId: latest.id });
+                announcedCount++;
+            } catch (error) {
+                console.error(`TestFlight notify failed for guild ${setup.guildId}:`, error.message);
+                // Don't retry a build forever when the channel is gone.
+                if (error.code === 'CHANNEL_UNAVAILABLE') {
+                    await setup.update({ lastTestflightBuildId: latest.id });
+                }
+            }
+        }
+
+        return { latest, announcedCount };
+    }
+
+    /**
+     * Posts the announcement for the given build in the guild's configured
+     * TestFlight channel. Throws if the channel is missing or not text-based.
+     */
+    async announceTestflightBuild(setup, build) {
+        const channel = await this.channels.fetch(setup.testflightChannelId).catch(() => null);
+        if (!channel || !channel.isTextBased()) {
+            const error = new Error(`Channel ${setup.testflightChannelId} is missing or not text-based.`);
+            error.code = 'CHANNEL_UNAVAILABLE';
+            throw error;
+        }
+
+        const container = await TestflightNewBuildComponent.create(
+            setup.defaultLang,
+            setup.guildId,
+            build,
+        );
+
+        const bannerAttachment = new AttachmentBuilder(
+            path.join(__dirname, '../assets/images/cover1.png'),
+        );
+
+        await channel.send({
+            components: [container],
+            files: [bannerAttachment],
+            flags: MessageFlags.IsComponentsV2,
+        });
     }
 
 }

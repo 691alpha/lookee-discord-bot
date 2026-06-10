@@ -13,7 +13,9 @@
       "Bash(node --check commands/admin/setTestflightChannel.js)",
       "Bash(node --check includes/Client.js)",
       "Bash(node --check database/models/Setups.js)",
-      "Bash(node -e ' *)"
+      "Bash(node -e ' *)",
+      "Bash(node --check commands/admin/forceTestflightCheck.js)",
+      "Bash(node -e \"JSON.parse\\(require\\('fs'\\).readFileSync\\('langs/en-US.json'\\)\\); JSON.parse\\(require\\('fs'\\).readFileSync\\('langs/fr.json'\\)\\); JSON.parse\\(require\\('fs'\\).readFileSync\\('langs/de.json'\\)\\); console.log\\('all OK'\\)\")"
     ]
   }
 }

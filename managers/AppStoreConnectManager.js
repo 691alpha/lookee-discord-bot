@@ -105,9 +105,10 @@ class AppStoreConnectManager {
             'filter[app]': appId,
             'sort': '-uploadedDate',
             'limit': '1',
-            'include': 'preReleaseVersion',
-            'fields[builds]': 'version,uploadedDate,processingState,expirationDate,preReleaseVersion',
+            'include': 'preReleaseVersion,betaBuildLocalizations',
+            'fields[builds]': 'version,uploadedDate,processingState,expirationDate,preReleaseVersion,betaBuildLocalizations',
             'fields[preReleaseVersions]': 'version,platform',
+            'fields[betaBuildLocalizations]': 'whatsNew,locale',
         });
 
         const payload = await apiGet(`/v1/builds?${query.toString()}`);
@@ -119,6 +120,13 @@ class AppStoreConnectManager {
             ? payload.included?.find(item => item.type === 'preReleaseVersions' && item.id === preReleaseRef.id)
             : null;
 
+        const whatsNew = (payload.included ?? [])
+            .filter(item => item.type === 'betaBuildLocalizations' && item.attributes?.whatsNew)
+            .map(item => ({
+                locale: item.attributes.locale,
+                text: item.attributes.whatsNew,
+            }));
+
         return {
             id: build.id,
             buildNumber: build.attributes?.version ?? null,
@@ -127,6 +135,7 @@ class AppStoreConnectManager {
             expirationDate: build.attributes?.expirationDate ?? null,
             marketingVersion: preReleaseVersion?.attributes?.version ?? null,
             platform: preReleaseVersion?.attributes?.platform ?? null,
+            whatsNew,
         };
     }
 }
