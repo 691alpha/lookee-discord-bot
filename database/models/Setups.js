@@ -64,6 +64,14 @@ module.exports = class Setups extends Model {
                 allowNull: false,
                 defaultValue: 0,
             },
+            testflightChannelId: {
+                type: Sequelize.STRING,
+                allowNull: true,
+            },
+            lastTestflightBuildId: {
+                type: Sequelize.STRING,
+                allowNull: true,
+            },
         }, {
             sequelize,
             tableName: 'setups',

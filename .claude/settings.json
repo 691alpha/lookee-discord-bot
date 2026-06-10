@@ -7,7 +7,12 @@
       "Read(//d/repositories/lookee-display-api/app/utils/**)",
       "Read(//d/repositories/lookee-display-api/app/models/mongo/**)",
       "Read(//d/repositories/lookee-display-api/**)",
-      "Bash(grep -E \"\\\\.\\(js|ts\\)$\")"
+      "Bash(grep -E \"\\\\.\\(js|ts\\)$\")",
+      "Bash(node --check managers/AppStoreConnectManager.js)",
+      "Bash(node --check components/TestflightNewBuildComponent.js)",
+      "Bash(node --check commands/admin/setTestflightChannel.js)",
+      "Bash(node --check includes/Client.js)",
+      "Bash(node --check database/models/Setups.js)"
     ]
   }
 }
