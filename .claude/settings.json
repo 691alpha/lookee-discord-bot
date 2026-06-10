@@ -12,7 +12,8 @@
       "Bash(node --check components/TestflightNewBuildComponent.js)",
       "Bash(node --check commands/admin/setTestflightChannel.js)",
       "Bash(node --check includes/Client.js)",
-      "Bash(node --check database/models/Setups.js)"
+      "Bash(node --check database/models/Setups.js)",
+      "Bash(node -e ' *)"
     ]
   }
 }

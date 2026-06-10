@@ -17,7 +17,25 @@ function base64url(input) {
 
 function normalisePrivateKey(raw) {
     if (!raw) return null;
-    return raw.includes('\\n') ? raw.replace(/\\n/g, '\n') : raw;
+
+    let key = raw.trim().replace(/^["']|["']$/g, '');
+    if (key.includes('\\n')) key = key.replace(/\\n/g, '\n');
+
+    // Bare base64 body (pasted without the PEM header/footer) — wrap it.
+    if (!key.includes('-----BEGIN')) {
+        const body = key.replace(/\s+/g, '').match(/.{1,64}/g)?.join('\n') ?? '';
+        key = `-----BEGIN PRIVATE KEY-----\n${body}\n-----END PRIVATE KEY-----`;
+    }
+
+    return key;
+}
+
+function loadPrivateKey() {
+    const keyPath = process.env.APP_STORE_CONNECT_PRIVATE_KEY_PATH;
+    if (keyPath) {
+        return normalisePrivateKey(require('node:fs').readFileSync(keyPath, 'utf8'));
+    }
+    return normalisePrivateKey(process.env.APP_STORE_CONNECT_PRIVATE_KEY);
 }
 
 function getJwt() {
@@ -28,7 +46,7 @@ function getJwt() {
 
     const keyId = process.env.APP_STORE_CONNECT_KEY_ID;
     const issuerId = process.env.APP_STORE_CONNECT_ISSUER_ID;
-    const privateKey = normalisePrivateKey(process.env.APP_STORE_CONNECT_PRIVATE_KEY);
+    const privateKey = loadPrivateKey();
 
     if (!keyId || !issuerId || !privateKey) {
         throw new Error('App Store Connect credentials are not fully configured.');
@@ -76,7 +94,7 @@ class AppStoreConnectManager {
         return Boolean(
             process.env.APP_STORE_CONNECT_KEY_ID
             && process.env.APP_STORE_CONNECT_ISSUER_ID
-            && process.env.APP_STORE_CONNECT_PRIVATE_KEY
+            && (process.env.APP_STORE_CONNECT_PRIVATE_KEY || process.env.APP_STORE_CONNECT_PRIVATE_KEY_PATH)
             && process.env.APP_STORE_CONNECT_APP_ID,
         );
     }
