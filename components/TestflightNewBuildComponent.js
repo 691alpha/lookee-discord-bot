@@ -22,7 +22,7 @@ function pickWhatsNew(whatsNew, lang) {
 }
 
 class TestflightNewBuildComponent {
-    static async create(lang, guildId, build) {
+    static async create(lang, guildId, build, app = null) {
         const container = new ContainerBuilder();
         if (guildId) container.setAccentColor(await ColorManager.getMainColor(guildId));
 
@@ -38,8 +38,9 @@ class TestflightNewBuildComponent {
         container.addMediaGalleryComponents(bannerMedia);
         container.addSeparatorComponents(separator);
 
+        const titleText = LocalisationManager.getString('testflight_new_build_title', lang);
         const title = new TextDisplayBuilder().setContent(
-            `### 🚀 ${LocalisationManager.getString('testflight_new_build_title', lang)}`,
+            app?.name ? `### 🚀 ${app.name} — ${titleText}` : `### 🚀 ${titleText}`,
         );
         container.addTextDisplayComponents(title);
 
@@ -78,7 +79,7 @@ class TestflightNewBuildComponent {
             );
         }
 
-        const testflightLink = process.env.TESTFLIGHT_PUBLIC_LINK;
+        const testflightLink = app?.publicLink || process.env.TESTFLIGHT_PUBLIC_LINK;
         if (testflightLink) {
             container.addActionRowComponents(row => row.addComponents(
                 ForwardToWebsiteButton.create(

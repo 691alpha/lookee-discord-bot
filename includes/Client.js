@@ -1,4 +1,4 @@
-const { Client, GatewayIntentBits, Partials, MessageFlags, AttachmentBuilder } = require("discord.js");
+const { Client, GatewayIntentBits, Partials, MessageFlags, AttachmentBuilder, TextDisplayBuilder } = require("discord.js");
 const path = require("node:path");
 const Database = require("../database/Database.js");
 // const { default: OpenAI } = require("openai");
@@ -9,6 +9,7 @@ const { Op } = require("sequelize");
 const Setups = require("../database/models/Setups.js");
 const { NoVariableResponseComponent } = require("../components/responses/NoVariableResponseComponent.js");
 const AppStoreConnectManager = require("../managers/AppStoreConnectManager.js");
+const TestflightApps = require("../database/models/TestflightApps.js");
 const { TestflightNewBuildComponent } = require("../components/TestflightNewBuildComponent.js");
 
 
@@ -123,66 +124,115 @@ module.exports = class extends Client {
     }
 
     /**
-     * Fetches the latest TestFlight build and announces it in every guild
-     * whose stored build id differs. Returns the latest build and the number
-     * of guilds an announcement was sent to.
+     * Checks every tracked TestFlight app for a new build and announces it.
+     * Returns { checkedCount, announcements } where announcements is a list
+     * of { appName, marketingVersion, buildNumber }.
      */
     async runTestflightCheck() {
-        const setups = await Setups.findAll({
-            where: { testflightChannelId: { [Op.ne]: null } },
-        });
-        if (setups.length === 0) return { latest: null, announcedCount: 0 };
+        await this.migrateLegacyTestflightSetup();
 
-        const latest = await AppStoreConnectManager.getLatestBuild();
-        if (!latest) return { latest: null, announcedCount: 0 };
+        const apps = await TestflightApps.findAll();
+        const announcements = [];
 
-        let announcedCount = 0;
-
-        for (const setup of setups) {
-            if (setup.lastTestflightBuildId === latest.id) continue;
+        for (const app of apps) {
+            let latest;
+            try {
+                latest = await AppStoreConnectManager.getLatestBuild(app.appStoreAppId);
+            } catch (error) {
+                console.error(`TestFlight check failed for app ${app.name} (${app.appStoreAppId}):`, error.message);
+                continue;
+            }
+            if (!latest || app.lastBuildId === latest.id) continue;
 
             try {
-                await this.announceTestflightBuild(setup, latest);
-                await setup.update({ lastTestflightBuildId: latest.id });
-                announcedCount++;
+                await this.announceTestflightBuild(app, latest);
+                await app.update({ lastBuildId: latest.id });
+                announcements.push({
+                    appName: app.name,
+                    marketingVersion: latest.marketingVersion,
+                    buildNumber: latest.buildNumber,
+                });
             } catch (error) {
-                console.error(`TestFlight notify failed for guild ${setup.guildId}:`, error.message);
+                console.error(`TestFlight notify failed for app ${app.name} (guild ${app.guildId}):`, error.message);
                 // Don't retry a build forever when the channel is gone.
                 if (error.code === 'CHANNEL_UNAVAILABLE') {
-                    await setup.update({ lastTestflightBuildId: latest.id });
+                    await app.update({ lastBuildId: latest.id });
                 }
             }
         }
 
-        return { latest, announcedCount };
+        return { checkedCount: apps.length, announcements };
     }
 
     /**
-     * Posts the announcement for the given build in the guild's configured
-     * TestFlight channel. Throws if the channel is missing or not text-based.
+     * One-time migration: guilds configured through the old single-app setup
+     * (testflightChannelId on Setups + APP_STORE_CONNECT_APP_ID env) get a
+     * TestflightApps row so the multi-app poll picks them up.
      */
-    async announceTestflightBuild(setup, build) {
-        const channel = await this.channels.fetch(setup.testflightChannelId).catch(() => null);
+    async migrateLegacyTestflightSetup() {
+        const legacyAppId = process.env.APP_STORE_CONNECT_APP_ID;
+        if (!legacyAppId) return;
+
+        const setups = await Setups.findAll({
+            where: { testflightChannelId: { [Op.ne]: null } },
+        });
+
+        for (const setup of setups) {
+            const count = await TestflightApps.count({ where: { guildId: setup.guildId } });
+            if (count > 0) continue;
+
+            const appInfo = await AppStoreConnectManager.getAppInfo(legacyAppId).catch(() => null);
+            await TestflightApps.create({
+                id: await this.db.getNextId('testflight_apps'),
+                guildId: setup.guildId,
+                appStoreAppId: legacyAppId,
+                name: appInfo?.name ?? 'App',
+                channelId: setup.testflightChannelId,
+                publicLink: process.env.TESTFLIGHT_PUBLIC_LINK || null,
+                lastBuildId: setup.lastTestflightBuildId,
+            });
+            console.log(`Migrated legacy TestFlight setup for guild ${setup.guildId} to testflight_apps.`);
+        }
+    }
+
+    /**
+     * Posts the announcement for the given build in the app's configured
+     * channel, pinging the guild's notification role when one is set.
+     * Throws if the channel is missing or not text-based.
+     */
+    async announceTestflightBuild(app, build, { ping = true } = {}) {
+        const channel = await this.channels.fetch(app.channelId).catch(() => null);
         if (!channel || !channel.isTextBased()) {
-            const error = new Error(`Channel ${setup.testflightChannelId} is missing or not text-based.`);
+            const error = new Error(`Channel ${app.channelId} is missing or not text-based.`);
             error.code = 'CHANNEL_UNAVAILABLE';
             throw error;
         }
 
+        const setup = await Setups.findOne({ where: { guildId: app.guildId } });
+
         const container = await TestflightNewBuildComponent.create(
-            setup.defaultLang,
-            setup.guildId,
+            setup?.defaultLang ?? 'en-US',
+            app.guildId,
             build,
+            app,
         );
 
         const bannerAttachment = new AttachmentBuilder(
             path.join(__dirname, '../assets/images/cover1.png'),
         );
 
+        const components = [];
+        const roleId = ping ? setup?.notificationRoleId : null;
+        if (roleId) {
+            components.push(new TextDisplayBuilder().setContent(`<@&${roleId}>`));
+        }
+        components.push(container);
+
         await channel.send({
-            components: [container],
+            components,
             files: [bannerAttachment],
             flags: MessageFlags.IsComponentsV2,
+            allowedMentions: roleId ? { roles: [roleId] } : undefined,
         });
     }
 

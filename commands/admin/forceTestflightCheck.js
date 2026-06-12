@@ -9,7 +9,7 @@ module.exports = {
     data: new SlashCommandBuilder()
         .setName('force_testflight_check')
         .setDefaultMemberPermissions(PermissionsBitField.Flags.Administrator)
-        .setDescription('Checks for a new TestFlight build right now and announces it if found.'),
+        .setDescription('Checks all tracked apps for new TestFlight builds right now.'),
     async execute(interaction) {
         const lang = interaction.locale;
 
@@ -28,19 +28,20 @@ module.exports = {
 
         let container;
         try {
-            const { latest, announcedCount } = await interaction.client.runTestflightCheck();
+            const { checkedCount, announcements } = await interaction.client.runTestflightCheck();
 
-            if (!latest) {
-                container = NoVariableResponseComponent.create('testflight_check_no_builds', lang);
+            if (checkedCount === 0) {
+                container = NoVariableResponseComponent.create('testflight_no_apps', lang);
+            } else if (announcements.length === 0) {
+                container = VariableResponseComponent.create('testflight_check_no_new_build', lang, {
+                    appCount: checkedCount,
+                });
             } else {
-                container = VariableResponseComponent.create(
-                    announcedCount > 0 ? 'testflight_check_announced' : 'testflight_check_no_new_build',
-                    lang,
-                    {
-                        marketingVersion: latest.marketingVersion ?? '—',
-                        buildNumber: latest.buildNumber ?? '—',
-                    },
-                );
+                container = VariableResponseComponent.create('testflight_check_announced', lang, {
+                    list: announcements
+                        .map(a => `- **${a.appName}** ${a.marketingVersion ?? '—'} (${a.buildNumber ?? '—'})`)
+                        .join('\n'),
+                });
             }
         } catch (error) {
             console.error('Forced TestFlight check failed:', error.message);

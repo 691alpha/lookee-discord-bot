@@ -94,13 +94,32 @@ class AppStoreConnectManager {
         return Boolean(
             process.env.APP_STORE_CONNECT_KEY_ID
             && process.env.APP_STORE_CONNECT_ISSUER_ID
-            && (process.env.APP_STORE_CONNECT_PRIVATE_KEY || process.env.APP_STORE_CONNECT_PRIVATE_KEY_PATH)
-            && process.env.APP_STORE_CONNECT_APP_ID,
+            && (process.env.APP_STORE_CONNECT_PRIVATE_KEY || process.env.APP_STORE_CONNECT_PRIVATE_KEY_PATH),
         );
     }
 
-    static async getLatestBuild() {
-        const appId = process.env.APP_STORE_CONNECT_APP_ID;
+    /**
+     * Returns { id, name, bundleId } for the given App Store Connect app id,
+     * or null when the app does not exist / is not accessible with this key.
+     */
+    static async getAppInfo(appId) {
+        try {
+            const payload = await apiGet(`/v1/apps/${encodeURIComponent(appId)}?fields[apps]=name,bundleId`);
+            const app = payload.data;
+            if (!app) return null;
+            return {
+                id: app.id,
+                name: app.attributes?.name ?? null,
+                bundleId: app.attributes?.bundleId ?? null,
+            };
+        } catch (error) {
+            if (/ 404:/.test(error.message)) return null;
+            throw error;
+        }
+    }
+
+    static async getLatestBuild(appId = process.env.APP_STORE_CONNECT_APP_ID) {
+        if (!appId) throw new Error('No App Store Connect app id provided.');
         const query = new URLSearchParams({
             'filter[app]': appId,
             'sort': '-uploadedDate',

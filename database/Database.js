@@ -14,6 +14,7 @@ const Suggestions = require('./models/Suggestions.js');
 const PatchNoteCategories = require('./models/PatchNoteCategories.js');
 const PatchNoteAttachments = require('./models/PatchNoteAttachments.js');
 const TicketCategories = require('./models/TicketCategories.js');
+const TestflightApps = require('./models/TestflightApps.js');
 // const Message = require('./models/Messages.js');
 
 dotenv.config();
@@ -51,6 +52,7 @@ module.exports = class Database {
                 this.initConnection(PatchNoteCategories);
                 this.initConnection(PatchNoteAttachments);
                 this.initConnection(TicketCategories);
+                this.initConnection(TestflightApps);
                 // this.initConnection(Message);
 
                 // Foreign keys
@@ -118,6 +120,7 @@ module.exports = class Database {
             SetupModel, AutoIncrementModel, TicketModel, PatchNote, Suggestions,
             PatchNoteNode, PatchNotePreview, Formats, Versions,
             PatchNoteCategories, PatchNoteAttachments, TicketCategories,
+            TestflightApps,
         ];
 
         for (const model of models) {
@@ -161,7 +164,8 @@ module.exports = class Database {
                 suggestions: 0,
                 patchnote_categories: 0,
                 patchnote_attachments: 0,
-                ticket_categories: 0
+                ticket_categories: 0,
+                testflight_apps: 0
             });
         }
     }

@@ -72,6 +72,10 @@ module.exports = class Setups extends Model {
                 type: Sequelize.STRING,
                 allowNull: true,
             },
+            notificationRoleId: {
+                type: Sequelize.STRING,
+                allowNull: true,
+            },
         }, {
             sequelize,
             tableName: 'setups',

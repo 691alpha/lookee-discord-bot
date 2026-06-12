@@ -41,6 +41,10 @@ module.exports = class AutoIncrement extends Model {
       ticket_categories: {
         type: Sequelize.BIGINT,
       },
+      testflight_apps: {
+        type: Sequelize.BIGINT,
+        defaultValue: 0,
+      },
     }, {
       sequelize,
       tableName: 'auto_increments',
